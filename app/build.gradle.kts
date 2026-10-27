@@ -26,6 +26,13 @@ val lastCommitTimestamp = providers.exec {
     commandLine("git", "log", "-1", "--format=%ct")
 }.standardOutput.asText.map { it.trim() }
 
+// jstore: the release workflow passes the version from the git tag (vX.Y.Z); local builds
+// are 0.0.0-dev. The signing key comes from the environment (CI) or signing.properties and
+// must be JaecooApp's key, or JaecooApp will not install for jstore.
+val jstoreVersionName = providers.gradleProperty("jstoreVersionName").getOrElse("0.0.0-dev")
+val jstoreVersionCode = providers.gradleProperty("jstoreVersionCode").getOrElse("1").toInt()
+val jstoreKeystore: String? = System.getenv("JSTORE_KEYSTORE")?.takeIf { it.isNotBlank() }
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -57,31 +64,40 @@ configure<ApplicationExtension> {
     }
 
     defaultConfig {
-        applicationId = "com.aurora.store"
+        applicationId = "com.example.jstore"
         minSdk {
-            version = release(23)
+            // jstore: runs next to JaecooApp, which needs Android 10
+            version = release(29)
         }
         targetSdk {
             version = release(37)
         }
 
-        versionCode = 76
-        versionName = "4.8.4"
+        versionCode = jstoreVersionCode
+        versionName = jstoreVersionName
 
         testInstrumentationRunner = "com.aurora.store.HiltInstrumentationTestRunner"
         testInstrumentationRunnerArguments["disableAnalytics"] = "true"
 
-        buildConfigField("String", "EXODUS_API_KEY", "\"bbe6ebae4ad45a9cbacb17d69739799b8df2c7ae\"")
+        // jstore: Exodus is not offered, so no key is shipped
+        buildConfigField("String", "EXODUS_API_KEY", "\"\"")
         buildConfigField("long", "BUILD_TIMESTAMP", "${lastCommitTimestamp.get()}L")
 
         missingDimensionStrategy("device", "vanilla")
     }
 
     signingConfigs {
-        if (File("signing.properties").exists()) {
+        if (jstoreKeystore != null) {
+            create("release") {
+                storeFile = file(jstoreKeystore)
+                storePassword = System.getenv("JSTORE_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("JSTORE_KEY_ALIAS")
+                keyPassword = System.getenv("JSTORE_KEY_PASSWORD")
+            }
+        } else if (rootProject.file("signing.properties").exists()) {
             create("release") {
                 val properties = Properties().apply {
-                    File("signing.properties").inputStream().use { load(it) }
+                    rootProject.file("signing.properties").inputStream().use { load(it) }
                 }
 
                 keyAlias = properties["KEY_ALIAS"] as String
@@ -108,9 +124,7 @@ configure<ApplicationExtension> {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            if (File("signing.properties").exists()) {
-                signingConfig = signingConfigs.getByName("release")
-            }
+            signingConfigs.findByName("release")?.let { signingConfig = it }
         }
 
         register("nightly") {
@@ -120,8 +134,8 @@ configure<ApplicationExtension> {
         }
 
         debug {
-            applicationIdSuffix = ".debug"
-            signingConfig = signingConfigs.getByName("aosp")
+            // jstore: same package and key as a release, so JaecooApp grants the contract
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("aosp")
         }
     }
 
@@ -131,21 +145,11 @@ configure<ApplicationExtension> {
         create("vanilla") {
             isDefault = true
             dimension = "device"
-            buildConfigField("Boolean", "SHOW_ANONYMOUS_LOGIN", "true")
-        }
-
-        create("huawei") {
-            dimension = "device"
-            versionNameSuffix = "-hw"
+            // jstore: Aurora's dispenser only serves Aurora itself; sign in through microG
             buildConfigField("Boolean", "SHOW_ANONYMOUS_LOGIN", "false")
         }
 
-        // This flavor is only for preloaded devices / users who push the app to system
-        create("preload") {
-            dimension = "device"
-            versionNameSuffix = "-preload"
-            buildConfigField("Boolean", "SHOW_ANONYMOUS_LOGIN", "true")
-        }
+        // jstore: the huawei and preload flavors are not built
     }
 
     buildFeatures {
@@ -267,8 +271,67 @@ dependencies {
 
     implementation(libs.process.phoenix)
 
-    "huaweiImplementation"(libs.huawei.hms.coreservice)
-
     // LeakCanary
     debugImplementation(libs.squareup.leakcanary.android)
+}
+
+// ---- jstore additions, kept together at the end so merging upstream stays small ----
+//
+// Branding: upstream's strings (and their Weblate translations, which Weblate rewrites
+// wholesale) say "Aurora Store" in many places. Rather than editing them, each build
+// generates overrides with the product name replaced, so the app reads "jstore" while the
+// source files stay identical to upstream. "Aurora OSS" (the authors) and "Aurora Services"
+// (another product) keep their names.
+
+abstract class JstoreBrandTask : DefaultTask() {
+
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val sourceRes: DirectoryProperty
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val out = outputDir.get().asFile
+        out.deleteRecursively()
+        val entry =
+            Regex("""<string\s+name="([^"]+)"([^>]*)>(.*?)</string>""", RegexOption.DOT_MATCHES_ALL)
+        val bareName = Regex("""Aurora(?! OSS| Services| Support|OSS)""")
+
+        sourceRes.get().asFile.listFiles { dir -> dir.isDirectory && dir.name.startsWith("values") }
+            ?.forEach { dir ->
+                val strings = File(dir, "strings.xml").takeIf { it.exists() } ?: return@forEach
+                val overrides = entry.findAll(strings.readText())
+                    .filter { "Aurora" in it.groupValues[3] }
+                    .map { match ->
+                        val (name, attrs, text) = match.destructured
+                        val branded = bareName.replace(
+                            text.replace("Aurora Store", "jstore"),
+                            "jstore"
+                        )
+                        """    <string name="$name"$attrs>$branded</string>"""
+                    }
+                    .toList()
+                if (overrides.isEmpty()) return@forEach
+                File(out, dir.name).apply {
+                    mkdirs()
+                }.resolve("strings_jstore_brand.xml").writeText(
+                    (
+                        listOf("<?xml version=\"1.0\" encoding=\"utf-8\"?>", "<resources>") +
+                            overrides + "</resources>"
+                        ).joinToString("\n", postfix = "\n")
+                )
+            }
+    }
+}
+
+val jstoreBrand = tasks.register<JstoreBrandTask>("jstoreBrandStrings") {
+    sourceRes.set(layout.projectDirectory.dir("src/main/res"))
+    outputDir.set(layout.buildDirectory.dir("generated/jstore/brandRes"))
+}
+
+androidComponents.onVariants { variant ->
+    variant.sources.res?.addGeneratedSourceDirectory(jstoreBrand, JstoreBrandTask::outputDir)
 }

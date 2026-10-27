@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">Pemasangan senyap melalui JaecooApp</string>
+    <string name="jstore_installer_desc">jstore menyerahkan aplikasi yang diunduh ke JaecooApp, yang memasang dan memperbaruinya dengan hak Device Owner tanpa bertanya kepada pengemudi. Memerlukan JaecooApp 4.8.0 atau lebih baru di head unit ini.</string>
+    <string name="jstore_jaecooapp_required">Perlu JaecooApp 4.8.0 atau lebih baru untuk memasang aplikasi.</string>
+    <string name="jstore_uninstall_failed">Tidak dapat mencopot: %1$s</string>
+    <string name="jstore_download_busy">%1$s sedang diunduh.</string>
+    <string name="jstore_paid_unsupported">Aplikasi berbayar tidak didukung.</string>
+    <string name="jstore_shared_libs_unsupported">Aplikasi ini memerlukan pustaka bersama; perbarui di jstore.</string>
+    <string name="jstore_obb_unsupported">Aplikasi dengan file ekspansi (OBB) tidak bisa diperbarui dari JaecooApp; perbarui di jstore.</string>
+    <string name="jstore_download_failed">Tidak dapat mengunduh %1$s: %2$s</string>
+    <string name="jstore_microg_required">jstore masuk melalui microG. Pasang microG (atau MicroG RE) dan tambahkan akun Google di dalamnya.</string>
+    <string name="jstore_about_source_title">Kode sumber jstore</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore, GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">Berbasis Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">jstore adalah fork dari Aurora Store oleh Aurora OSS, tidak berafiliasi atau didukung oleh mereka.</string>
+    <string name="jstore_sign_in_required">Masuk ke jstore dengan akun Google Anda terlebih dahulu.</string>
+    <string name="jstore_about_tagline">Dibuat untuk head unit Jaecoo</string>
+</resources>

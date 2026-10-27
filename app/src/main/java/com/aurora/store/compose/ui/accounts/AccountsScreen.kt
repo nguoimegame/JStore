@@ -58,6 +58,7 @@ import com.aurora.Constants.URL_DISCLAIMER
 import com.aurora.Constants.URL_LICENSE
 import com.aurora.Constants.URL_TOS
 import com.aurora.extensions.browse
+import com.aurora.extensions.toast
 import com.aurora.store.BuildConfig
 import com.aurora.store.R
 import com.aurora.store.compose.composable.AccountListItem
@@ -68,7 +69,7 @@ import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.compose.ui.commons.LoadingDialog
 import com.aurora.store.compose.ui.sheets.AccountActionsSheet
 import com.aurora.store.data.room.account.Account
-import com.aurora.store.util.CertUtil.GOOGLE_ACCOUNT_TYPE
+import com.aurora.store.jstore.MicroGAccounts
 import com.aurora.store.util.PackageUtil
 import com.aurora.store.util.Preferences
 import com.aurora.store.util.RestartUtil
@@ -321,7 +322,7 @@ fun AccountsScreen(
                                 AccountManager.newChooseAccountIntent(
                                     null,
                                     null,
-                                    arrayOf(GOOGLE_ACCOUNT_TYPE),
+                                    arrayOf(MicroGAccounts.accountType(context)),
                                     null,
                                     null,
                                     null,
@@ -329,7 +330,8 @@ fun AccountsScreen(
                                 )
                             )
                         } else {
-                            onNavigateTo(Destination.GoogleLogin(addAccount = true))
+                            // jstore: microG is required, there is no WebView sign-in
+                            context.toast(R.string.jstore_microg_required)
                         }
                     }
                 )

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">Silent installs through JaecooApp</string>
+    <string name="jstore_installer_desc">jstore hands downloaded apps to JaecooApp, which installs and updates them with its Device Owner rights, without asking the driver. Needs JaecooApp 4.8.0 or newer on this head unit.</string>
+    <string name="jstore_jaecooapp_required">JaecooApp 4.8.0 or newer is needed to install apps.</string>
+    <string name="jstore_uninstall_failed">Could not uninstall: %1$s</string>
+    <string name="jstore_download_busy">%1$s is already downloading.</string>
+    <string name="jstore_paid_unsupported">Paid apps are not supported.</string>
+    <string name="jstore_shared_libs_unsupported">This app needs shared libraries; update it in jstore instead.</string>
+    <string name="jstore_obb_unsupported">Apps with expansion files (OBB) cannot be updated from JaecooApp; update it in jstore instead.</string>
+    <string name="jstore_download_failed">Could not download %1$s: %2$s</string>
+    <string name="jstore_microg_required">jstore signs in through microG. Install microG (or MicroG RE) and add a Google account in it.</string>
+    <string name="jstore_about_source_title">jstore source code</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore, GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">Based on Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">jstore is a fork of Aurora Store by Aurora OSS. Not affiliated with or endorsed by them.</string>
+    <string name="jstore_sign_in_required">Sign in to jstore with your Google account first.</string>
+    <string name="jstore_about_tagline">Made for Jaecoo head units</string>
+</resources>

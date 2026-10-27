@@ -44,6 +44,7 @@ import com.aurora.store.data.room.favourite.FavouriteDao
 import com.aurora.store.data.room.review.LocalReview
 import com.aurora.store.data.room.review.LocalReview.Companion.toReview
 import com.aurora.store.data.room.review.ReviewDao
+import com.aurora.store.jstore.JstoreFeatures
 import com.aurora.store.util.CertUtil
 import com.aurora.store.util.PackageUtil
 import com.aurora.store.util.Preferences
@@ -235,16 +236,16 @@ class AppDetailsViewModel @Inject constructor(
             if (throwable != null || app.value == null) return@invokeOnCompletion
 
             fetchFavourite(packageName)
-            fetchFeaturedReviews(packageName)
+            if (JstoreFeatures.REVIEWS) fetchFeaturedReviews(packageName)
             // Reviews can only be submitted for installed apps with a personal account, so the
             // user's existing review is only relevant (and fetchable) in that case.
-            if (!authProvider.isAnonymous && app.value!!.isInstalled) {
+            if (JstoreFeatures.REVIEWS && !authProvider.isAnonymous && app.value!!.isInstalled) {
                 fetchUserAppReview(app.value!!)
             }
             fetchDataSafetyReport(packageName)
             fetchSuggestions()
-            fetchExodusPrivacyReport(packageName)
-            if (app.value!!.requiresGMS()) fetchPlexusReport(packageName)
+            if (JstoreFeatures.EXODUS) fetchExodusPrivacyReport(packageName)
+            if (JstoreFeatures.PLEXUS && app.value!!.requiresGMS()) fetchPlexusReport(packageName)
         }
     }
 

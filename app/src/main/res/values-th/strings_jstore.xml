@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">ติดตั้งแบบเงียบผ่าน JaecooApp</string>
+    <string name="jstore_installer_desc">jstore ส่งแอปที่ดาวน์โหลดให้ JaecooApp ซึ่งติดตั้งและอัปเดตด้วยสิทธิ์ Device Owner โดยไม่ต้องถามผู้ขับ ต้องมี JaecooApp 4.8.0 ขึ้นไปในเครื่องเสียงนี้</string>
+    <string name="jstore_jaecooapp_required">ต้องใช้ JaecooApp 4.8.0 ขึ้นไปเพื่อติดตั้งแอป</string>
+    <string name="jstore_uninstall_failed">ถอนการติดตั้งไม่ได้: %1$s</string>
+    <string name="jstore_download_busy">กำลังดาวน์โหลด %1$s อยู่แล้ว</string>
+    <string name="jstore_paid_unsupported">ไม่รองรับแอปแบบเสียเงิน</string>
+    <string name="jstore_shared_libs_unsupported">แอปนี้ต้องใช้ไลบรารีที่ใช้ร่วมกัน โปรดอัปเดตใน jstore</string>
+    <string name="jstore_obb_unsupported">แอปที่มีไฟล์ขยาย (OBB) อัปเดตจาก JaecooApp ไม่ได้ โปรดอัปเดตใน jstore</string>
+    <string name="jstore_download_failed">ดาวน์โหลด %1$s ไม่ได้: %2$s</string>
+    <string name="jstore_microg_required">jstore ลงชื่อเข้าใช้ผ่าน microG โปรดติดตั้ง microG (หรือ MicroG RE) และเพิ่มบัญชี Google ในนั้น</string>
+    <string name="jstore_about_source_title">ซอร์สโค้ด jstore</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore, สัญญาอนุญาต GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">พัฒนาจาก Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">jstore เป็นฟอร์กของ Aurora Store โดย Aurora OSS ไม่มีส่วนเกี่ยวข้องหรือได้รับการรับรองจากพวกเขา</string>
+    <string name="jstore_sign_in_required">โปรดลงชื่อเข้าใช้ jstore ด้วยบัญชี Google ก่อน</string>
+    <string name="jstore_about_tagline">สร้างมาเพื่อเครื่องเสียงรถ Jaecoo</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore mark on its round badge; replaces upstream's logo. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#5B4BDB"
+        android:pathData="M54,8a46,46 0,1 1,0 92a46,46 0,1 1,0 -92Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,42h40l-3,34a4,4 0,0 1,-4 3.6H41a4,4 0,0 1,-4 -3.6Z" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M44,46v-6a10,10 0,0 1,20 0v6"
+        android:strokeWidth="4"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M54,52v16M47,61l7,7 7,-7"
+        android:strokeWidth="4"
+        android:strokeColor="#5B4BDB"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

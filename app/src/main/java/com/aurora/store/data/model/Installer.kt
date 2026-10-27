@@ -15,5 +15,8 @@ enum class Installer {
     SERVICE,
     AM,
     SHIZUKU,
-    MICROG
+    MICROG,
+
+    // jstore: installs through JaecooApp's Device Owner rights
+    JAECOO
 }

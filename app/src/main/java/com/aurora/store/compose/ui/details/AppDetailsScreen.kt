@@ -110,6 +110,7 @@ import com.aurora.store.data.model.StorageRequirement
 import com.aurora.store.data.providers.PermissionProvider.Companion.isGranted
 import com.aurora.store.data.providers.PermissionProvider.Companion.isPermittedToInstall
 import com.aurora.store.data.room.account.Account
+import com.aurora.store.jstore.JstoreFeatures
 import com.aurora.store.util.FlavouredUtil
 import com.aurora.store.util.PackageUtil
 import com.aurora.store.util.Preferences
@@ -489,7 +490,7 @@ private fun ScreenContentApp(
         AppDetailsMenu(
             isFavorite = isFavorite,
             state = state,
-            canManualDownload = canAcquire,
+            canManualDownload = JstoreFeatures.MANUAL_DOWNLOAD && canAcquire,
             canUseOtherAccount = accounts.size > 1
         ) { menuItem ->
             when (menuItem) {
@@ -658,6 +659,7 @@ private fun ScreenContentApp(
                     }
 
                     item {
+                        if (!JstoreFeatures.REVIEWS) return@item
                         RatingAndReviews(
                             rating = app.rating,
                             featuredReviews = featuredReviews,
@@ -667,7 +669,7 @@ private fun ScreenContentApp(
 
                     item {
                         // Reviews can only be submitted by personal accounts for installed apps.
-                        if (!isAnonymous && app.isInstalled) {
+                        if (JstoreFeatures.REVIEWS && !isAnonymous && app.isInstalled) {
                             UserReview(
                                 review = userReview,
                                 onSubmit = onSubmitReview,
@@ -677,7 +679,10 @@ private fun ScreenContentApp(
                     }
 
                     item {
-                        if (!isAnonymous && app.testingProgram?.isAvailable == true) {
+                        if (JstoreFeatures.BETA_PROGRAMS &&
+                            !isAnonymous &&
+                            app.testingProgram?.isAvailable == true
+                        ) {
                             Testing(
                                 isSubscribed = app.testingProgram!!.isSubscribed,
                                 onTestingSubscriptionChange = onTestingSubscriptionChange
@@ -715,6 +720,7 @@ private fun ScreenContentApp(
                     }
 
                     item {
+                        if (!JstoreFeatures.EXODUS) return@item
                         Privacy(
                             report = exodusReport,
                             onNavigateToDetailsExodus = if (exodusReport != null &&

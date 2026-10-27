@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.aurora.store.jstore.ui.JstoreTheme
 import com.aurora.store.util.Preferences
 
 /**
@@ -110,5 +111,6 @@ fun AuroraTheme(content: @Composable () -> Unit) {
         }
     }
 
-    MaterialExpressiveTheme(colorScheme = colorScheme, content = content)
+    // jstore: head-unit palette, type scale and touch targets
+    JstoreTheme(colorScheme = colorScheme, content = content)
 }

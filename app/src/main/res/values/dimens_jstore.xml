@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!--
+  jstore type scale and touch target, matching JaecooApp. These are the sizes for screens
+  under 1024dp tall; values-h1024dp holds the taller ones. Read by jstore.ui.JstoreTheme.
+-->
+<resources>
+    <dimen name="jstore_text_label">20sp</dimen>
+    <dimen name="jstore_text_caption">21sp</dimen>
+    <dimen name="jstore_text_body_sm">24sp</dimen>
+    <dimen name="jstore_text_body">27sp</dimen>
+    <dimen name="jstore_text_title">30sp</dimen>
+    <dimen name="jstore_text_headline">36sp</dimen>
+    <dimen name="jstore_text_display">56sp</dimen>
+    <dimen name="jstore_touch_min">64dp</dimen>
+    <dimen name="jstore_nav_rail_width">120dp</dimen>
+</resources>

@@ -17,7 +17,7 @@ import android.util.Base64
 import android.util.Log
 import com.aurora.Constants.PACKAGE_NAME_PLAY_STORE
 import com.aurora.extensions.TAG
-import com.aurora.store.util.CertUtil.GOOGLE_ACCOUNT_TYPE
+import com.aurora.store.jstore.MicroGAccounts
 import com.aurora.store.util.CertUtil.GOOGLE_PLAY_AUTH_TOKEN_TYPE
 import com.aurora.store.util.CertUtil.GOOGLE_PLAY_CERT
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -38,7 +38,7 @@ class GoogleAccountTokenProvider @Inject constructor(
 
     /** E-mails of Google accounts present on-device (e.g. provided by microG). */
     fun systemGoogleAccountEmails(): List<String> = try {
-        AccountManager.get(context).getAccountsByType(GOOGLE_ACCOUNT_TYPE)
+        AccountManager.get(context).getAccountsByType(MicroGAccounts.accountType(context))
             .map { it.name }
             .distinct()
     } catch (e: Exception) {
@@ -81,9 +81,9 @@ class GoogleAccountTokenProvider @Inject constructor(
         try {
             val accountManager = AccountManager.get(context)
             if (oldToken != null) {
-                accountManager.invalidateAuthToken(GOOGLE_ACCOUNT_TYPE, oldToken)
+                accountManager.invalidateAuthToken(MicroGAccounts.accountType(context), oldToken)
             }
-            val account = Account(email, GOOGLE_ACCOUNT_TYPE)
+            val account = Account(email, MicroGAccounts.accountType(context))
             val options = Bundle().apply {
                 putString("overridePackage", PACKAGE_NAME_PLAY_STORE)
                 putByteArray(

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">Instalação silenciosa pelo JaecooApp</string>
+    <string name="jstore_installer_desc">O jstore entrega os apps baixados ao JaecooApp, que os instala e atualiza com direitos de Device Owner, sem perguntar ao motorista. Requer JaecooApp 4.8.0 ou mais recente nesta central.</string>
+    <string name="jstore_jaecooapp_required">É necessário o JaecooApp 4.8.0 ou mais recente para instalar apps.</string>
+    <string name="jstore_uninstall_failed">Não foi possível desinstalar: %1$s</string>
+    <string name="jstore_download_busy">%1$s já está sendo baixado.</string>
+    <string name="jstore_paid_unsupported">Apps pagos não são compatíveis.</string>
+    <string name="jstore_shared_libs_unsupported">Este app precisa de bibliotecas compartilhadas; atualize-o no jstore.</string>
+    <string name="jstore_obb_unsupported">Apps com arquivos de expansão (OBB) não podem ser atualizados pelo JaecooApp; atualize no jstore.</string>
+    <string name="jstore_download_failed">Não foi possível baixar %1$s: %2$s</string>
+    <string name="jstore_microg_required">O jstore entra pelo microG. Instale o microG (ou MicroG RE) e adicione uma conta Google nele.</string>
+    <string name="jstore_about_source_title">Código-fonte do jstore</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore, GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">Baseado no Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">O jstore é um fork do Aurora Store da Aurora OSS, sem afiliação ou aprovação deles.</string>
+    <string name="jstore_sign_in_required">Entre no jstore com sua conta Google primeiro.</string>
+    <string name="jstore_about_tagline">Feito para centrais multimídia Jaecoo</string>
+</resources>

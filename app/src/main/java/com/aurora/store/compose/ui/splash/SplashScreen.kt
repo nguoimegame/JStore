@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aurora.Constants.PACKAGE_NAME_PLAY_STORE
+import com.aurora.extensions.toast
 import com.aurora.gplayapi.helpers.AuthHelper
 import com.aurora.store.BuildConfig
 import com.aurora.store.R
@@ -64,7 +65,8 @@ import com.aurora.store.compose.navigation.Destination
 import com.aurora.store.data.model.AuthState
 import com.aurora.store.data.model.NetworkStatus
 import com.aurora.store.data.work.ExodusTrackerWorker
-import com.aurora.store.util.CertUtil.GOOGLE_ACCOUNT_TYPE
+import com.aurora.store.jstore.JstoreFeatures
+import com.aurora.store.jstore.MicroGAccounts
 import com.aurora.store.util.CertUtil.GOOGLE_PLAY_AUTH_TOKEN_TYPE
 import com.aurora.store.util.CertUtil.GOOGLE_PLAY_CERT
 import com.aurora.store.util.PackageUtil
@@ -114,7 +116,7 @@ fun SplashScreen(
             AuthState.Valid, AuthState.SignedIn -> {
                 anonymousLoading = false
                 googleLoading = false
-                ExodusTrackerWorker.enqueue(context)
+                if (JstoreFeatures.EXODUS) ExodusTrackerWorker.enqueue(context)
                 when {
                     !deepLinkDevId.isNullOrBlank() -> onNavigateTo(
                         Destination.DevProfile(deepLinkDevId)
@@ -273,7 +275,7 @@ fun SplashScreen(
                                         AccountManager.newChooseAccountIntent(
                                             null,
                                             null,
-                                            arrayOf(GOOGLE_ACCOUNT_TYPE),
+                                            arrayOf(MicroGAccounts.accountType(context)),
                                             null,
                                             null,
                                             null,
@@ -281,7 +283,8 @@ fun SplashScreen(
                                         )
                                     )
                                 } else {
-                                    onNavigateTo(Destination.GoogleLogin())
+                                    // jstore: microG is required, there is no WebView sign-in
+                                    context.toast(R.string.jstore_microg_required)
                                 }
                             }
                         ) {
@@ -336,10 +339,10 @@ private fun requestAuthTokenForGoogle(
     try {
         val accountManager = AccountManager.get(context)
         if (oldToken != null) {
-            accountManager.invalidateAuthToken(GOOGLE_ACCOUNT_TYPE, oldToken)
+            accountManager.invalidateAuthToken(MicroGAccounts.accountType(context), oldToken)
         }
         accountManager.getAuthToken(
-            Account(accountName, GOOGLE_ACCOUNT_TYPE),
+            Account(accountName, MicroGAccounts.accountType(context)),
             GOOGLE_PLAY_AUTH_TOKEN_TYPE,
             Bundle().apply {
                 putString("overridePackage", PACKAGE_NAME_PLAY_STORE)

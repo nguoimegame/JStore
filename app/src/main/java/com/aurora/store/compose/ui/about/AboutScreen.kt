@@ -47,6 +47,7 @@ import com.aurora.store.compose.composable.LinkListItem
 import com.aurora.store.compose.composable.TopAppBar
 import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.data.model.Link
+import com.aurora.store.jstore.JstoreAbout
 
 @Composable
 fun AboutScreen() {
@@ -91,7 +92,7 @@ private fun ScreenContent(onAboutAurora: () -> Unit = {}) {
             url = url,
             icon = linkIcons[index]
         )
-    }
+    }.let { JstoreAbout.links(context, it) } // jstore: own source + upstream credit
 
     Scaffold(
         topBar = {
@@ -169,7 +170,7 @@ private fun BrandHeader() {
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = stringResource(R.string.made_with_love, String(Character.toChars(0x2764))),
+            text = stringResource(R.string.jstore_about_tagline), // jstore
             style = MaterialTheme.typography.bodyMedium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

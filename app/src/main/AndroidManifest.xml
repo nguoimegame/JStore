@@ -50,6 +50,17 @@
         android:name="android.software.device_admin"
         android:required="false" />
 
+    <!-- jstore: JaecooApp installs for jstore, and asks it for Google Play updates
+         (docs/jstore-contract.md). Signature permissions, granted only while both apps carry
+         the same key; both apps declare both, so either may be installed first. -->
+    <permission
+        android:name="com.example.jaecooapp.permission.INSTALL_PACKAGES"
+        android:protectionLevel="signature" />
+    <permission
+        android:name="com.example.jstore.permission.PLAY_UPDATES"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.example.jaecooapp.permission.INSTALL_PACKAGES" />
+
     <application
         android:name=".AuroraApp"
         android:allowBackup="true"
@@ -218,5 +229,14 @@
                 <action android:name="android.intent.action.UNARCHIVE_PACKAGE" />
             </intent-filter>
         </receiver>
+        <!-- jstore: Google Play updates for JaecooApp's app manager. -->
+        <service
+            android:name=".jstore.JstoreUpdateService"
+            android:exported="true"
+            android:permission="com.example.jstore.permission.PLAY_UPDATES">
+            <intent-filter>
+                <action android:name="com.example.jstore.action.BIND_UPDATES" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>

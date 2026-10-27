@@ -32,8 +32,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.booleanResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aurora.extensions.requiresObbDir
@@ -55,6 +58,8 @@ import com.aurora.store.data.model.PermissionType
 import com.aurora.store.data.model.StorageRequirement
 import com.aurora.store.data.providers.PermissionProvider.Companion.isGranted
 import com.aurora.store.data.room.update.Update
+import com.aurora.store.jstore.ui.JstoreNavItem
+import com.aurora.store.jstore.ui.JstoreNavRail
 import com.aurora.store.util.PackageUtil
 import com.aurora.store.util.Preferences
 import com.aurora.store.util.Preferences.PREFERENCE_UPDATES_WARN_TRACKERS
@@ -87,6 +92,7 @@ fun MainScreen(
         initialValue = null
     )
     val updateCount = updates?.size ?: 0
+    val useRail = booleanResource(R.bool.jstore_nav_rail) // jstore: rail on short screens
     val notificationCount by notificationsViewModel.unreadCount.collectAsStateWithLifecycle()
     val downloads by updatesViewModel.downloadsList.collectAsStateWithLifecycle()
 
@@ -214,6 +220,7 @@ fun MainScreen(
             }
         },
         bottomBar = {
+            if (useRail) return@Scaffold // jstore: the rail replaces the bottom bar
             NavigationBar {
                 MainTab.entries.forEachIndexed { index, tab ->
                     NavigationBarItem(
@@ -248,11 +255,33 @@ fun MainScreen(
                 .consumeWindowInsets(paddingValues)
                 .fillMaxSize()
         ) {
+            if (useRail) { // jstore
+                JstoreNavRail(
+                    items = MainTab.entries.map { tab ->
+                        val badge = if (tab == MainTab.UPDATES) updateCount else 0
+                        JstoreNavItem(tab.labelRes, tab.iconRes, badge)
+                    },
+                    selected = pagerState.currentPage,
+                    onSelect = { index ->
+                        coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                    }
+                )
+            }
             HorizontalPager(
                 state = pagerState,
                 userScrollEnabled = false,
                 beyondViewportPageCount = MainTab.entries.size - 1,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = if (useRail) {
+                            dimensionResource(
+                                R.dimen.jstore_nav_rail_width
+                            )
+                        } else {
+                            0.dp
+                        }
+                    )
             ) { page ->
                 when (MainTab.entries[page]) {
                     MainTab.APPS -> AppsGamesScreen(

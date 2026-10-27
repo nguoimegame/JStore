@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">通过 JaecooApp 静默安装</string>
+    <string name="jstore_installer_desc">jstore 将下载的应用交给 JaecooApp，由其以设备所有者权限安装和更新，无需驾驶员确认。需要本车机安装 JaecooApp 4.8.0 或更高版本。</string>
+    <string name="jstore_jaecooapp_required">需要 JaecooApp 4.8.0 或更高版本才能安装应用。</string>
+    <string name="jstore_uninstall_failed">无法卸载：%1$s</string>
+    <string name="jstore_download_busy">%1$s 正在下载。</string>
+    <string name="jstore_paid_unsupported">不支持付费应用。</string>
+    <string name="jstore_shared_libs_unsupported">此应用需要共享库，请在 jstore 中更新。</string>
+    <string name="jstore_obb_unsupported">带扩展文件（OBB）的应用无法在 JaecooApp 中更新，请在 jstore 中更新。</string>
+    <string name="jstore_download_failed">无法下载 %1$s：%2$s</string>
+    <string name="jstore_microg_required">jstore 通过 microG 登录。请安装 microG（或 MicroG RE）并在其中添加 Google 账号。</string>
+    <string name="jstore_about_source_title">jstore 源代码</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore，GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">基于 Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">jstore 是 Aurora OSS 的 Aurora Store 的分支，与其无关联，也未获其认可。</string>
+    <string name="jstore_sign_in_required">请先用 Google 账号登录 jstore。</string>
+    <string name="jstore_about_tagline">专为 Jaecoo 车机打造</string>
+</resources>

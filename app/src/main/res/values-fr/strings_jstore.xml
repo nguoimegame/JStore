@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">Installation silencieuse via JaecooApp</string>
+    <string name="jstore_installer_desc">jstore confie les applications téléchargées à JaecooApp, qui les installe et les met à jour avec ses droits Device Owner, sans rien demander au conducteur. Nécessite JaecooApp 4.8.0 ou plus récent sur cet écran.</string>
+    <string name="jstore_jaecooapp_required">JaecooApp 4.8.0 ou plus récent est nécessaire pour installer des applications.</string>
+    <string name="jstore_uninstall_failed">Désinstallation impossible : %1$s</string>
+    <string name="jstore_download_busy">%1$s est déjà en cours de téléchargement.</string>
+    <string name="jstore_paid_unsupported">Les applications payantes ne sont pas prises en charge.</string>
+    <string name="jstore_shared_libs_unsupported">Cette application a besoin de bibliothèques partagées ; mettez-la à jour dans jstore.</string>
+    <string name="jstore_obb_unsupported">Les applications avec fichiers d\'extension (OBB) ne peuvent pas être mises à jour depuis JaecooApp ; faites-le dans jstore.</string>
+    <string name="jstore_download_failed">Téléchargement de %1$s impossible : %2$s</string>
+    <string name="jstore_microg_required">jstore se connecte via microG. Installez microG (ou MicroG RE) et ajoutez-y un compte Google.</string>
+    <string name="jstore_about_source_title">Code source de jstore</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore, GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">Basé sur Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">jstore est un fork d\'Aurora Store par Aurora OSS, sans affiliation ni approbation de leur part.</string>
+    <string name="jstore_sign_in_required">Connectez-vous d’abord à jstore avec votre compte Google.</string>
+    <string name="jstore_about_tagline">Conçu pour les écrans Jaecoo</string>
+</resources>

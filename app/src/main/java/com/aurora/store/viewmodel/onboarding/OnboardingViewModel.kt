@@ -21,6 +21,7 @@ import com.aurora.store.AuroraApp
 import com.aurora.store.BuildConfig
 import com.aurora.store.data.event.InstallerEvent
 import com.aurora.store.data.helper.UpdateHelper
+import com.aurora.store.data.installer.AppInstaller
 import com.aurora.store.data.model.UpdateMode
 import com.aurora.store.data.providers.BlacklistProvider
 import com.aurora.store.data.work.CacheWorker
@@ -129,7 +130,7 @@ class OnboardingViewModel @Inject constructor(
 
         /*Installer*/
         save(PREFERENCE_AUTO_DELETE, true)
-        save(PREFERENCE_INSTALLER_ID, 0)
+        save(PREFERENCE_INSTALLER_ID, AppInstaller.getDefaultInstaller(context).ordinal)
 
         /*Updates*/
         save(PREFERENCE_UPDATES_EXTENDED, false)

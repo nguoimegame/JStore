@@ -37,6 +37,8 @@ import com.aurora.extensions.isValidApp
 import com.aurora.store.BuildConfig
 import com.aurora.store.R
 import com.aurora.store.data.model.BuildType
+import com.aurora.store.jstore.JstoreFeatures
+import com.aurora.store.jstore.MicroGAccounts
 import java.util.Locale
 
 object PackageUtil {
@@ -89,6 +91,9 @@ object PackageUtil {
     }
 
     fun hasSupportedMicroGVariant(context: Context): Boolean {
+        // jstore: also accept repackaged microG builds such as MicroG RE
+        if (MicroGAccounts.find(context) != null) return true
+
         val isMicroG = CertUtil.isMicroGGms(context)
 
         // Do not proceed if MicroG variant is not installed
@@ -179,8 +184,11 @@ object PackageUtil {
      * flavor check. The user-facing toggle gates this further at runtime.
      */
     fun isSelfUpdateSupported(context: Context): Boolean {
-        val flavorEligible = BuildConfig.FLAVOR == FLAVOUR_VANILLA ||
-            BuildConfig.FLAVOR == FLAVOUR_PRELOAD
+        val flavorEligible = JstoreFeatures.SELF_UPDATE &&
+            (
+                BuildConfig.FLAVOR == FLAVOUR_VANILLA ||
+                    BuildConfig.FLAVOR == FLAVOUR_PRELOAD
+                )
         return flavorEligible &&
             BuildType.CURRENT != BuildType.DEBUG &&
             !CertUtil.isFDroidApp(context, BuildConfig.APPLICATION_ID)

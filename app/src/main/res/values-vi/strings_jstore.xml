@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">Cài im lặng qua JaecooApp</string>
+    <string name="jstore_installer_desc">jstore chuyển app đã tải cho JaecooApp; JaecooApp cài và cập nhật bằng quyền Device Owner, không cần người lái xác nhận. Cần JaecooApp 4.8.0 trở lên trên head unit này.</string>
+    <string name="jstore_jaecooapp_required">Cần JaecooApp 4.8.0 trở lên để cài ứng dụng.</string>
+    <string name="jstore_uninstall_failed">Không gỡ được: %1$s</string>
+    <string name="jstore_download_busy">%1$s đang được tải.</string>
+    <string name="jstore_paid_unsupported">Không hỗ trợ ứng dụng trả phí.</string>
+    <string name="jstore_shared_libs_unsupported">App này cần thư viện dùng chung; hãy cập nhật nó trong jstore.</string>
+    <string name="jstore_obb_unsupported">App có tệp mở rộng (OBB) không cập nhật được từ JaecooApp; hãy cập nhật trong jstore.</string>
+    <string name="jstore_download_failed">Không tải được %1$s: %2$s</string>
+    <string name="jstore_microg_required">jstore đăng nhập qua microG. Hãy cài microG (hoặc MicroG RE) và thêm tài khoản Google trong đó.</string>
+    <string name="jstore_about_source_title">Mã nguồn jstore</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore, giấy phép GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">Dựa trên Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">jstore là bản fork của Aurora Store (Aurora OSS), không liên kết hay được họ bảo trợ.</string>
+    <string name="jstore_sign_in_required">Hãy đăng nhập jstore bằng tài khoản Google trước.</string>
+    <string name="jstore_about_tagline">Dành cho màn hình xe Jaecoo</string>
+</resources>

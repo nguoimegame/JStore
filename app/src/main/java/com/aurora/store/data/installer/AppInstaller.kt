@@ -26,6 +26,7 @@ import com.aurora.store.R
 import com.aurora.store.data.installer.base.IInstaller
 import com.aurora.store.data.model.Installer
 import com.aurora.store.data.model.InstallerInfo
+import com.aurora.store.jstore.JaecooInstaller
 import com.aurora.store.util.PackageUtil
 import com.aurora.store.util.PackageUtil.hasMicroGCompanion
 import com.aurora.store.util.Preferences
@@ -47,7 +48,8 @@ class AppInstaller @Inject constructor(
     private val serviceInstaller: ServiceInstaller,
     private val amInstaller: AMInstaller,
     private val shizukuInstaller: ShizukuInstaller,
-    private val microGInstaller: MicroGInstaller
+    private val microGInstaller: MicroGInstaller,
+    private val jaecooInstaller: JaecooInstaller
 ) {
 
     companion object {
@@ -65,6 +67,22 @@ class AppInstaller @Inject constructor(
             Installer.entries[Preferences.getInteger(context, PREFERENCE_INSTALLER_ID)]
 
         fun getAvailableInstallersInfo(context: Context): List<InstallerInfo> = listOfNotNull(
+            if (JaecooInstaller.isAvailable(context)) JaecooInstaller.installerInfo else null,
+            SessionInstaller.installerInfo
+        )
+
+        /** The installer a fresh jstore starts with: JaecooApp when it is there. */
+        fun getDefaultInstaller(context: Context): Installer =
+            if (JaecooInstaller.isAvailable(context)) {
+                Installer.JAECOO
+            } else {
+                Installer.SESSION
+            }
+
+        @Suppress("unused") // Upstream's list, kept so merges stay small
+        private fun getUpstreamInstallersInfo(
+            context: Context
+        ): List<InstallerInfo> = listOfNotNull(
             SessionInstaller.installerInfo,
             NativeInstaller.installerInfo,
             if (hasRootAccess()) RootInstaller.installerInfo else null,
@@ -134,6 +152,8 @@ class AppInstaller @Inject constructor(
                     isOAndAbove && hasShizukuOrSui(context) && hasShizukuPerm(context)
 
                 Installer.MICROG -> false
+
+                Installer.JAECOO -> JaecooInstaller.isAvailable(context)
             }
         }
 
@@ -209,6 +229,16 @@ class AppInstaller @Inject constructor(
         }
 
         fun uninstall(context: Context, packageName: String) {
+            if (getCurrentInstaller(context) == Installer.JAECOO &&
+                JaecooInstaller.isAvailable(context)
+            ) {
+                JaecooInstaller.uninstall(context, packageName)
+            } else {
+                uninstallWithSystemDialog(context, packageName)
+            }
+        }
+
+        fun uninstallWithSystemDialog(context: Context, packageName: String) {
             val intent = Intent().apply {
                 data = Uri.fromParts("package", packageName, null)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -260,6 +290,12 @@ class AppInstaller @Inject constructor(
 
             Installer.MICROG -> if (hasMicroGCompanion(context)) {
                 microGInstaller
+            } else {
+                defaultInstaller
+            }
+
+            Installer.JAECOO -> if (JaecooInstaller.isAvailable(context)) {
+                jaecooInstaller
             } else {
                 defaultInstaller
             }

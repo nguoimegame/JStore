@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<resources>
+    <dimen name="jstore_text_label">26sp</dimen>
+    <dimen name="jstore_text_caption">28sp</dimen>
+    <dimen name="jstore_text_body_sm">32sp</dimen>
+    <dimen name="jstore_text_body">36sp</dimen>
+    <dimen name="jstore_text_title">40sp</dimen>
+    <dimen name="jstore_text_headline">48sp</dimen>
+    <dimen name="jstore_text_display">76sp</dimen>
+</resources>

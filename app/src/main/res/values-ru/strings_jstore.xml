@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">Тихая установка через JaecooApp</string>
+    <string name="jstore_installer_desc">jstore передаёт загруженные приложения JaecooApp, который устанавливает и обновляет их с правами владельца устройства, не спрашивая водителя. Нужен JaecooApp 4.8.0 или новее на этом головном устройстве.</string>
+    <string name="jstore_jaecooapp_required">Для установки приложений нужен JaecooApp 4.8.0 или новее.</string>
+    <string name="jstore_uninstall_failed">Не удалось удалить: %1$s</string>
+    <string name="jstore_download_busy">%1$s уже загружается.</string>
+    <string name="jstore_paid_unsupported">Платные приложения не поддерживаются.</string>
+    <string name="jstore_shared_libs_unsupported">Этому приложению нужны общие библиотеки; обновите его в jstore.</string>
+    <string name="jstore_obb_unsupported">Приложения с файлами расширения (OBB) нельзя обновить из JaecooApp; обновите в jstore.</string>
+    <string name="jstore_download_failed">Не удалось загрузить %1$s: %2$s</string>
+    <string name="jstore_microg_required">jstore входит через microG. Установите microG (или MicroG RE) и добавьте в него аккаунт Google.</string>
+    <string name="jstore_about_source_title">Исходный код jstore</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore, GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">Основано на Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">jstore — форк Aurora Store от Aurora OSS, не связан с ними и не одобрен ими.</string>
+    <string name="jstore_sign_in_required">Сначала войдите в jstore с аккаунтом Google.</string>
+    <string name="jstore_about_tagline">Для головных устройств Jaecoo</string>
+</resources>

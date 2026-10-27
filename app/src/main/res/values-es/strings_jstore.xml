@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">Instalación silenciosa mediante JaecooApp</string>
+    <string name="jstore_installer_desc">jstore entrega las apps descargadas a JaecooApp, que las instala y actualiza con permisos de propietario del dispositivo, sin preguntar al conductor. Requiere JaecooApp 4.8.0 o posterior en esta pantalla.</string>
+    <string name="jstore_jaecooapp_required">Se necesita JaecooApp 4.8.0 o posterior para instalar apps.</string>
+    <string name="jstore_uninstall_failed">No se pudo desinstalar: %1$s</string>
+    <string name="jstore_download_busy">%1$s ya se está descargando.</string>
+    <string name="jstore_paid_unsupported">Las apps de pago no son compatibles.</string>
+    <string name="jstore_shared_libs_unsupported">Esta app necesita bibliotecas compartidas; actualízala en jstore.</string>
+    <string name="jstore_obb_unsupported">Las apps con archivos de expansión (OBB) no se pueden actualizar desde JaecooApp; actualízalas en jstore.</string>
+    <string name="jstore_download_failed">No se pudo descargar %1$s: %2$s</string>
+    <string name="jstore_microg_required">jstore inicia sesión mediante microG. Instala microG (o MicroG RE) y añade una cuenta de Google.</string>
+    <string name="jstore_about_source_title">Código fuente de jstore</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore, GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">Basado en Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">jstore es un fork de Aurora Store de Aurora OSS, sin afiliación ni respaldo de ellos.</string>
+    <string name="jstore_sign_in_required">Inicia sesión primero en jstore con tu cuenta de Google.</string>
+    <string name="jstore_about_tagline">Hecho para las pantallas de Jaecoo</string>
+</resources>

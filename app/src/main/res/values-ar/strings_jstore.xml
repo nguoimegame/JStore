@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<!-- jstore's own strings, kept apart from upstream's so merges stay small. -->
+<resources>
+    <string name="jstore_installer_title">JaecooApp</string>
+    <string name="jstore_installer_subtitle">تثبيت صامت عبر JaecooApp</string>
+    <string name="jstore_installer_desc">يسلّم jstore التطبيقات التي تم تنزيلها إلى JaecooApp، الذي يثبّتها ويحدّثها بصلاحيات مالك الجهاز دون سؤال السائق. يتطلب JaecooApp 4.8.0 أو أحدث على هذه الشاشة.</string>
+    <string name="jstore_jaecooapp_required">يلزم JaecooApp 4.8.0 أو أحدث لتثبيت التطبيقات.</string>
+    <string name="jstore_uninstall_failed">تعذّر إلغاء التثبيت: %1$s</string>
+    <string name="jstore_download_busy">جارٍ تنزيل %1$s بالفعل.</string>
+    <string name="jstore_paid_unsupported">التطبيقات المدفوعة غير مدعومة.</string>
+    <string name="jstore_shared_libs_unsupported">يحتاج هذا التطبيق إلى مكتبات مشتركة؛ حدّثه من jstore.</string>
+    <string name="jstore_obb_unsupported">لا يمكن تحديث التطبيقات التي تحتوي على ملفات توسيع (OBB) من JaecooApp؛ حدّثها من jstore.</string>
+    <string name="jstore_download_failed">تعذّر تنزيل %1$s: %2$s</string>
+    <string name="jstore_microg_required">يسجّل jstore الدخول عبر microG. ثبّت microG (أو MicroG RE) وأضف حساب Google فيه.</string>
+    <string name="jstore_about_source_title">الشيفرة المصدرية لـ jstore</string>
+    <string name="jstore_about_source_subtitle">github.com/nguoimegame/JStore، رخصة GNU GPL v3.0</string>
+    <string name="jstore_about_upstream_title">مبني على Aurora Store</string>
+    <string name="jstore_about_upstream_subtitle">jstore هو نسخة متفرعة من Aurora Store من Aurora OSS، غير تابعة لهم ولا معتمدة منهم.</string>
+    <string name="jstore_sign_in_required">سجّل الدخول إلى jstore بحساب Google أولاً.</string>
+    <string name="jstore_about_tagline">مصمم لشاشات سيارات Jaecoo</string>
+</resources>
