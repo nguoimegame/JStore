@@ -27,6 +27,7 @@ import com.aurora.store.data.installer.base.IInstaller
 import com.aurora.store.data.model.Installer
 import com.aurora.store.data.model.InstallerInfo
 import com.aurora.store.jstore.JaecooInstaller
+import com.aurora.store.jstore.resolveInstaller
 import com.aurora.store.util.PackageUtil
 import com.aurora.store.util.PackageUtil.hasMicroGCompanion
 import com.aurora.store.util.Preferences
@@ -63,8 +64,15 @@ class AppInstaller @Inject constructor(
         const val EXTRA_DISPLAY_NAME =
             "com.aurora.store.data.installer.AppInstaller.EXTRA_DISPLAY_NAME"
 
-        fun getCurrentInstaller(context: Context): Installer =
-            Installer.entries[Preferences.getInteger(context, PREFERENCE_INSTALLER_ID)]
+        fun getCurrentInstaller(context: Context): Installer {
+            val prefs = Preferences.getPrefs(context)
+            val savedOrdinal = if (prefs.contains(PREFERENCE_INSTALLER_ID)) {
+                prefs.getInt(PREFERENCE_INSTALLER_ID, 0)
+            } else {
+                null
+            }
+            return resolveInstaller(savedOrdinal, JaecooInstaller.isAvailable(context))
+        }
 
         fun getAvailableInstallersInfo(context: Context): List<InstallerInfo> = listOfNotNull(
             if (JaecooInstaller.isAvailable(context)) JaecooInstaller.installerInfo else null,
@@ -73,11 +81,7 @@ class AppInstaller @Inject constructor(
 
         /** The installer a fresh jstore starts with: JaecooApp when it is there. */
         fun getDefaultInstaller(context: Context): Installer =
-            if (JaecooInstaller.isAvailable(context)) {
-                Installer.JAECOO
-            } else {
-                Installer.SESSION
-            }
+            resolveInstaller(savedOrdinal = null, JaecooInstaller.isAvailable(context))
 
         @Suppress("unused") // Upstream's list, kept so merges stay small
         private fun getUpstreamInstallersInfo(

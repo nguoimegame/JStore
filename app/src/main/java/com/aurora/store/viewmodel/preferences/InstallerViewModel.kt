@@ -48,7 +48,11 @@ class InstallerViewModel @Inject constructor(
     val error = _error.asSharedFlow()
 
     private var installerId: Int
-        get() = sharedPreferences.getInt(PREFERENCE_INSTALLER_ID, 0)
+        get() = if (sharedPreferences.contains(PREFERENCE_INSTALLER_ID)) {
+            sharedPreferences.getInt(PREFERENCE_INSTALLER_ID, 0)
+        } else {
+            AppInstaller.getDefaultInstaller(context).ordinal
+        }
         set(value) = sharedPreferences.edit { putInt(PREFERENCE_INSTALLER_ID, value) }
 
     val currentInstaller = sharedPreferences.observeAsStateFlow(

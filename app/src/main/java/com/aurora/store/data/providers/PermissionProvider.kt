@@ -33,8 +33,11 @@ import com.aurora.extensions.toast
 import com.aurora.gplayapi.data.models.App
 import com.aurora.store.BuildConfig
 import com.aurora.store.R
+import com.aurora.store.data.installer.AppInstaller
 import com.aurora.store.data.model.Permission
 import com.aurora.store.data.model.PermissionType
+import com.aurora.store.jstore.JaecooInstaller
+import com.aurora.store.jstore.needsUnknownAppsPermission
 import com.aurora.store.util.PackageUtil
 
 class PermissionProvider(private val fragment: Fragment) :
@@ -67,7 +70,12 @@ class PermissionProvider(private val fragment: Fragment) :
                 }
 
                 PermissionType.INSTALL_UNKNOWN_APPS -> {
-                    PackageUtil.canRequestPackageInstalls(context)
+                    // jstore: JaecooApp installs with its own rights, no permission needed
+                    !needsUnknownAppsPermission(
+                        AppInstaller.getCurrentInstaller(context),
+                        JaecooInstaller.isAvailable(context)
+                    ) ||
+                        PackageUtil.canRequestPackageInstalls(context)
                 }
 
                 PermissionType.POST_NOTIFICATIONS -> {

@@ -110,7 +110,9 @@ import com.aurora.store.data.model.StorageRequirement
 import com.aurora.store.data.providers.PermissionProvider.Companion.isGranted
 import com.aurora.store.data.providers.PermissionProvider.Companion.isPermittedToInstall
 import com.aurora.store.data.room.account.Account
+import com.aurora.store.jstore.JaecooInstaller
 import com.aurora.store.jstore.JstoreFeatures
+import com.aurora.store.jstore.needsUnknownAppsPermission
 import com.aurora.store.util.FlavouredUtil
 import com.aurora.store.util.PackageUtil
 import com.aurora.store.util.Preferences
@@ -416,8 +418,12 @@ private fun ScreenContentApp(
             }
         } else {
             isChecking = false
+            val needsUnknown = needsUnknownAppsPermission(
+                AppInstaller.getCurrentInstaller(context),
+                JaecooInstaller.isAvailable(context)
+            )
             val requiredPermissions = setOfNotNull(
-                PermissionType.INSTALL_UNKNOWN_APPS,
+                if (needsUnknown) PermissionType.INSTALL_UNKNOWN_APPS else null,
                 if (app.fileList.requiresObbDir()) PermissionType.STORAGE_MANAGER else null,
                 if (app.fileList.requiresObbDir()) PermissionType.EXTERNAL_STORAGE else null
             )
