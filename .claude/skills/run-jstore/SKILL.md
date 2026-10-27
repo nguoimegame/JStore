@@ -83,8 +83,34 @@ different, re-measure taps from a screenshot.
 
 Always look at the screenshot; a blank frame means it did not launch.
 
-## Known UI observations (portrait 1280x1606)
+Native crashes (SIGSEGV) do not show under `AndroidRuntime:E`; read `$A logcat -d -b crash`.
 
-- Welcome and Permissions onboarding screens use the two-column landscape layout:
-  content hugs the top, left column holds only the logo, lower ~40% is empty.
-- Login screen and the Apps tab render fine.
+## Screen sizes to check
+
+The target head unit is 1280x1606 @240dpi. otoAutomative boots at 160dpi, so set the density
+first and always reset it:
+
+```bash
+"$A" shell wm density 240          # app area 1280x1534 px = 853x1022dp: bottom bar, short type scale
+"$A" shell wm size 2544x960        # add this for the landscape unit (1696x592dp): left rail
+"$A" shell wm size reset; "$A" shell wm density reset
+```
+
+Force-stop and relaunch jstore after each change. Rail vs bottom bar follows
+`@bool/jstore_nav_rail` (on from 1200dp wide). Dark mode: `$A shell cmd uimode night yes|no`.
+
+Main screen tap targets at 1280x1606 @240: search field (640,233), tabs For you / Top charts /
+Categories (240,348) (638,348) (1036,348), bottom bar Apps / Games / Updates (212,1450)
+(640,1450) (1065,1450).
+
+## Known UI observations
+
+- Main screens follow docs/superpowers/specs/2026-10-27-jstore-headunit-ui-design.md:
+  cluster cards with 150dp tiles, hero card on For you, segmented tabs, header with account and
+  search field, head-unit bottom bar.
+- **Top charts crashes** (SIGSEGV in `App.requiresGMS` from `LargeAppListItem`, a null
+  `dependencies.dependentPackages` from Play). Pre-dates the head-unit UI.
+- Landscape 2544x960: header + search + hero leave room for only part of the first cluster.
+- Dark mode: the selected segmented tab barely stands out from its track.
+- Welcome and Permissions onboarding screens still use the two-column layout on portrait.
+- The emulator has no user apps, so the Updates list (cards) shows "No updates available".
