@@ -43,6 +43,7 @@ internal fun ForYouContent(
         onHeaderClick = onHeaderClick,
         onAppClick = onAppClick,
         onClusterScrolled = onClusterScrolled,
-        onScrolledToEnd = onScrolledToEnd
+        onScrolledToEnd = onScrolledToEnd,
+        showHero = true // jstore
     )
 }

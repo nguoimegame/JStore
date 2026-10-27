@@ -34,6 +34,8 @@ import com.aurora.store.compose.composable.app.LargeAppListItem
 import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.jstore.ui.JstoreAppTile // jstore
 import com.aurora.store.jstore.ui.JstoreClusterCard // jstore
+import com.aurora.store.jstore.ui.JstoreHeroCard // jstore
+import com.aurora.store.jstore.ui.heroApp // jstore
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 private const val LOAD_MORE_THRESHOLD = 2
@@ -47,7 +49,8 @@ fun StreamCarousel(
     onHeaderClick: (StreamCluster) -> Unit = {},
     onAppClick: (App) -> Unit = {},
     onClusterScrolled: (StreamCluster) -> Unit = {},
-    onScrolledToEnd: () -> Unit = {}
+    onScrolledToEnd: () -> Unit = {},
+    showHero: Boolean = false // jstore: featured card above the clusters (For you)
 ) {
     val bundleLoaded = streamBundle != null
     LaunchedEffect(lazyListState, bundleLoaded) {
@@ -112,6 +115,19 @@ fun StreamCarousel(
                 )
             }
         } else {
+            if (showHero) { // jstore
+                heroApp(clusters)?.let { hero ->
+                    item(key = "jstore_hero") {
+                        JstoreHeroCard(
+                            modifier = Modifier.padding(
+                                horizontal = dimensionResource(R.dimen.jstore_space_lg)
+                            ),
+                            app = hero,
+                            onClick = { onAppClick(hero) }
+                        )
+                    }
+                }
+            }
             clusters.forEach { cluster ->
                 // jstore: each cluster is one card (title, "See all", row of tiles)
                 item(key = "cluster_${cluster.id}") {
