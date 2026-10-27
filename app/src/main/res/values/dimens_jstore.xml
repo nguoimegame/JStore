@@ -16,7 +16,13 @@
     <dimen name="jstore_text_headline">36sp</dimen>
     <dimen name="jstore_text_display">56sp</dimen>
     <dimen name="jstore_touch_min">64dp</dimen>
-    <dimen name="jstore_nav_rail_width">120dp</dimen>
+    <!-- Left rail on short screens, sized as JaecooApp's (values/dimens_short.xml there) -->
+    <dimen name="jstore_nav_rail_width">232dp</dimen>
+    <dimen name="jstore_nav_item_height">72dp</dimen>
+    <dimen name="jstore_nav_item_gap">7dp</dimen>
+    <dimen name="jstore_nav_icon">36dp</dimen>
+    <dimen name="jstore_nav_label_text">22sp</dimen>
+    <dimen name="jstore_nav_indicator_width">4dp</dimen>
 
     <!-- Main screens (docs/superpowers/specs/2026-10-27-jstore-headunit-ui-design.md) -->
     <dimen name="jstore_space_sm">12dp</dimen>

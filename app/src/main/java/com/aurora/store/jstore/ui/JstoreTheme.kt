@@ -97,6 +97,13 @@ private fun TextStyle.scaled(sizeSp: Float): TextStyle {
     )
 }
 
+/** The rail's selected-item band, JaecooApp's `sidebar_item_selected` (day, night). */
+val JstoreRailSelectedLight = Color(0xFFDCE9F7)
+val JstoreRailSelectedDark = Color(0xFF1C1E21)
+
+/** The bar that marks the selected rail item, JaecooApp's `sidebar_indicator`. */
+val JstoreRailIndicator = Color(0xFF2EF4F8)
+
 /** JaecooApp's day palette (values/colors.xml there). */
 val JstoreLightColorScheme = lightColorScheme(
     primary = Color(0xFF3292F5),

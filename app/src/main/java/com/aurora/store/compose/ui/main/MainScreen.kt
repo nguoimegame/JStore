@@ -8,6 +8,7 @@ package com.aurora.store.compose.ui.main
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,10 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.booleanResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aurora.extensions.requiresObbDir
@@ -90,7 +89,7 @@ fun MainScreen(
         initialValue = null
     )
     val updateCount = updates?.size ?: 0
-    val useRail = booleanResource(R.bool.jstore_nav_rail) // jstore: rail on wide screens
+    val useRail = booleanResource(R.bool.jstore_nav_rail) // jstore: rail or bottom bar
     val notificationCount by notificationsViewModel.unreadCount.collectAsStateWithLifecycle()
     val downloads by updatesViewModel.downloadsList.collectAsStateWithLifecycle()
 
@@ -182,45 +181,10 @@ fun MainScreen(
         JstoreNavItem(tab.labelRes, tab.iconRes, badge)
     }
 
-    Scaffold(
-        topBar = {
-            // jstore: header with the account and a fixed search field
-            JstoreMainHeader(
-                title = stringResource(MainTab.entries[pagerState.currentPage].labelRes),
-                subtitle = mainViewModel.accountEmail,
-                onSearch = { onNavigateTo(Destination.Search) },
-                actions = {
-                    IconButton(onClick = { onNavigateTo(Destination.Notifications) }) {
-                        BadgedBox(
-                            badge = {
-                                if (notificationCount > 0) Badge { Text("$notificationCount") }
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_notifications),
-                                contentDescription = stringResource(R.string.title_notifications)
-                            )
-                        }
-                    }
-                    IconButton(onClick = { onNavigateTo(Destination.Downloads) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_download_manager),
-                            contentDescription = stringResource(R.string.title_download_manager)
-                        )
-                    }
-                    IconButton(onClick = { showMoreSheet = true }) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_settings_account),
-                            contentDescription = stringResource(R.string.title_more)
-                        )
-                    }
-                }
-            )
-        },
-        // jstore: no search FAB, search lives in the header
-        bottomBar = {
-            if (useRail) return@Scaffold // jstore: the rail replaces the bottom bar
-            JstoreBottomBar( // jstore
+    // jstore: on short screens the rail runs the full height, left of the header (as JaecooApp)
+    Row(modifier = Modifier.fillMaxSize()) {
+        if (useRail) {
+            JstoreNavRail(
                 items = navItems,
                 selected = pagerState.currentPage,
                 onSelect = { index ->
@@ -228,15 +192,48 @@ fun MainScreen(
                 }
             )
         }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .consumeWindowInsets(paddingValues)
-                .fillMaxSize()
-        ) {
-            if (useRail) { // jstore
-                JstoreNavRail(
+        Scaffold(
+            modifier = Modifier.weight(1f),
+            topBar = {
+                // jstore: header with the account and a fixed search field
+                JstoreMainHeader(
+                    title = stringResource(MainTab.entries[pagerState.currentPage].labelRes),
+                    subtitle = mainViewModel.accountEmail,
+                    onSearch = { onNavigateTo(Destination.Search) },
+                    actions = {
+                        IconButton(onClick = { onNavigateTo(Destination.Notifications) }) {
+                            BadgedBox(
+                                badge = {
+                                    if (notificationCount > 0) Badge { Text("$notificationCount") }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_notifications),
+                                    contentDescription = stringResource(
+                                        R.string.title_notifications
+                                    )
+                                )
+                            }
+                        }
+                        IconButton(onClick = { onNavigateTo(Destination.Downloads) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_download_manager),
+                                contentDescription = stringResource(R.string.title_download_manager)
+                            )
+                        }
+                        IconButton(onClick = { showMoreSheet = true }) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_settings_account),
+                                contentDescription = stringResource(R.string.title_more)
+                            )
+                        }
+                    }
+                )
+            },
+            // jstore: no search FAB, search lives in the header
+            bottomBar = {
+                if (useRail) return@Scaffold // jstore: the rail replaces the bottom bar
+                JstoreBottomBar( // jstore
                     items = navItems,
                     selected = pagerState.currentPage,
                     onSelect = { index ->
@@ -244,92 +241,90 @@ fun MainScreen(
                     }
                 )
             }
-            HorizontalPager(
-                state = pagerState,
-                userScrollEnabled = false,
-                beyondViewportPageCount = MainTab.entries.size - 1,
+        ) { paddingValues ->
+            Box(
                 modifier = Modifier
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues)
                     .fillMaxSize()
-                    .padding(
-                        start = if (useRail) {
-                            dimensionResource(
-                                R.dimen.jstore_nav_rail_width
-                            )
-                        } else {
-                            0.dp
-                        }
-                    )
-            ) { page ->
-                when (MainTab.entries[page]) {
-                    MainTab.APPS -> AppsGamesScreen(
-                        pageType = 0,
-                        onNavigateTo = onNavigateTo
-                    )
-                    MainTab.GAMES -> AppsGamesScreen(
-                        pageType = 1,
-                        onNavigateTo = ::handleNavigation
-                    )
-                    MainTab.UPDATES -> {
-                        UpdatesScreen(
-                            viewModel = updatesViewModel,
-                            onNavigateTo = ::handleNavigation,
-                            onRequestUpdate = { update ->
-                                if (!Preferences.getBoolean(
-                                        context,
-                                        PREFERENCE_UPDATES_WARN_TRACKERS,
-                                        false
-                                    )
-                                ) {
-                                    performUpdate(update)
-                                } else {
-                                    val job = coroutineScope.launch {
-                                        val installedVc = PackageUtil.getInstalledVersionCode(
-                                            context,
-                                            update.packageName
-                                        )
-                                        val trackers = updatesViewModel.getNewTrackers(
-                                            update.packageName,
-                                            installedVc
-                                        )
-                                        if (trackers.isEmpty()) {
-                                            performUpdate(update)
-                                        } else {
-                                            trackerWarning = update to trackers
-                                        }
-                                    }
-                                    checkingJobs[update.packageName] = job
-                                }
-                            },
-                            onRequestUpdateAll = { selectedUpdates ->
-                                val needsObb = selectedUpdates.any {
-                                    it.fileList.requiresObbDir()
-                                }
-                                if (needsObb &&
-                                    !isGranted(context, PermissionType.STORAGE_MANAGER)
-                                ) {
-                                    onNavigateTo(
-                                        Destination.PermissionRationale(
-                                            setOf(PermissionType.STORAGE_MANAGER)
-                                        )
-                                    )
-                                } else {
-                                    updatesViewModel.downloadAll(selectedUpdates)
-                                }
-                            },
-                            onCancelUpdate = { packageName ->
-                                if (downloads.any {
-                                        it.packageName == packageName && !it.isFinished
-                                    }
-                                ) {
-                                    checkingJobs.remove(packageName)
-                                    updatesViewModel.cancelDownload(packageName)
-                                } else {
-                                    checkingJobs.remove(packageName)?.cancel()
-                                }
-                            },
-                            onCancelAll = { updatesViewModel.cancelAll() },
-                            checkingPackages = checkingJobs.keys
+            ) {
+                HorizontalPager(
+                    state = pagerState,
+                    userScrollEnabled = false,
+                    beyondViewportPageCount = MainTab.entries.size - 1,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    when (MainTab.entries[page]) {
+                        MainTab.APPS -> AppsGamesScreen(
+                            pageType = 0,
+                            onNavigateTo = onNavigateTo
                         )
+                        MainTab.GAMES -> AppsGamesScreen(
+                            pageType = 1,
+                            onNavigateTo = ::handleNavigation
+                        )
+                        MainTab.UPDATES -> {
+                            UpdatesScreen(
+                                viewModel = updatesViewModel,
+                                onNavigateTo = ::handleNavigation,
+                                onRequestUpdate = { update ->
+                                    if (!Preferences.getBoolean(
+                                            context,
+                                            PREFERENCE_UPDATES_WARN_TRACKERS,
+                                            false
+                                        )
+                                    ) {
+                                        performUpdate(update)
+                                    } else {
+                                        val job = coroutineScope.launch {
+                                            val installedVc = PackageUtil.getInstalledVersionCode(
+                                                context,
+                                                update.packageName
+                                            )
+                                            val trackers = updatesViewModel.getNewTrackers(
+                                                update.packageName,
+                                                installedVc
+                                            )
+                                            if (trackers.isEmpty()) {
+                                                performUpdate(update)
+                                            } else {
+                                                trackerWarning = update to trackers
+                                            }
+                                        }
+                                        checkingJobs[update.packageName] = job
+                                    }
+                                },
+                                onRequestUpdateAll = { selectedUpdates ->
+                                    val needsObb = selectedUpdates.any {
+                                        it.fileList.requiresObbDir()
+                                    }
+                                    if (needsObb &&
+                                        !isGranted(context, PermissionType.STORAGE_MANAGER)
+                                    ) {
+                                        onNavigateTo(
+                                            Destination.PermissionRationale(
+                                                setOf(PermissionType.STORAGE_MANAGER)
+                                            )
+                                        )
+                                    } else {
+                                        updatesViewModel.downloadAll(selectedUpdates)
+                                    }
+                                },
+                                onCancelUpdate = { packageName ->
+                                    if (downloads.any {
+                                            it.packageName == packageName && !it.isFinished
+                                        }
+                                    ) {
+                                        checkingJobs.remove(packageName)
+                                        updatesViewModel.cancelDownload(packageName)
+                                    } else {
+                                        checkingJobs.remove(packageName)?.cancel()
+                                    }
+                                },
+                                onCancelAll = { updatesViewModel.cancelAll() },
+                                checkingPackages = checkingJobs.keys
+                            )
+                        }
                     }
                 }
             }

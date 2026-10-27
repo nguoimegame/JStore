@@ -91,13 +91,14 @@ The target head unit is 1280x1606 @240dpi. otoAutomative boots at 160dpi, so set
 first and always reset it:
 
 ```bash
-"$A" shell wm density 240          # app area 1280x1534 px = 853x1022dp: bottom bar, short type scale
-"$A" shell wm size 2544x960        # add this for the landscape unit (1696x592dp): left rail
+"$A" shell wm density 240          # app area 1280x1534 px = 853x1022dp: short screen (rail, short type scale)
+"$A" shell wm size 2544x960        # add this for the landscape unit (1696x592dp): rail
+"$A" shell wm size 1440x2560; "$A" shell wm density 160   # tall head unit (JaecooApp's reference): bottom bar
 "$A" shell wm size reset; "$A" shell wm density reset
 ```
 
-Force-stop and relaunch jstore after each change. Rail vs bottom bar follows
-`@bool/jstore_nav_rail` (on from 1200dp wide). Dark mode: `$A shell cmd uimode night yes|no`.
+Force-stop and relaunch jstore after each change. Screens under 1024dp tall get the left
+rail, taller ones the bottom bar (`@bool/jstore_nav_rail`, `values-h1024dp`). Dark mode: `$A shell cmd uimode night yes|no`.
 
 Main screen tap targets at 1280x1606 @240: search field (640,233), tabs For you / Top charts /
 Categories (240,348) (638,348) (1036,348), bottom bar Apps / Games / Updates (212,1450)
