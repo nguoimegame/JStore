@@ -8,6 +8,7 @@ package com.aurora.store.compose.composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -29,9 +30,10 @@ import com.aurora.gplayapi.data.models.App
 import com.aurora.gplayapi.data.models.StreamBundle
 import com.aurora.gplayapi.data.models.StreamCluster
 import com.aurora.store.R
-import com.aurora.store.compose.composable.app.AppListItem
 import com.aurora.store.compose.composable.app.LargeAppListItem
 import com.aurora.store.compose.preview.ThemePreviewProvider
+import com.aurora.store.jstore.ui.JstoreAppTile // jstore
+import com.aurora.store.jstore.ui.JstoreClusterCard // jstore
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 private const val LOAD_MORE_THRESHOLD = 2
@@ -96,7 +98,7 @@ fun StreamCarousel(
                 if (clusters.size == 1) {
                     R.dimen.spacing_medium
                 } else {
-                    R.dimen.spacing_xsmall
+                    R.dimen.jstore_space_md // jstore: gap between cluster cards
                 }
             )
         )
@@ -111,22 +113,25 @@ fun StreamCarousel(
             }
         } else {
             clusters.forEach { cluster ->
-                item(key = "header_${cluster.id}") {
-                    SectionHeader(
+                // jstore: each cluster is one card (title, "See all", row of tiles)
+                item(key = "cluster_${cluster.id}") {
+                    JstoreClusterCard(
+                        modifier = Modifier.padding(
+                            horizontal = dimensionResource(R.dimen.jstore_space_lg)
+                        ),
                         title = cluster.clusterTitle,
-                        onClick = if (cluster.clusterBrowseUrl.isNotBlank()) {
+                        onSeeAll = if (cluster.clusterBrowseUrl.isNotBlank()) {
                             { onHeaderClick(cluster) }
                         } else {
                             null
                         }
-                    )
-                }
-                item(key = "row_${cluster.id}") {
-                    ClusterRow(
-                        cluster = cluster,
-                        onAppClick = onAppClick,
-                        onClusterScrolled = onClusterScrolled
-                    )
+                    ) {
+                        ClusterRow(
+                            cluster = cluster,
+                            onAppClick = onAppClick,
+                            onClusterScrolled = onClusterScrolled
+                        )
+                    }
                 }
             }
         }
@@ -158,14 +163,15 @@ internal fun ClusterRow(
 
     LazyRow(
         state = rowState,
-        contentPadding = PaddingValues(horizontal = dimensionResource(R.dimen.spacing_small)),
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+        // jstore: tiles inside a cluster card
+        contentPadding = PaddingValues(horizontal = dimensionResource(R.dimen.jstore_space_lg)),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm))
     ) {
         itemsIndexed(
             items = cluster.clusterAppList,
             key = { _, app -> app.packageName }
         ) { _, app ->
-            AppListItem(
+            JstoreAppTile( // jstore
                 app = app,
                 onClick = { onAppClick(app) }
             )

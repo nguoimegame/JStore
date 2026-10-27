@@ -22,4 +22,7 @@
     <string name="jstore_about_upstream_subtitle">jstore is a fork of Aurora Store by Aurora OSS. Not affiliated with or endorsed by them.</string>
     <string name="jstore_sign_in_required">Sign in to jstore with your Google account first.</string>
     <string name="jstore_about_tagline">Made for Jaecoo head units</string>
+    <string name="jstore_see_all">See all ›</string>
+    <string name="jstore_open">Open</string>
+    <string name="jstore_search_hint">Search apps &amp; games</string>
 </resources>
