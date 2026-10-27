@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,6 +32,7 @@ import com.aurora.store.compose.navigation.Destination
 import com.aurora.store.data.model.DownloadStatus
 import com.aurora.store.data.room.download.Download
 import com.aurora.store.data.room.update.Update
+import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.viewmodel.all.UpdatesViewModel
 
 @Composable
@@ -110,7 +111,8 @@ fun UpdatesScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(
-                        dimensionResource(R.dimen.spacing_medium)
+                        // jstore: gap between update cards
+                        dimensionResource(R.dimen.jstore_space_sm)
                     )
                 ) {
                     if (selfEntries.isNotEmpty()) {
@@ -125,6 +127,8 @@ fun UpdatesScreen(
                             key = { "self-${it.key.packageName}" }
                         ) { (update, download) ->
                             AppUpdateItem(
+                                // jstore
+                                modifier = Modifier.jstoreCard(),
                                 update = update,
                                 download = download,
                                 isChecking = update.packageName in checkingPackages,
@@ -156,7 +160,8 @@ fun UpdatesScreen(
                             SectionHeader(
                                 title = title,
                                 trailing = {
-                                    TextButton(
+                                    // jstore: a filled button, as in JaecooApp
+                                    Button(
                                         onClick = {
                                             if (mainAnyActive) {
                                                 onCancelAll()
@@ -191,7 +196,8 @@ fun UpdatesScreen(
                                 title = stringResource(R.string.updates_approval_header),
                                 subtitle = stringResource(R.string.updates_approval_desc),
                                 trailing = {
-                                    TextButton(
+                                    // jstore: a filled button, as in JaecooApp
+                                    Button(
                                         onClick = {
                                             if (approvalAnyActive) {
                                                 onCancelAll()
@@ -244,6 +250,8 @@ fun UpdatesScreen(
                             key = { "ignored-${it.packageName}" }
                         ) { update ->
                             AppUpdateItem(
+                                // jstore
+                                modifier = Modifier.jstoreCard(),
                                 update = update,
                                 onClick = {},
                                 onUnignore = { viewModel.unignore(update.packageName) }
@@ -275,6 +283,8 @@ private fun LazyListScope.updateItems(
         key = { "$keyPrefix-${it.key.packageName}" }
     ) { (update, download) ->
         AppUpdateItem(
+            // jstore
+            modifier = Modifier.jstoreCard(),
             update = update,
             download = download,
             isChecking = update.packageName in checkingPackages,

@@ -6,6 +6,8 @@
 package com.aurora.store.jstore.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,6 +47,19 @@ fun JstoreCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.(
     ) {
         Column(content = content)
     }
+}
+
+/**
+ * Draws a list row as a [JstoreCard] for composables that take a modifier but not a container,
+ * such as Aurora's `AppUpdateItem`: side margins, the card's shape, colour and outline.
+ */
+@Composable
+fun Modifier.jstoreCard(): Modifier {
+    val shape = RoundedCornerShape(dimensionResource(R.dimen.jstore_card_radius))
+    return padding(horizontal = dimensionResource(R.dimen.jstore_space_lg))
+        .clip(shape)
+        .background(MaterialTheme.colorScheme.surfaceContainer)
+        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
 }
 
 /**
