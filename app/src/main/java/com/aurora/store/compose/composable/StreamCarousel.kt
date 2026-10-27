@@ -50,7 +50,8 @@ fun StreamCarousel(
     onAppClick: (App) -> Unit = {},
     onClusterScrolled: (StreamCluster) -> Unit = {},
     onScrolledToEnd: () -> Unit = {},
-    showHero: Boolean = false // jstore: featured card above the clusters (For you)
+    // jstore: featured card above the clusters (For you)
+    showHero: Boolean = false
 ) {
     val bundleLoaded = streamBundle != null
     LaunchedEffect(lazyListState, bundleLoaded) {

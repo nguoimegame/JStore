@@ -94,7 +94,9 @@ private fun JstoreClusterCardPreview(@PreviewParameter(AppPreviewProvider::class
 @PreviewWrapper(ThemePreviewProvider::class)
 @Preview(showBackground = true)
 @Composable
-private fun JstoreClusterCardNoBrowsePreview(@PreviewParameter(AppPreviewProvider::class) app: App) {
+private fun JstoreClusterCardNoBrowsePreview(
+    @PreviewParameter(AppPreviewProvider::class) app: App
+) {
     JstoreClusterCard(title = "Recommended for you", onSeeAll = null) {
         Row { repeat(3) { JstoreAppTile(app = app, onClick = {}) } }
     }

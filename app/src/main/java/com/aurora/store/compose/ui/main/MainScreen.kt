@@ -15,11 +15,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,7 +40,6 @@ import com.aurora.extensions.requiresObbDir
 import com.aurora.store.MainViewModel
 import com.aurora.store.R
 import com.aurora.store.compose.composable.InsufficientStorageDialog
-import com.aurora.store.compose.composable.TopAppBar
 import com.aurora.store.compose.composable.TrackerUpdateWarningDialog
 import com.aurora.store.compose.composition.LocalNetworkStatus
 import com.aurora.store.compose.navigation.Destination
@@ -58,6 +54,8 @@ import com.aurora.store.data.model.PermissionType
 import com.aurora.store.data.model.StorageRequirement
 import com.aurora.store.data.providers.PermissionProvider.Companion.isGranted
 import com.aurora.store.data.room.update.Update
+import com.aurora.store.jstore.ui.JstoreBottomBar
+import com.aurora.store.jstore.ui.JstoreMainHeader
 import com.aurora.store.jstore.ui.JstoreNavItem
 import com.aurora.store.jstore.ui.JstoreNavRail
 import com.aurora.store.util.PackageUtil
@@ -92,7 +90,7 @@ fun MainScreen(
         initialValue = null
     )
     val updateCount = updates?.size ?: 0
-    val useRail = booleanResource(R.bool.jstore_nav_rail) // jstore: rail on short screens
+    val useRail = booleanResource(R.bool.jstore_nav_rail) // jstore: rail on wide screens
     val notificationCount by notificationsViewModel.unreadCount.collectAsStateWithLifecycle()
     val downloads by updatesViewModel.downloadsList.collectAsStateWithLifecycle()
 
@@ -178,11 +176,19 @@ fun MainScreen(
         )
     }
 
+    // jstore: shared by the rail and the bottom bar
+    val navItems = MainTab.entries.map { tab ->
+        val badge = if (tab == MainTab.UPDATES) updateCount else 0
+        JstoreNavItem(tab.labelRes, tab.iconRes, badge)
+    }
+
     Scaffold(
         topBar = {
-            TopAppBar(
+            // jstore: header with the account and a fixed search field
+            JstoreMainHeader(
                 title = stringResource(MainTab.entries[pagerState.currentPage].labelRes),
-                showNavigationIcon = false,
+                subtitle = mainViewModel.accountEmail,
+                onSearch = { onNavigateTo(Destination.Search) },
                 actions = {
                     IconButton(onClick = { onNavigateTo(Destination.Notifications) }) {
                         BadgedBox(
@@ -211,42 +217,16 @@ fun MainScreen(
                 }
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { onNavigateTo(Destination.Search) }) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_round_search),
-                    contentDescription = stringResource(R.string.action_search)
-                )
-            }
-        },
+        // jstore: no search FAB, search lives in the header
         bottomBar = {
             if (useRail) return@Scaffold // jstore: the rail replaces the bottom bar
-            NavigationBar {
-                MainTab.entries.forEachIndexed { index, tab ->
-                    NavigationBarItem(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            coroutineScope.launch { pagerState.animateScrollToPage(index) }
-                        },
-                        icon = {
-                            if (tab == MainTab.UPDATES && updateCount > 0) {
-                                BadgedBox(badge = { Badge { Text("$updateCount") } }) {
-                                    Icon(
-                                        painter = painterResource(tab.iconRes),
-                                        contentDescription = null
-                                    )
-                                }
-                            } else {
-                                Icon(
-                                    painter = painterResource(tab.iconRes),
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        label = { Text(stringResource(tab.labelRes)) }
-                    )
+            JstoreBottomBar( // jstore
+                items = navItems,
+                selected = pagerState.currentPage,
+                onSelect = { index ->
+                    coroutineScope.launch { pagerState.animateScrollToPage(index) }
                 }
-            }
+            )
         }
     ) { paddingValues ->
         Box(
@@ -257,10 +237,7 @@ fun MainScreen(
         ) {
             if (useRail) { // jstore
                 JstoreNavRail(
-                    items = MainTab.entries.map { tab ->
-                        val badge = if (tab == MainTab.UPDATES) updateCount else 0
-                        JstoreNavItem(tab.labelRes, tab.iconRes, badge)
-                    },
+                    items = navItems,
                     selected = pagerState.currentPage,
                     onSelect = { index ->
                         coroutineScope.launch { pagerState.animateScrollToPage(index) }
