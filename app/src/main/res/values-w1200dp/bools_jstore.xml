@@ -4,5 +4,5 @@
   ~ SPDX-License-Identifier: GPL-3.0-or-later
   -->
 <resources>
-    <bool name="jstore_nav_rail">false</bool>
+    <bool name="jstore_nav_rail">true</bool>
 </resources>

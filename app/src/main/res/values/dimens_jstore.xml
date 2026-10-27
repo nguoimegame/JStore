@@ -17,4 +17,16 @@
     <dimen name="jstore_text_display">56sp</dimen>
     <dimen name="jstore_touch_min">64dp</dimen>
     <dimen name="jstore_nav_rail_width">120dp</dimen>
+
+    <!-- Main screens (docs/superpowers/specs/2026-10-27-jstore-headunit-ui-design.md) -->
+    <dimen name="jstore_space_sm">12dp</dimen>
+    <dimen name="jstore_space_md">18dp</dimen>
+    <dimen name="jstore_space_lg">24dp</dimen>
+    <dimen name="jstore_card_radius">20dp</dimen>
+    <dimen name="jstore_tile_width">150dp</dimen>
+    <dimen name="jstore_tile_icon">96dp</dimen>
+    <dimen name="jstore_tile_icon_radius">22dp</dimen>
+    <dimen name="jstore_hero_icon">112dp</dimen>
+    <dimen name="jstore_segment_height">56dp</dimen>
+    <dimen name="jstore_bottom_bar_height">112dp</dimen>
 </resources>

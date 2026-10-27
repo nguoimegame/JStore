@@ -4,7 +4,8 @@
   ~ SPDX-License-Identifier: GPL-3.0-or-later
   -->
 <resources>
-    <!-- Main screen destinations as a left rail (true) or a bottom bar (false). Screens under
-         1024dp tall get the rail; values-h1024dp turns it off. -->
-    <bool name="jstore_nav_rail">true</bool>
+    <!-- Main screen destinations as a left rail (true) or a bottom bar (false). Only wide
+         screens (values-w1200dp) get the rail; on a narrower one it would take too much of
+         the width the app tiles need. -->
+    <bool name="jstore_nav_rail">false</bool>
 </resources>

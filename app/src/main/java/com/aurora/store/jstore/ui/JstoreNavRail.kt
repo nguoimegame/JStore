@@ -26,9 +26,9 @@ import com.aurora.store.R
 data class JstoreNavItem(@StringRes val label: Int, @DrawableRes val icon: Int, val badge: Int = 0)
 
 /**
- * The main screen's destinations as a rail on the left. Screens under 1024dp tall use it
- * instead of the bottom bar, which would cost a row the list needs more
- * (see `@bool/jstore_nav_rail`).
+ * The main screen's destinations as a rail on the left. Screens at least 1200dp wide use it
+ * instead of the bottom bar, which would cost a row the list needs more; narrower screens keep
+ * the width for the app tiles (see `@bool/jstore_nav_rail`).
  */
 @Composable
 fun JstoreNavRail(
