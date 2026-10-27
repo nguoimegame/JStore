@@ -33,6 +33,7 @@ import com.aurora.store.compose.composable.LinkListItem
 import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.compose.ui.about.AboutDialog
 import com.aurora.store.data.model.Link
+import com.aurora.store.jstore.JstoreAbout
 
 @Composable
 fun WelcomePage() {
@@ -69,7 +70,7 @@ private fun PageContent(onAboutAurora: () -> Unit = {}) {
             title = stringResource(R.string.source_code_title),
             subtitle = stringResource(R.string.source_code_subtitle),
             icon = R.drawable.ic_code,
-            url = "https://gitlab.com/AuroraOSS/AuroraStore/"
+            url = JstoreAbout.SOURCE_URL // jstore: this build's own source
         ),
         Link(
             id = 3,
