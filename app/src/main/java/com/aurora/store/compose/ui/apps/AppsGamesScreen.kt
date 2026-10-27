@@ -8,24 +8,23 @@ package com.aurora.store.compose.ui.apps
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.aurora.gplayapi.helpers.contracts.StreamContract
 import com.aurora.gplayapi.helpers.contracts.TopChartsContract
 import com.aurora.store.R
 import com.aurora.store.compose.navigation.Destination
+import com.aurora.store.jstore.ui.JstoreSegmentedTabs // jstore
 import com.aurora.store.util.Preferences
 import com.aurora.store.viewmodel.category.CategoryViewModel
 import com.aurora.store.viewmodel.homestream.StreamViewModel
@@ -71,22 +70,17 @@ fun AppsGamesScreen(
     val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        PrimaryTabRow(
-            modifier = Modifier.fillMaxWidth(),
-            selectedTabIndex = pagerState.currentPage
-        ) {
-            tabs.forEachIndexed { index, tab ->
-                Tab(
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                    text = { Text(stringResource(tab.titleRes)) }
-                )
+        JstoreSegmentedTabs( // jstore: segment track instead of PrimaryTabRow
+            modifier = Modifier.padding(
+                horizontal = dimensionResource(R.dimen.jstore_space_lg),
+                vertical = dimensionResource(R.dimen.jstore_space_sm)
+            ),
+            titles = tabs.map { stringResource(it.titleRes) },
+            selected = pagerState.currentPage,
+            onSelect = { index ->
+                coroutineScope.launch { pagerState.animateScrollToPage(index) }
             }
-        }
+        )
 
         HorizontalPager(
             modifier = Modifier.fillMaxSize(),
