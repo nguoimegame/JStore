@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>jstore UI mock: JaecooApp design language, 1280x1606 @240dpi</title>
+<style>
+  /* 1dp = 1.5px at 240dpi. All sizes below are px = dp * 1.5, taken from JaecooApp tokens. */
+  :root {
+    --bg: #E5EAEF; --card: #FFFFFF; --variant: #DEE3E8; --border: #D1D8E0;
+    --c1: #17191E; --c2: rgba(23,25,30,.6); --c3: rgba(23,25,30,.4);
+    --accent: #3292F5; --accent-dark: #1657BE; --accent-soft: #DCE9F7;
+    --warn: #B45309; --warn-soft: #FCEEDA;
+    --sp-xs: 10.5px; --sp-sm: 18px; --sp-md: 27px; --sp-lg: 36px; --sp-xl: 45px;
+    --r-sm: 18px; --r-md: 30px; --touch: 96px; --row: 150px; --btn: 108px;
+    --t-label: 30px; --t-caption: 31.5px; --t-body-sm: 36px; --t-body: 40.5px;
+    --t-title: 45px; --t-headline: 54px;
+  }
+  .dark {
+    --bg: #131517; --card: #1D1F22; --variant: #24272B; --border: #2E3137;
+    --c1: #ECEFF4; --c2: rgba(236,239,244,.6); --c3: rgba(236,239,244,.4);
+    --accent: #2B7ACE; --accent-soft: #1E2A3A; --warn-soft: #3A2A12; --warn: #FDBA74;
+  }
+  body { margin: 0; background: #8A9199; font-family: Roboto, "Segoe UI", sans-serif; padding: 40px; }
+  h1 { color: #fff; font-weight: 500; margin: 0 0 8px; }
+  p.lead { color: #EEF1F4; margin: 0 0 32px; max-width: 1400px; line-height: 1.5; }
+  .row { display: flex; gap: 48px; flex-wrap: wrap; align-items: flex-start; }
+  .wrap { display: flex; flex-direction: column; gap: 12px; }
+  .wrap > .cap { color: #fff; font-size: 20px; }
+  /* Frames are drawn at real pixels, then scaled down to fit the page. */
+  .scaler { width: 640px; height: 803px; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,.35); }
+  .frame { width: 1280px; height: 1606px; transform: scale(.5); transform-origin: 0 0;
+           background: var(--bg); color: var(--c1); display: flex; flex-direction: column; position: relative; }
+
+  .statusbar { height: 36px; padding: 0 var(--sp-sm); display: flex; align-items: center; justify-content: space-between;
+               font-size: 24px; color: var(--c2); }
+  /* Header: no back button; title + subtitle, actions at the end (JaecooApp rule 4). */
+  .header { display: flex; align-items: center; padding: var(--sp-md) var(--sp-lg) var(--sp-sm); gap: var(--sp-md); }
+  .header .titles { flex: 1; }
+  .header .t { font-size: var(--t-headline); font-weight: 700; }
+  .header .s { font-size: var(--t-caption); color: var(--c2); margin-top: 4px; }
+  .iconbtn { width: var(--touch); height: var(--touch); border-radius: 50%; background: var(--card);
+             display: grid; place-items: center; font-size: 40px; color: var(--c2); border: 1.5px solid var(--border); position: relative; }
+  .iconbtn .dot { position: absolute; top: 18px; right: 20px; width: 16px; height: 16px; background: var(--accent); border-radius: 50%; }
+  .search { margin: 0 var(--sp-lg) var(--sp-sm); height: var(--touch); border-radius: 100px; background: var(--card);
+            border: 1.5px solid var(--border); display: flex; align-items: center; gap: var(--sp-sm);
+            padding: 0 var(--sp-lg); font-size: var(--t-body-sm); color: var(--c3); }
+  /* Segment track, like section_app_store_tabs.xml */
+  .segment { margin: 0 var(--sp-lg) var(--sp-md); background: var(--variant); border-radius: 100px; display: flex; padding: 6px; }
+  .segment div { flex: 1; height: 84px; display: grid; place-items: center; border-radius: 100px;
+                 font-size: var(--t-body-sm); color: var(--c2); }
+  .segment .on { background: var(--card); color: var(--accent); font-weight: 600; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+
+  .content { flex: 1; overflow: hidden; padding: 0 var(--sp-lg); display: flex; flex-direction: column; gap: var(--sp-md); }
+  .card { background: var(--card); border-radius: var(--r-md); padding: var(--sp-md) 0 var(--sp-md); border: 1.5px solid var(--border); }
+  .card-h { display: flex; align-items: center; padding: 0 var(--sp-lg); height: 72px; }
+  .card-h .lbl { flex: 1; font-size: var(--t-title); font-weight: 600; }
+  .card-h .more { font-size: var(--t-body-sm); color: var(--accent); display: flex; align-items: center; gap: 6px;
+                  min-height: var(--touch); padding: 0 6px; }
+  .tiles { display: flex; gap: var(--sp-sm); padding: var(--sp-sm) var(--sp-lg) 0; overflow: hidden; }
+  /* App tile: 150dp wide, 96dp icon, name on up to 2 lines, never cut mid-word */
+  .tile { flex: 0 0 225px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .ic { width: 144px; height: 144px; border-radius: 34px; display: grid; place-items: center; color: #fff;
+        font-size: 60px; font-weight: 700; box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.06); }
+  .tile .n { margin-top: var(--sp-sm); font-size: var(--t-caption); line-height: 1.2; height: 76px; overflow: hidden;
+             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; word-break: normal; }
+  .tile .m { font-size: var(--t-label); color: var(--c2); margin-top: 2px; }
+
+  /* Featured hero card */
+  .hero { display: flex; gap: var(--sp-lg); align-items: center; padding: var(--sp-lg); border-radius: var(--r-md);
+          background: linear-gradient(120deg, #1657BE, #3292F5); color: #fff; }
+  .hero .ic { width: 168px; height: 168px; background: #fff; color: #1657BE; }
+  .hero .tt { font-size: var(--t-headline); font-weight: 700; }
+  .hero .ss { font-size: var(--t-body-sm); opacity: .85; margin-top: 6px; }
+  .btn { height: var(--btn); padding: 0 var(--sp-xl); border-radius: 100px; background: var(--accent); color: #fff;
+         font-size: var(--t-body-sm); font-weight: 600; display: grid; place-items: center; white-space: nowrap; }
+  .btn.white { background: #fff; color: #1657BE; }
+  .btn.sec { background: var(--accent-soft); color: var(--accent); }
+
+  /* Bottom nav: 3 destinations, 132dp-tall touch area with pill indicator */
+  .nav { height: 168px; background: var(--card); border-top: 1.5px solid var(--border); display: flex; }
+  .nav div { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+             font-size: var(--t-body-sm); color: var(--c2); }
+  .nav .pill { width: 120px; height: 60px; border-radius: 100px; display: grid; place-items: center; font-size: 40px; }
+  .nav .on { color: var(--accent); font-weight: 600; }
+  .nav .on .pill { background: var(--accent-soft); }
+  .nav .badge { font-size: 22px; background: var(--accent); color: #fff; border-radius: 100px; padding: 2px 12px; margin-left: 6px; }
+  .sysnav { height: 84px; background: #fff; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 60px; font-size: 36px; color: #555; }
+  .dark .sysnav { background: #000; color: #aaa; }
+
+  /* Updates list rows, like JaecooApp item_app.xml */
+  .rowitem { background: var(--card); border-radius: var(--r-md); border: 1.5px solid var(--border); min-height: var(--row);
+             display: flex; align-items: center; gap: var(--sp-lg); padding: var(--sp-lg); }
+  .rowitem .ic { width: 120px; height: 120px; border-radius: 28px; font-size: 50px; }
+  .rowitem .info { flex: 1; min-width: 0; }
+  .rowitem .n { font-size: var(--t-body); font-weight: 700; display: flex; align-items: center; gap: var(--sp-sm); }
+  .rowitem .meta { font-size: var(--t-caption); color: var(--accent); margin-top: 6px; }
+  .rowitem .desc { font-size: var(--t-body-sm); color: var(--c2); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pillbadge { font-size: var(--t-label); font-weight: 700; color: var(--warn); background: var(--warn-soft);
+               border-radius: 100px; padding: 3px 18px; }
+  .bar { height: 12px; border-radius: 6px; background: var(--variant); margin-top: var(--sp-sm); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 62%; background: var(--accent); }
+  .seclabel { font-size: var(--t-label); font-weight: 700; letter-spacing: 1.5px; color: var(--c2); text-transform: uppercase;
+              padding: var(--sp-sm) 0 0; }
+
+  .notes { background: #fff; border-radius: 12px; padding: 24px 28px; max-width: 560px; font-size: 16px; line-height: 1.55; color: #17191E; }
+  .notes h3 { margin: 0 0 8px; font-size: 18px; }
+  .notes table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  .notes td { border-top: 1px solid #E5EAEF; padding: 5px 6px; vertical-align: top; }
+  .notes code { background: #EEF1F4; padding: 1px 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>jstore: mock giao diện theo JaecooApp (màn cao 1280×1606 @240dpi ≈ 853×1070dp)</h1>
+<p class="lead">Ảnh thu nhỏ 50%, khung vẽ đúng pixel thật. Token lấy từ JaecooApp (<code>colors.xml</code>, thang chữ màn thấp trong <code>dimens_short.xml</code>, <code>touch_min</code> 64dp, <code>row_height</code> 100dp, <code>radius_md</code> 20dp). Dữ liệu app là giả.</p>
+
+<div class="row">
+
+<!-- ============ 1. For you, light ============ -->
+<div class="wrap"><div class="cap">① Apps › For you (sáng)</div>
+<div class="scaler"><div class="frame">
+  <div class="statusbar"><span>14:24</span><span>▲ ▮</span></div>
+  <div class="header">
+    <div class="titles"><div class="t">Apps</div><div class="s">quangit22@gmail.com</div></div>
+    <div class="iconbtn">⤓<span class="dot"></span></div>
+    <div class="iconbtn">⚙</div>
+  </div>
+  <div class="search">⌕&nbsp; Search apps &amp; games</div>
+  <div class="segment"><div class="on">For you</div><div>Top charts</div><div>Categories</div></div>
+  <div class="content">
+    <div class="hero">
+      <div class="ic">N</div>
+      <div style="flex:1"><div class="tt">Navigation</div><div class="ss">Maps, traffic and speed cameras</div></div>
+      <div class="btn white">Install</div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="lbl">Popular apps</div><div class="more">See all ›</div></div>
+      <div class="tiles">
+        <div class="tile"><div class="ic" style="background:#25D366">W</div><div class="n">WhatsApp Messenger</div><div class="m">4.3 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#FA2D48">♪</div><div class="n">Apple Music</div><div class="m">4.1 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#229ED9">T</div><div class="n">Telegram</div><div class="m">4.2 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#FF6A00">F</div><div class="n">Firefox Browser</div><div class="m">4.4 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#111">C</div><div class="n">ChatGPT</div><div class="m">4.7 ★</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="lbl">Music &amp; audio</div><div class="more">See all ›</div></div>
+      <div class="tiles">
+        <div class="tile"><div class="ic" style="background:#1DB954">S</div><div class="n">Spotify: Music and Podcasts</div><div class="m">4.4 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#FF0000">▶</div><div class="n">YouTube Music</div><div class="m">4.5 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#7B3FE4">P</div><div class="n">Pocket Casts</div><div class="m">4.6 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#E5532E">Z</div><div class="n">Zing MP3</div><div class="m">4.3 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#0B5FFF">N</div><div class="n">NhacCuaTui</div><div class="m">4.2 ★</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="lbl">Maps &amp; navigation</div><div class="more">See all ›</div></div>
+      <div class="tiles">
+        <div class="tile"><div class="ic" style="background:#34A853">G</div><div class="n">Google Maps</div><div class="m">4.2 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#33CCFF">W</div><div class="n">Waze Navigation &amp; Live Traffic</div><div class="m">4.4 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#2E7D32">V</div><div class="n">VietMap Live</div><div class="m">4.1 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#F2A900">H</div><div class="n">HERE WeGo</div><div class="m">4.0 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#555">O</div><div class="n">Organic Maps</div><div class="m">4.6 ★</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="nav">
+    <div class="on"><span class="pill">▦</span>Apps</div>
+    <div><span class="pill">◈</span>Games</div>
+    <div><span class="pill">⟳</span><span>Updates<span class="badge">3</span></span></div>
+  </div>
+  <div class="sysnav"><span>◀</span><span>●</span><span>■</span></div>
+</div></div></div>
+
+<!-- ============ 2. For you, dark ============ -->
+<div class="wrap"><div class="cap">② Như ① ở chế độ tối (<code>values-night</code> của JaecooApp)</div>
+<div class="scaler"><div class="frame dark">
+  <div class="statusbar"><span>21:05</span><span>▲ ▮</span></div>
+  <div class="header">
+    <div class="titles"><div class="t">Apps</div><div class="s">quangit22@gmail.com</div></div>
+    <div class="iconbtn">⤓<span class="dot"></span></div>
+    <div class="iconbtn">⚙</div>
+  </div>
+  <div class="search">⌕&nbsp; Search apps &amp; games</div>
+  <div class="segment"><div class="on">For you</div><div>Top charts</div><div>Categories</div></div>
+  <div class="content">
+    <div class="hero">
+      <div class="ic">N</div>
+      <div style="flex:1"><div class="tt">Navigation</div><div class="ss">Maps, traffic and speed cameras</div></div>
+      <div class="btn white">Install</div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="lbl">Popular apps</div><div class="more">See all ›</div></div>
+      <div class="tiles">
+        <div class="tile"><div class="ic" style="background:#25D366">W</div><div class="n">WhatsApp Messenger</div><div class="m">4.3 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#FA2D48">♪</div><div class="n">Apple Music</div><div class="m">4.1 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#229ED9">T</div><div class="n">Telegram</div><div class="m">4.2 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#FF6A00">F</div><div class="n">Firefox Browser</div><div class="m">4.4 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#444">C</div><div class="n">ChatGPT</div><div class="m">4.7 ★</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="lbl">Music &amp; audio</div><div class="more">See all ›</div></div>
+      <div class="tiles">
+        <div class="tile"><div class="ic" style="background:#1DB954">S</div><div class="n">Spotify: Music and Podcasts</div><div class="m">4.4 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#FF0000">▶</div><div class="n">YouTube Music</div><div class="m">4.5 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#7B3FE4">P</div><div class="n">Pocket Casts</div><div class="m">4.6 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#E5532E">Z</div><div class="n">Zing MP3</div><div class="m">4.3 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#0B5FFF">N</div><div class="n">NhacCuaTui</div><div class="m">4.2 ★</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="lbl">Maps &amp; navigation</div><div class="more">See all ›</div></div>
+      <div class="tiles">
+        <div class="tile"><div class="ic" style="background:#34A853">G</div><div class="n">Google Maps</div><div class="m">4.2 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#33CCFF">W</div><div class="n">Waze Navigation &amp; Live Traffic</div><div class="m">4.4 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#2E7D32">V</div><div class="n">VietMap Live</div><div class="m">4.1 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#F2A900">H</div><div class="n">HERE WeGo</div><div class="m">4.0 ★</div></div>
+        <div class="tile"><div class="ic" style="background:#555">O</div><div class="n">Organic Maps</div><div class="m">4.6 ★</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="nav">
+    <div class="on"><span class="pill">▦</span>Apps</div>
+    <div><span class="pill">◈</span>Games</div>
+    <div><span class="pill">⟳</span><span>Updates<span class="badge">3</span></span></div>
+  </div>
+  <div class="sysnav"><span>◀</span><span>●</span><span>■</span></div>
+</div></div></div>
+
+<!-- ============ 3. Updates, light ============ -->
+<div class="wrap"><div class="cap">③ Updates: hàng danh sách theo <code>item_app.xml</code></div>
+<div class="scaler"><div class="frame">
+  <div class="statusbar"><span>14:26</span><span>▲ ▮</span></div>
+  <div class="header">
+    <div class="titles"><div class="t">Updates</div><div class="s">3 updates available · 128 MB</div></div>
+    <div class="btn">Update all</div>
+  </div>
+  <div class="content" style="gap: var(--sp-sm); padding-top: var(--sp-sm)">
+    <div class="seclabel">Downloading</div>
+    <div class="rowitem">
+      <div class="ic" style="background:#1DB954">S</div>
+      <div class="info"><div class="n">Spotify</div><div class="meta">Music &amp; audio · 9.0.84</div>
+        <div class="bar"><i></i></div></div>
+      <div class="btn sec">62%</div>
+    </div>
+    <div class="seclabel">Pending</div>
+    <div class="rowitem">
+      <div class="ic" style="background:#34A853">G</div>
+      <div class="info"><div class="n">Google Maps <span class="pillbadge">Update</span></div><div class="meta">Maps &amp; navigation · 26.43.01</div>
+        <div class="desc">Faster rerouting and new lane guidance for highways</div></div>
+      <div class="btn">Update</div>
+    </div>
+    <div class="rowitem">
+      <div class="ic" style="background:#229ED9">T</div>
+      <div class="info"><div class="n">Telegram <span class="pillbadge">Update</span></div><div class="meta">Communication · 12.1.2</div>
+        <div class="desc">Bug fixes and performance improvements</div></div>
+      <div class="btn">Update</div>
+    </div>
+    <div class="seclabel">Up to date</div>
+    <div class="rowitem">
+      <div class="ic" style="background:#25D366">W</div>
+      <div class="info"><div class="n">WhatsApp Messenger</div><div class="meta">Communication · 2.26.21</div></div>
+      <div class="btn sec">Open</div>
+    </div>
+    <div class="rowitem">
+      <div class="ic" style="background:#33CCFF">W</div>
+      <div class="info"><div class="n">Waze</div><div class="meta">Maps &amp; navigation · 5.9.0</div></div>
+      <div class="btn sec">Open</div>
+    </div>
+  </div>
+  <div class="nav">
+    <div><span class="pill">▦</span>Apps</div>
+    <div><span class="pill">◈</span>Games</div>
+    <div class="on"><span class="pill">⟳</span><span>Updates<span class="badge">3</span></span></div>
+  </div>
+  <div class="sysnav"><span>◀</span><span>●</span><span>■</span></div>
+</div></div></div>
+
+<div class="notes">
+  <h3>So với giao diện hiện tại</h3>
+  <table>
+    <tr><td>Tên app</td><td>Ô 150dp, tối đa 2 dòng, không cắt giữa từ (trước: ~59dp, "Face boo…")</td></tr>
+    <tr><td>Mật độ</td><td>5 app mỗi hàng, icon 96dp (trước: ~14 app, icon ~48dp)</td></tr>
+    <tr><td>Nhóm</td><td>Mỗi nhóm là một thẻ trắng bo 20dp, tiêu đề 30sp, "See all" vùng chạm 64dp</td></tr>
+    <tr><td>Tìm kiếm</td><td>Ô tìm kiếm cố định dưới header, bỏ nút nổi che nội dung</td></tr>
+    <tr><td>Tab</td><td>Segment track như Kho ứng dụng của JaecooApp, cao 56dp</td></tr>
+    <tr><td>Header</td><td>Không có nút back; tiêu đề 36sp, phụ đề là tài khoản; nút tải xuống và cài đặt 64dp</td></tr>
+    <tr><td>Hero</td><td>Một thẻ nổi bật đầu trang (app đầu tiên của cụm đầu tiên)</td></tr>
+    <tr><td>Thanh dưới</td><td>Giữ 3 đích của upstream, cao 112dp, pill chỉ mục chọn, badge số cập nhật</td></tr>
+    <tr><td>Danh sách</td><td>Hàng ≥ 100dp theo <code>item_app.xml</code>: icon, tên + badge, meta màu accent, nút bên phải</td></tr>
+  </table>
+</div>
+
+</div>
+</body>
+</html>
