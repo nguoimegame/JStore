@@ -27,6 +27,7 @@
     <dimen name="jstore_tile_icon">96dp</dimen>
     <dimen name="jstore_tile_icon_radius">22dp</dimen>
     <dimen name="jstore_hero_icon">112dp</dimen>
-    <dimen name="jstore_segment_height">56dp</dimen>
+    <!-- A segment is a touch target, so it is never below jstore_touch_min. -->
+    <dimen name="jstore_segment_height">@dimen/jstore_touch_min</dimen>
     <dimen name="jstore_bottom_bar_height">112dp</dimen>
 </resources>
