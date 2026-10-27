@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectable
@@ -38,13 +39,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
-import androidx.compose.ui.unit.dp
 import com.aurora.store.R
 import com.aurora.store.compose.preview.ThemePreviewProvider
 
 /**
- * The main screen's destinations as a tall bottom bar for narrow head units; wide ones use
- * [JstoreNavRail]. The selected item sits in a pill, as in JaecooApp.
+ * The main screen's destinations as a tall bottom bar for screens at least 1024dp tall; short
+ * ones use [JstoreNavRail]. Each item is a large icon left of its label; the selected one sits
+ * in a pill.
  */
 @Composable
 fun JstoreBottomBar(
@@ -67,7 +68,7 @@ fun JstoreBottomBar(
                     val isSelected = index == selected
                     val content = if (isSelected) colors.primary else colors.onSurfaceVariant
                     val pill = if (isSelected) colors.secondaryContainer else Color.Transparent
-                    Column(
+                    Box(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight()
@@ -76,35 +77,45 @@ fun JstoreBottomBar(
                                 role = Role.Tab,
                                 onClick = { onSelect(index) }
                             ),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(
-                            dimensionResource(R.dimen.jstore_space_sm) / 2,
-                            Alignment.CenterVertically
-                        )
+                        contentAlignment = Alignment.Center
                     ) {
-                        Box(
+                        // Icon left of the label, the pill around both marks the selected item
+                        Row(
                             modifier = Modifier
-                                .size(width = 60.dp, height = 30.dp)
-                                .background(pill, RoundedCornerShape(percent = 50)),
-                            contentAlignment = Alignment.Center
+                                .background(pill, RoundedCornerShape(percent = 50))
+                                .padding(
+                                    horizontal = dimensionResource(R.dimen.jstore_space_lg),
+                                    vertical = dimensionResource(R.dimen.jstore_space_sm) / 2
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(
+                                dimensionResource(R.dimen.jstore_space_sm)
+                            )
                         ) {
                             BadgedBox(
                                 badge = { if (item.badge > 0) Badge { Text("${item.badge}") } }
                             ) {
                                 Icon(
+                                    modifier = Modifier.size(
+                                        dimensionResource(R.dimen.jstore_bottom_bar_icon)
+                                    ),
                                     painter = painterResource(item.icon),
                                     contentDescription = null,
                                     tint = content
                                 )
                             }
+                            Text(
+                                text = stringResource(item.label),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = if (isSelected) {
+                                    FontWeight.SemiBold
+                                } else {
+                                    FontWeight.Normal
+                                },
+                                color = content,
+                                maxLines = 1
+                            )
                         }
-                        Text(
-                            text = stringResource(item.label),
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                            color = content,
-                            maxLines = 1
-                        )
                     }
                 }
             }

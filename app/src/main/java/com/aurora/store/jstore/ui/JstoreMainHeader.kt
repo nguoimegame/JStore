@@ -5,6 +5,8 @@
 
 package com.aurora.store.jstore.ui
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,9 +15,13 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,22 +40,32 @@ import androidx.compose.ui.unit.dp
 import com.aurora.store.R
 import com.aurora.store.compose.preview.ThemePreviewProvider
 
+/** An icon button at the end of [JstoreMainHeader]. [badge] above zero shows as a count. */
+data class JstoreHeaderAction(
+    @DrawableRes val icon: Int,
+    @StringRes val label: Int,
+    val badge: Int = 0,
+    val onClick: () -> Unit
+)
+
 /**
  * The main screen's header, JaecooApp style: no back button, a large title with the signed-in
- * account under it, and the actions at the end. The subtitle line is kept even when empty so
- * the header does not change height between accounts. With [onSearch], a [JstoreSearchField]
- * sits under it.
+ * account under it, and the actions at the end as large icons a driver can hit. The subtitle
+ * line is kept even when empty so the header does not change height between accounts. With
+ * [onSearch], a [JstoreSearchField] sits under it.
  */
 @Composable
 fun JstoreMainHeader(
     title: String,
     subtitle: String?,
+    actions: List<JstoreHeaderAction>,
     modifier: Modifier = Modifier,
-    onSearch: (() -> Unit)? = null,
-    actions: @Composable RowScope.() -> Unit = {}
+    onSearch: (() -> Unit)? = null
 ) {
     Column(modifier = modifier.windowInsetsPadding(TopAppBarDefaults.windowInsets)) {
-        HeaderRow(title = title, subtitle = subtitle, actions = actions)
+        HeaderRow(title = title, subtitle = subtitle) {
+            actions.forEach { HeaderActionButton(it) }
+        }
         if (onSearch != null) JstoreSearchField(onClick = onSearch)
     }
 }
@@ -85,6 +101,22 @@ private fun HeaderRow(title: String, subtitle: String?, actions: @Composable Row
             )
         }
         actions()
+    }
+}
+
+@Composable
+private fun HeaderActionButton(action: JstoreHeaderAction) {
+    IconButton(
+        modifier = Modifier.size(dimensionResource(R.dimen.jstore_header_action_size)),
+        onClick = action.onClick
+    ) {
+        BadgedBox(badge = { if (action.badge > 0) Badge { Text("${action.badge}") } }) {
+            Icon(
+                modifier = Modifier.size(dimensionResource(R.dimen.jstore_header_icon)),
+                painter = painterResource(action.icon),
+                contentDescription = stringResource(action.label)
+            )
+        }
     }
 }
 
@@ -125,12 +157,20 @@ fun JstoreSearchField(onClick: () -> Unit, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 private fun JstoreMainHeaderPreview() {
-    JstoreMainHeader(title = "Apps", subtitle = "someone@gmail.com", onSearch = {})
+    JstoreMainHeader(
+        title = "Apps",
+        subtitle = "someone@gmail.com",
+        actions = listOf(
+            JstoreHeaderAction(R.drawable.ic_notifications, R.string.title_notifications, 2) {},
+            JstoreHeaderAction(R.drawable.ic_download_manager, R.string.title_download_manager) {}
+        ),
+        onSearch = {}
+    )
 }
 
 @PreviewWrapper(ThemePreviewProvider::class)
 @Preview(showBackground = true)
 @Composable
 private fun JstoreMainHeaderNoAccountPreview() {
-    JstoreMainHeader(title = "Apps", subtitle = "")
+    JstoreMainHeader(title = "Apps", subtitle = "", actions = emptyList())
 }

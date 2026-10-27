@@ -33,8 +33,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.rememberSearchBarState
@@ -119,7 +121,11 @@ private fun ScreenContent(
     val searchBarState = rememberSearchBarState(initialValue = SearchBarValue.Expanded)
     var isSearching by rememberSaveable { mutableStateOf(false) }
 
-    val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<String>()
+    // jstore: one pane on the head unit, so results take the full width and details open on top
+    val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<String>(
+        scaffoldDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
+            .copy(maxHorizontalPartitions = 1)
+    )
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = textFieldState) {

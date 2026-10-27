@@ -11,4 +11,12 @@
     <dimen name="jstore_text_title">40sp</dimen>
     <dimen name="jstore_text_headline">48sp</dimen>
     <dimen name="jstore_text_display">76sp</dimen>
+    <!-- Menu rows on tall screens, as JaecooApp's values-h1024dp -->
+    <dimen name="jstore_nav_item_height">120dp</dimen>
+    <dimen name="jstore_nav_icon">64dp</dimen>
+    <dimen name="jstore_nav_label_text">32sp</dimen>
+    <dimen name="jstore_nav_item_padding_start">54dp</dimen>
+    <dimen name="jstore_nav_icon_gap">18dp</dimen>
+    <dimen name="jstore_dialog_max_width">720dp</dimen>
+    <dimen name="jstore_avatar_size">96dp</dimen>
 </resources>

@@ -16,13 +16,15 @@
     <dimen name="jstore_text_headline">36sp</dimen>
     <dimen name="jstore_text_display">56sp</dimen>
     <dimen name="jstore_touch_min">64dp</dimen>
-    <!-- Left rail on short screens, sized as JaecooApp's (values/dimens_short.xml there) -->
+    <!-- Menu rows (left rail, settings menu), sized as JaecooApp's; values-h1024dp has the tall sizes -->
     <dimen name="jstore_nav_rail_width">232dp</dimen>
     <dimen name="jstore_nav_item_height">72dp</dimen>
     <dimen name="jstore_nav_item_gap">7dp</dimen>
     <dimen name="jstore_nav_icon">36dp</dimen>
     <dimen name="jstore_nav_label_text">22sp</dimen>
     <dimen name="jstore_nav_indicator_width">4dp</dimen>
+    <dimen name="jstore_nav_item_padding_start">24dp</dimen>
+    <dimen name="jstore_nav_icon_gap">12dp</dimen>
 
     <!-- Main screens (docs/superpowers/specs/2026-10-27-jstore-headunit-ui-design.md) -->
     <dimen name="jstore_space_sm">12dp</dimen>
@@ -36,4 +38,11 @@
     <!-- A segment is a touch target, so it is never below jstore_touch_min. -->
     <dimen name="jstore_segment_height">@dimen/jstore_touch_min</dimen>
     <dimen name="jstore_bottom_bar_height">112dp</dimen>
+    <!-- Header actions and bottom-bar icons: twice Material's 24dp, for the head unit -->
+    <dimen name="jstore_header_icon">48dp</dimen>
+    <!-- Settings menu card in the middle of the screen -->
+    <dimen name="jstore_dialog_max_width">560dp</dimen>
+    <dimen name="jstore_avatar_size">64dp</dimen>
+    <dimen name="jstore_header_action_size">72dp</dimen>
+    <dimen name="jstore_bottom_bar_icon">48dp</dimen>
 </resources>

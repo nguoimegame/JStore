@@ -14,12 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.booleanResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,7 +37,6 @@ import com.aurora.store.compose.composable.TrackerUpdateWarningDialog
 import com.aurora.store.compose.composition.LocalNetworkStatus
 import com.aurora.store.compose.navigation.Destination
 import com.aurora.store.compose.ui.apps.AppsGamesScreen
-import com.aurora.store.compose.ui.commons.MoreSheet
 import com.aurora.store.compose.ui.commons.NetworkScreen
 import com.aurora.store.compose.ui.sheets.AppUpdateSheet
 import com.aurora.store.compose.ui.updates.UpdatesScreen
@@ -54,7 +47,9 @@ import com.aurora.store.data.model.StorageRequirement
 import com.aurora.store.data.providers.PermissionProvider.Companion.isGranted
 import com.aurora.store.data.room.update.Update
 import com.aurora.store.jstore.ui.JstoreBottomBar
+import com.aurora.store.jstore.ui.JstoreHeaderAction
 import com.aurora.store.jstore.ui.JstoreMainHeader
+import com.aurora.store.jstore.ui.JstoreMoreDialog
 import com.aurora.store.jstore.ui.JstoreNavItem
 import com.aurora.store.jstore.ui.JstoreNavRail
 import com.aurora.store.util.PackageUtil
@@ -155,7 +150,8 @@ fun MainScreen(
     }
 
     if (showMoreSheet) {
-        MoreSheet(
+        // jstore: a centred menu with JaecooApp's rows instead of Aurora's bottom sheet
+        JstoreMoreDialog(
             onDismiss = { showMoreSheet = false },
             onNavigateTo = { destination ->
                 showMoreSheet = false
@@ -200,34 +196,22 @@ fun MainScreen(
                     title = stringResource(MainTab.entries[pagerState.currentPage].labelRes),
                     subtitle = mainViewModel.accountEmail,
                     onSearch = { onNavigateTo(Destination.Search) },
-                    actions = {
-                        IconButton(onClick = { onNavigateTo(Destination.Notifications) }) {
-                            BadgedBox(
-                                badge = {
-                                    if (notificationCount > 0) Badge { Text("$notificationCount") }
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_notifications),
-                                    contentDescription = stringResource(
-                                        R.string.title_notifications
-                                    )
-                                )
-                            }
-                        }
-                        IconButton(onClick = { onNavigateTo(Destination.Downloads) }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_download_manager),
-                                contentDescription = stringResource(R.string.title_download_manager)
-                            )
-                        }
-                        IconButton(onClick = { showMoreSheet = true }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_settings_account),
-                                contentDescription = stringResource(R.string.title_more)
-                            )
-                        }
-                    }
+                    // jstore: large icons, drawn by the header
+                    actions = listOf(
+                        JstoreHeaderAction(
+                            R.drawable.ic_notifications,
+                            R.string.title_notifications,
+                            notificationCount
+                        ) { onNavigateTo(Destination.Notifications) },
+                        JstoreHeaderAction(
+                            R.drawable.ic_download_manager,
+                            R.string.title_download_manager
+                        ) { onNavigateTo(Destination.Downloads) },
+                        JstoreHeaderAction(
+                            R.drawable.ic_settings_account,
+                            R.string.title_more
+                        ) { showMoreSheet = true }
+                    )
                 )
             },
             // jstore: no search FAB, search lives in the header
