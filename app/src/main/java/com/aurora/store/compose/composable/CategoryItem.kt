@@ -43,7 +43,7 @@ fun CategoryItem(modifier: Modifier = Modifier, category: Category, onClick: () 
                 vertical = dimensionResource(R.dimen.spacing_small)
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md)) // jstore
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md))
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -54,8 +54,8 @@ fun CategoryItem(modifier: Modifier = Modifier, category: Category, onClick: () 
             contentScale = ContentScale.Crop,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
             modifier = Modifier
-                .requiredSize(dimensionResource(R.dimen.jstore_category_icon)) // jstore
-                .clip(RoundedCornerShape(dimensionResource(R.dimen.jstore_category_icon_radius))) // jstore
+                .requiredSize(dimensionResource(R.dimen.jstore_category_icon))
+                .clip(RoundedCornerShape(dimensionResource(R.dimen.jstore_category_icon_radius)))
         )
 
         Text(

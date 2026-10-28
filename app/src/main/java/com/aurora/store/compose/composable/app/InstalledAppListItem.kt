@@ -47,8 +47,9 @@ fun InstalledAppListItem(
     lastUpdateTime: Long = 0L,
     installerLabel: String? = null,
     onClick: () -> Unit = {},
-    iconSize: Dp = dimensionResource(R.dimen.jstore_list_item_icon), // jstore
-    iconRadius: Dp = dimensionResource(R.dimen.jstore_list_item_icon_radius) // jstore
+    // jstore: custom icon sizing
+    iconSize: Dp = dimensionResource(R.dimen.jstore_list_item_icon),
+    iconRadius: Dp = dimensionResource(R.dimen.jstore_list_item_icon_radius)
 ) {
     AuroraListItem(
         modifier = modifier,
@@ -56,7 +57,8 @@ fun InstalledAppListItem(
         supporting = app.packageName,
         tertiary = buildInstalledExtras(sizeBytes, lastUpdateTime, installerLabel),
         headlineStyle = MaterialTheme.typography.bodyMedium,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)), // jstore
+        horizontalArrangement =
+        Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)),
         onClick = onClick,
         leading = {
             AsyncImage(

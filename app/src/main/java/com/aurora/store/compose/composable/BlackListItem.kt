@@ -47,7 +47,8 @@ fun BlackListItem(
         supporting = packageName,
         tertiary = stringResource(R.string.version, versionName, versionCode),
         headlineStyle = MaterialTheme.typography.bodyMedium,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)), // jstore
+        horizontalArrangement =
+        Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)),
         onClick = onClick,
         enabled = isEnabled,
         leading = {
@@ -56,7 +57,9 @@ fun BlackListItem(
                 contentDescription = null,
                 modifier = Modifier
                     .requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)) // jstore
-                    .clip(RoundedCornerShape(dimensionResource(R.dimen.jstore_list_item_icon_radius))), // jstore
+                    .clip(
+                        RoundedCornerShape(dimensionResource(R.dimen.jstore_list_item_icon_radius))
+                    ), // jstore
                 colorFilter = if (isChecked) DESATURATE else null
             )
         },

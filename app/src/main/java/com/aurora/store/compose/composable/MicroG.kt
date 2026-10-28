@@ -224,7 +224,8 @@ private fun MicroGItemRow(item: ExternalItem) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AnimatedAppIcon(
-            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)), // jstore
+            modifier = Modifier
+                .requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)),
             iconUrl = item.iconURL,
             inProgress = inProgress,
             progress = item.progress.toFloat()

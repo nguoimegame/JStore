@@ -59,7 +59,9 @@ fun AppListItem(modifier: Modifier = Modifier, app: App, onClick: () -> Unit = {
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(dimensionResource(R.dimen.jstore_tile_icon_radius))), // jstore
+                .clip(
+                    RoundedCornerShape(dimensionResource(R.dimen.jstore_tile_icon_radius))
+                ),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(app.iconArtwork.url)
                 .crossfade(true)

@@ -99,11 +99,11 @@ private fun ShimmerListRow(showTrailing: Boolean) {
                 vertical = dimensionResource(R.dimen.spacing_xsmall)
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)) // jstore
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm))
     ) {
         ShimmerBlock(
-            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)), // jstore
-            radiusRes = R.dimen.jstore_list_item_icon_radius // jstore
+            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)),
+            radiusRes = R.dimen.jstore_list_item_icon_radius
         )
         ShimmerTextStack(
             modifier = Modifier.weight(1f),
@@ -140,11 +140,11 @@ internal fun ShimmerCategoryRow() {
                 vertical = dimensionResource(R.dimen.spacing_small)
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md)) // jstore
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md))
     ) {
         ShimmerBlock(
-            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_category_icon)), // jstore
-            radiusRes = R.dimen.jstore_category_icon_radius // jstore
+            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_category_icon)),
+            radiusRes = R.dimen.jstore_category_icon_radius
         )
         ShimmerBlock(
             modifier = Modifier
@@ -178,8 +178,8 @@ internal fun ShimmerCarouselSection() {
                     )
                 ) {
                     ShimmerBlock(
-                        modifier = Modifier.size(dimensionResource(R.dimen.jstore_tile_icon)), // jstore
-                        radiusRes = R.dimen.jstore_tile_icon_radius // jstore
+                        modifier = Modifier.size(dimensionResource(R.dimen.jstore_tile_icon)),
+                        radiusRes = R.dimen.jstore_tile_icon_radius
                     )
                     ShimmerBlock(
                         modifier = Modifier

@@ -111,17 +111,19 @@ fun Details(
         modifier = Modifier
             .fillMaxWidth()
             .padding(dimensionResource(R.dimen.spacing_medium)),
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md)), // jstore
-        verticalAlignment = Alignment.CenterVertically // jstore
+        horizontalArrangement =
+        Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md)),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         AnimatedAppIcon(
-            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_hero_icon)), // jstore
+            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_hero_icon)),
             iconUrl = app.iconArtwork.url,
             inProgress = state.inProgress(),
             progress = state.progress(),
-            radiusRes = R.dimen.jstore_tile_icon_radius // jstore
+            radiusRes = R.dimen.jstore_tile_icon_radius
         )
-        Column(modifier = Modifier.weight(1f)) { // jstore
+        Column(modifier = Modifier.weight(1f)) {
+            // jstore
             Text(
                 text = app.displayName,
                 style = MaterialTheme.typography.titleLarge,
