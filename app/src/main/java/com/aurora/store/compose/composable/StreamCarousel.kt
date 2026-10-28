@@ -69,7 +69,8 @@ fun StreamCarousel(
         LazyColumn(
             modifier = modifier.fillMaxSize(),
             state = lazyListState,
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
+            // jstore: gap between cluster shimmer cards
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md))
         ) {
             items(5) { ShimmerCarouselSection() }
         }

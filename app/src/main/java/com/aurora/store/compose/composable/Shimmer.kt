@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,8 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.aurora.store.R
 import com.aurora.store.compose.preview.ThemePreviewProvider
+import com.aurora.store.jstore.ui.JstoreCard
+import com.aurora.store.jstore.ui.jstoreCard
 
 @Composable
 fun shimmerBrush(): Brush {
@@ -93,10 +96,11 @@ private fun ShimmerTextStack(modifier: Modifier = Modifier, widthFractions: List
 private fun ShimmerListRow(showTrailing: Boolean) {
     Row(
         modifier = Modifier
+            .jstoreCard()
             .fillMaxWidth()
             .padding(
-                horizontal = dimensionResource(R.dimen.spacing_small),
-                vertical = dimensionResource(R.dimen.spacing_xsmall)
+                horizontal = dimensionResource(R.dimen.spacing_medium),
+                vertical = dimensionResource(R.dimen.spacing_small)
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm))
@@ -134,6 +138,7 @@ internal fun ShimmerUpdateItem() {
 internal fun ShimmerCategoryRow() {
     Row(
         modifier = Modifier
+            .jstoreCard()
             .fillMaxWidth()
             .padding(
                 horizontal = dimensionResource(R.dimen.spacing_medium),
@@ -156,23 +161,34 @@ internal fun ShimmerCategoryRow() {
 
 @Composable
 internal fun ShimmerCarouselSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(all = dimensionResource(R.dimen.spacing_small)),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+    val spaceLg = dimensionResource(R.dimen.jstore_space_lg)
+    // jstore: card container matching JstoreClusterCard
+    JstoreCard(
+        modifier = Modifier.padding(horizontal = spaceLg)
     ) {
-        ShimmerBlock(
-            modifier = Modifier
-                .fillMaxWidth(0.42f)
-                .height(16.dp)
-        )
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = spaceLg, end = spaceLg / 2, top = spaceLg / 2),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            repeat(5) {
+            ShimmerBlock(
+                modifier = Modifier
+                    .width(180.dp)
+                    .height(24.dp)
+            )
+        }
+        Spacer(Modifier.height(dimensionResource(R.dimen.jstore_space_sm) / 2))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = spaceLg / 2),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_xsmall))
+        ) {
+            repeat(4) {
                 Column(
+                    modifier = Modifier.width(dimensionResource(R.dimen.jstore_tile_width)),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(
                         dimensionResource(R.dimen.spacing_xsmall)
                     )
@@ -183,17 +199,18 @@ internal fun ShimmerCarouselSection() {
                     )
                     ShimmerBlock(
                         modifier = Modifier
-                            .width(dimensionResource(R.dimen.jstore_tile_icon) * 0.75f) // jstore
-                            .height(11.dp)
+                            .width(dimensionResource(R.dimen.jstore_tile_icon) * 0.8f)
+                            .height(14.dp)
                     )
                     ShimmerBlock(
                         modifier = Modifier
-                            .width(dimensionResource(R.dimen.jstore_tile_icon) * 0.5f) // jstore
-                            .height(11.dp)
+                            .width(dimensionResource(R.dimen.jstore_tile_icon) * 0.5f)
+                            .height(12.dp)
                     )
                 }
             }
         }
+        Spacer(Modifier.height(dimensionResource(R.dimen.jstore_space_md)))
     }
 }
 
