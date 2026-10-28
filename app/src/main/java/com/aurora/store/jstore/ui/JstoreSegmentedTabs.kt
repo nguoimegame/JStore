@@ -5,7 +5,9 @@
 
 package com.aurora.store.jstore.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +44,10 @@ fun JstoreSegmentedTabs(
 ) {
     val pill = RoundedCornerShape(percent = 50)
     val colors = MaterialTheme.colorScheme
+    val isDark = colors.background.luminance() < 0.5f
+    val selectedBg = if (isDark) colors.surfaceContainerHighest else colors.surfaceContainer
+    val selectedBorder = if (isDark) BorderStroke(1.dp, colors.outline) else null
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -51,17 +58,29 @@ fun JstoreSegmentedTabs(
     ) {
         titles.forEachIndexed { index, title ->
             val isSelected = index == selected
+            val boxModifier = Modifier
+                .weight(1f)
+                .height(dimensionResource(R.dimen.jstore_segment_height))
+                .clip(pill)
+                .then(
+                    if (isSelected) {
+                        if (selectedBorder != null) {
+                            Modifier.background(selectedBg).border(selectedBorder, pill)
+                        } else {
+                            Modifier.background(selectedBg)
+                        }
+                    } else {
+                        Modifier.background(Color.Transparent)
+                    }
+                )
+                .selectable(
+                    selected = isSelected,
+                    role = Role.Tab,
+                    onClick = { onSelect(index) }
+                )
+
             Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(dimensionResource(R.dimen.jstore_segment_height))
-                    .clip(pill)
-                    .background(if (isSelected) colors.surfaceContainer else Color.Transparent)
-                    .selectable(
-                        selected = isSelected,
-                        role = Role.Tab,
-                        onClick = { onSelect(index) }
-                    ),
+                modifier = boxModifier,
                 contentAlignment = Alignment.Center
             ) {
                 Text(
