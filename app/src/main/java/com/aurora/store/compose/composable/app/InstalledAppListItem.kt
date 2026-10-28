@@ -6,6 +6,7 @@
 package com.aurora.store.compose.composable.app
 
 import android.text.format.DateUtils
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewWrapper
+import androidx.compose.ui.unit.Dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -44,7 +46,9 @@ fun InstalledAppListItem(
     sizeBytes: Long = 0L,
     lastUpdateTime: Long = 0L,
     installerLabel: String? = null,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    iconSize: Dp = dimensionResource(R.dimen.jstore_list_item_icon), // jstore
+    iconRadius: Dp = dimensionResource(R.dimen.jstore_list_item_icon_radius) // jstore
 ) {
     AuroraListItem(
         modifier = modifier,
@@ -52,12 +56,13 @@ fun InstalledAppListItem(
         supporting = app.packageName,
         tertiary = buildInstalledExtras(sizeBytes, lastUpdateTime, installerLabel),
         headlineStyle = MaterialTheme.typography.bodyMedium,
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)), // jstore
         onClick = onClick,
         leading = {
             AsyncImage(
                 modifier = Modifier
-                    .requiredSize(dimensionResource(R.dimen.icon_size_medium))
-                    .clip(RoundedCornerShape(dimensionResource(R.dimen.radius_medium))),
+                    .requiredSize(iconSize)
+                    .clip(RoundedCornerShape(iconRadius)),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(app.iconArtwork.url)
                     .crossfade(true)

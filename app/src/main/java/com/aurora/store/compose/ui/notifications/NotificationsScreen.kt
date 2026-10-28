@@ -144,10 +144,11 @@ private fun PendingInstallItem(
         },
         tertiary = relativeTime(download.downloadedAt),
         headlineStyle = MaterialTheme.typography.bodyMedium,
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)), // jstore
         onClick = onClick,
         leading = {
             AnimatedAppIcon(
-                modifier = Modifier.requiredSize(dimensionResource(R.dimen.icon_size_medium)),
+                modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)), // jstore
                 iconUrl = download.iconURL,
                 inProgress = isInstalling
             )

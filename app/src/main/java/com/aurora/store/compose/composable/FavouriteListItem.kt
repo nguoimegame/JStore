@@ -99,12 +99,13 @@ fun FavouriteListItem(
             supporting = favourite.packageName,
             tertiary = statusText,
             headlineStyle = MaterialTheme.typography.bodyMedium,
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)), // jstore
             onClick = onClick,
             leading = {
                 if (inProgress) {
                     AnimatedAppIcon(
                         modifier = Modifier
-                            .requiredSize(dimensionResource(R.dimen.icon_size_medium)),
+                            .requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)), // jstore
                         iconUrl = favourite.iconURL,
                         inProgress = true,
                         progress = progress
@@ -118,8 +119,8 @@ fun FavouriteListItem(
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .requiredSize(dimensionResource(R.dimen.icon_size_medium))
-                            .clip(RoundedCornerShape(dimensionResource(R.dimen.radius_medium)))
+                            .requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)) // jstore
+                            .clip(RoundedCornerShape(dimensionResource(R.dimen.jstore_list_item_icon_radius))) // jstore
                     )
                 }
             },

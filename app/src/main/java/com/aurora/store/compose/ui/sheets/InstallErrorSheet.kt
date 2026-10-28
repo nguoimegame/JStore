@@ -122,7 +122,7 @@ private fun Header(app: App, showBuy: Boolean = false, onBuy: () -> Unit = {}) {
                 vertical = dimensionResource(R.dimen.spacing_xsmall)
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)) // jstore
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -131,8 +131,8 @@ private fun Header(app: App, showBuy: Boolean = false, onBuy: () -> Unit = {}) {
                 .build(),
             contentDescription = null,
             modifier = Modifier
-                .requiredSize(dimensionResource(R.dimen.icon_size_medium))
-                .clip(RoundedCornerShape(dimensionResource(R.dimen.radius_medium)))
+                .requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)) // jstore
+                .clip(RoundedCornerShape(dimensionResource(R.dimen.jstore_list_item_icon_radius))) // jstore
         )
         Column(modifier = Modifier.weight(1f)) {
             Text(

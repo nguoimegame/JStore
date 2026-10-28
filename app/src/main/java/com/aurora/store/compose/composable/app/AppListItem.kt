@@ -46,7 +46,7 @@ import com.aurora.store.compose.preview.ThemePreviewProvider
 fun AppListItem(modifier: Modifier = Modifier, app: App, onClick: () -> Unit = {}) {
     Column(
         modifier = modifier
-            .width(dimensionResource(R.dimen.icon_size_cluster))
+            .width(dimensionResource(R.dimen.jstore_tile_icon)) // jstore
             .clickable(onClick = onClick)
             .padding(all = dimensionResource(R.dimen.spacing_xsmall)),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,7 +59,7 @@ fun AppListItem(modifier: Modifier = Modifier, app: App, onClick: () -> Unit = {
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(dimensionResource(R.dimen.radius_medium))),
+                .clip(RoundedCornerShape(dimensionResource(R.dimen.jstore_tile_icon_radius))), // jstore
             model = ImageRequest.Builder(LocalContext.current)
                 .data(app.iconArtwork.url)
                 .crossfade(true)

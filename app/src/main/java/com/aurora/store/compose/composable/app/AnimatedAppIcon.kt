@@ -48,7 +48,8 @@ fun AnimatedAppIcon(
     modifier: Modifier = Modifier,
     iconUrl: String,
     progress: Float = 0F,
-    inProgress: Boolean = false
+    inProgress: Boolean = false,
+    radiusRes: Int = R.dimen.jstore_list_item_icon_radius // jstore: automotive standard corner radius
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
@@ -60,7 +61,7 @@ fun AnimatedAppIcon(
     )
     val clip = when {
         inProgress -> CircleShape
-        else -> RoundedCornerShape(dimensionResource(R.dimen.radius_medium))
+        else -> RoundedCornerShape(dimensionResource(radiusRes)) // jstore
     }
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {

@@ -83,6 +83,8 @@ configure<ApplicationExtension> {
         buildConfigField("String", "EXODUS_API_KEY", "\"\"")
         buildConfigField("long", "BUILD_TIMESTAMP", "${lastCommitTimestamp.get()}L")
 
+        resourceConfigurations += listOf("en", "vi")
+
         missingDimensionStrategy("device", "vanilla")
     }
 
@@ -169,6 +171,12 @@ configure<ApplicationExtension> {
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
+    }
+
+    packaging {
+        dex {
+            useLegacyPackaging = true
+        }
     }
 }
 

@@ -66,15 +66,15 @@ fun AppUpdateItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(modifier = Modifier.requiredSize(dimensionResource(R.dimen.icon_size_medium))) {
+        Box(modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_list_item_icon))) { // jstore
             AnimatedAppIcon(
-                modifier = Modifier.requiredSize(dimensionResource(R.dimen.icon_size_medium)),
+                modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)), // jstore
                 iconUrl = update.iconURL,
                 inProgress = inProgress,
                 progress = progress
             )
         }
-        Spacer(Modifier.width(dimensionResource(R.dimen.spacing_medium)))
+        Spacer(Modifier.width(dimensionResource(R.dimen.jstore_space_sm))) // jstore
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = update.displayName,

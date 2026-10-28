@@ -41,7 +41,9 @@ fun AuroraListItem(
     enabled: Boolean = true,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
-    headlineStyle: TextStyle = MaterialTheme.typography.bodyLarge
+    headlineStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+    horizontalArrangement: Arrangement.Horizontal = // jstore:
+        Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
 ) {
     Row(
         modifier = modifier
@@ -57,7 +59,7 @@ fun AuroraListItem(
                 horizontal = dimensionResource(R.dimen.spacing_medium),
                 vertical = dimensionResource(R.dimen.spacing_xsmall)
             ),
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
+        horizontalArrangement = horizontalArrangement, // jstore
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leading != null) leading()

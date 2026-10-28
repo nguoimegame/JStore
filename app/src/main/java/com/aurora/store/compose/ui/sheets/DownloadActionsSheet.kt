@@ -129,10 +129,10 @@ private fun DownloadHeader(download: Download, onShowDetails: () -> Unit) {
                 vertical = dimensionResource(R.dimen.spacing_xsmall)
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)) // jstore
     ) {
         AnimatedAppIcon(
-            modifier = Modifier.requiredSize(dimensionResource(R.dimen.icon_size_medium)),
+            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)), // jstore
             iconUrl = download.iconURL,
             inProgress = download.isRunning,
             progress = download.progress.toFloat()

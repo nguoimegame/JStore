@@ -99,10 +99,11 @@ private fun ShimmerListRow(showTrailing: Boolean) {
                 vertical = dimensionResource(R.dimen.spacing_xsmall)
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)) // jstore
     ) {
         ShimmerBlock(
-            modifier = Modifier.requiredSize(dimensionResource(R.dimen.icon_size_medium))
+            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)), // jstore
+            radiusRes = R.dimen.jstore_list_item_icon_radius // jstore
         )
         ShimmerTextStack(
             modifier = Modifier.weight(1f),
@@ -139,15 +140,16 @@ internal fun ShimmerCategoryRow() {
                 vertical = dimensionResource(R.dimen.spacing_small)
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md)) // jstore
     ) {
         ShimmerBlock(
-            modifier = Modifier.requiredSize(dimensionResource(R.dimen.icon_size_category))
+            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_category_icon)), // jstore
+            radiusRes = R.dimen.jstore_category_icon_radius // jstore
         )
         ShimmerBlock(
             modifier = Modifier
                 .weight(1f)
-                .height(24.dp)
+                .height(28.dp) // jstore
         )
     }
 }
@@ -176,17 +178,17 @@ internal fun ShimmerCarouselSection() {
                     )
                 ) {
                     ShimmerBlock(
-                        modifier = Modifier.size(dimensionResource(R.dimen.icon_size_cluster)),
-                        radiusRes = R.dimen.radius_medium
+                        modifier = Modifier.size(dimensionResource(R.dimen.jstore_tile_icon)), // jstore
+                        radiusRes = R.dimen.jstore_tile_icon_radius // jstore
                     )
                     ShimmerBlock(
                         modifier = Modifier
-                            .width(dimensionResource(R.dimen.icon_size_cluster) * 0.75f)
+                            .width(dimensionResource(R.dimen.jstore_tile_icon) * 0.75f) // jstore
                             .height(11.dp)
                     )
                     ShimmerBlock(
                         modifier = Modifier
-                            .width(dimensionResource(R.dimen.icon_size_cluster) * 0.5f)
+                            .width(dimensionResource(R.dimen.jstore_tile_icon) * 0.5f) // jstore
                             .height(11.dp)
                     )
                 }
@@ -200,8 +202,8 @@ internal fun ShimmerAppListItem() {
     ShimmerBlock(
         modifier = Modifier
             .padding(dimensionResource(R.dimen.spacing_xsmall))
-            .size(dimensionResource(R.dimen.icon_size_cluster)),
-        radiusRes = R.dimen.radius_medium
+            .size(dimensionResource(R.dimen.jstore_tile_icon)), // jstore
+        radiusRes = R.dimen.jstore_tile_icon_radius // jstore
     )
 }
 

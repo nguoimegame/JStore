@@ -8,11 +8,14 @@ package com.aurora.store.compose.composable
 import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.asImageBitmap
@@ -44,13 +47,16 @@ fun BlackListItem(
         supporting = packageName,
         tertiary = stringResource(R.string.version, versionName, versionCode),
         headlineStyle = MaterialTheme.typography.bodyMedium,
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)), // jstore
         onClick = onClick,
         enabled = isEnabled,
         leading = {
             Image(
                 bitmap = icon.asImageBitmap(),
                 contentDescription = null,
-                modifier = Modifier.requiredSize(dimensionResource(R.dimen.icon_size_medium)),
+                modifier = Modifier
+                    .requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)) // jstore
+                    .clip(RoundedCornerShape(dimensionResource(R.dimen.jstore_list_item_icon_radius))), // jstore
                 colorFilter = if (isChecked) DESATURATE else null
             )
         },

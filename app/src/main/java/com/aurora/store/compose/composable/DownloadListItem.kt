@@ -8,6 +8,7 @@ package com.aurora.store.compose.composable
 
 import android.text.format.DateUtils
 import android.text.format.Formatter
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -51,10 +52,11 @@ fun DownloadListItem(modifier: Modifier = Modifier, download: Download, onClick:
         supporting = statusLine,
         tertiary = tertiaryLine,
         headlineStyle = MaterialTheme.typography.bodyMedium,
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm)), // jstore
         onClick = onClick,
         leading = {
             AnimatedAppIcon(
-                modifier = Modifier.requiredSize(dimensionResource(R.dimen.icon_size_medium)),
+                modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_list_item_icon)), // jstore
                 iconUrl = download.iconURL,
                 inProgress = download.isRunning,
                 progress = download.progress.toFloat()

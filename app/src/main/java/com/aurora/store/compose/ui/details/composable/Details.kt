@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -109,15 +110,18 @@ fun Details(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.spacing_medium))
+            .padding(dimensionResource(R.dimen.spacing_medium)),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md)), // jstore
+        verticalAlignment = Alignment.CenterVertically // jstore
     ) {
         AnimatedAppIcon(
-            modifier = Modifier.requiredSize(dimensionResource(R.dimen.icon_size_large)),
+            modifier = Modifier.requiredSize(dimensionResource(R.dimen.jstore_hero_icon)), // jstore
             iconUrl = app.iconArtwork.url,
             inProgress = state.inProgress(),
-            progress = state.progress()
+            progress = state.progress(),
+            radiusRes = R.dimen.jstore_tile_icon_radius // jstore
         )
-        Column(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.spacing_small))) {
+        Column(modifier = Modifier.weight(1f)) { // jstore
             Text(
                 text = app.displayName,
                 style = MaterialTheme.typography.titleLarge,
