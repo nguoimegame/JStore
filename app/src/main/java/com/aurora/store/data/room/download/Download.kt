@@ -11,6 +11,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.aurora.extensions.requiresGMS
+import com.aurora.extensions.safeDependentLibraries
 import com.aurora.gplayapi.data.models.App
 import com.aurora.gplayapi.data.models.PlayFile
 import com.aurora.store.data.model.DownloadStatus
@@ -74,7 +75,7 @@ data class Download(
             0,
             0,
             app.fileList.filterNot { it.url.isBlank() },
-            app.dependencies.dependentLibraries.map { SharedLib.fromApp(it) },
+            app.safeDependentLibraries().map { SharedLib.fromApp(it) },
             app.targetSdk,
             Date().time,
             app.requiresGMS()

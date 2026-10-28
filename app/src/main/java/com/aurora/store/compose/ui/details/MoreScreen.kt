@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aurora.extensions.adaptiveNavigationIcon
 import com.aurora.extensions.copyToClipBoard
 import com.aurora.extensions.isWindowCompact
+import com.aurora.extensions.safeDependentPackages
 import com.aurora.extensions.toast
 import com.aurora.gplayapi.data.models.App
 import com.aurora.gplayapi.data.models.PlayFile
@@ -63,7 +64,7 @@ fun MoreScreen(
     moreViewModel: MoreViewModel = hiltViewModel(
         key = "$packageName/more",
         creationCallback = { factory: MoreViewModel.Factory ->
-            factory.create(appDetailsViewModel.app.value!!.dependencies.dependentPackages)
+            factory.create(appDetailsViewModel.app.value!!.safeDependentPackages())
         }
     )
 ) {

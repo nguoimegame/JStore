@@ -593,9 +593,11 @@ private fun ScreenContentApp(
 
                     Actions(
                         primaryActionDisplayName = primaryActionName,
-                        secondaryActionDisplayName = stringResource(
-                            R.string.title_manual_download
-                        ),
+                        secondaryActionDisplayName = if (JstoreFeatures.MANUAL_DOWNLOAD) {
+                            stringResource(R.string.title_manual_download)
+                        } else {
+                            ""
+                        },
                         isPrimaryActionEnabled = canAcquire,
                         isSecondaryActionEnabled = canAcquire,
                         onPrimaryAction = ::onInstall,
@@ -697,6 +699,7 @@ private fun ScreenContentApp(
                     }
 
                     item {
+                        if (!JstoreFeatures.PLEXUS) return@item
                         Compatibility(needsGms = app.requiresGMS(), plexusScores = plexusScores)
                     }
 

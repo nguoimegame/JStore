@@ -11,11 +11,13 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.core.content.getSystemService
 import com.aurora.extensions.isHuawei
+import com.aurora.store.jstore.PlayDeviceProfile
 import java.util.Properties
 
 object NativeDeviceInfoProvider {
 
     fun getNativeDeviceProperties(context: Context, isExport: Boolean = false): Properties {
+        if (!isExport) return PlayDeviceProfile.build(context)
         val properties = Properties().apply {
             // Build Props
             setProperty("UserReadableName", "${Build.MANUFACTURER} ${Build.MODEL}")

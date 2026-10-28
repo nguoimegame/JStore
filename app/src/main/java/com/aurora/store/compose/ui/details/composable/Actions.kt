@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
@@ -26,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
-import com.aurora.extensions.isWindowCompact
 import com.aurora.store.R
 import com.aurora.store.compose.preview.ThemePreviewProvider
 
@@ -63,16 +61,18 @@ fun Actions(
             .weight(1F)
             .defaultMinSize(minHeight = dimensionResource(R.dimen.jstore_touch_min))
 
-        FilledTonalButton(
-            modifier = buttonWidthModifier,
-            onClick = onSecondaryAction,
-            enabled = isSecondaryActionEnabled
-        ) {
-            Text(
-                text = secondaryActionDisplayName,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+        if (secondaryActionDisplayName.isNotBlank()) {
+            FilledTonalButton(
+                modifier = buttonWidthModifier,
+                onClick = onSecondaryAction,
+                enabled = isSecondaryActionEnabled
+            ) {
+                Text(
+                    text = secondaryActionDisplayName,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
 
         Button(

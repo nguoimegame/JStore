@@ -13,6 +13,7 @@ import android.os.IBinder
 import android.os.RemoteException
 import android.util.Log
 import androidx.core.content.FileProvider
+import com.aurora.extensions.safeDependentLibraries
 import com.aurora.gplayapi.data.models.AuthData
 import com.aurora.gplayapi.data.models.PlayFile
 import com.aurora.gplayapi.helpers.AppDetailsHelper
@@ -99,8 +100,8 @@ class JstoreUpdateService : Service() {
 
     private fun findLatestVersions(packages: List<String>): List<Bundle> {
         if (packages.isEmpty()) return emptyList()
-        val authData = authProvider.authData ?: return emptyList()
         return try {
+            val authData = resolveAuthData(packages.first())
             AppDetailsHelper(authData).using(httpClient)
                 .getAppByPackageName(packages)
                 .map { toBundle(it.packageName, it.versionCode, it.versionName, it.isFree) }
@@ -135,7 +136,7 @@ class JstoreUpdateService : Service() {
         val authData = resolveAuthData(packageName)
         val app = AppDetailsHelper(authData).using(httpClient).getAppByPackageName(packageName)
         if (!app.isFree) throw UnsupportedAppException(getString(R.string.jstore_paid_unsupported))
-        if (app.dependencies.dependentLibraries.isNotEmpty()) {
+        if (app.safeDependentLibraries().isNotEmpty()) {
             throw UnsupportedAppException(getString(R.string.jstore_shared_libs_unsupported))
         }
 
