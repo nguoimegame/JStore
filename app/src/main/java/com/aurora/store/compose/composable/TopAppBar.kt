@@ -9,16 +9,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.aurora.store.R
@@ -44,13 +48,28 @@ fun TopAppBar(
     val activity = LocalActivity.current as? ComponentActivity
     TopAppBar(
         modifier = modifier,
-        title = { if (title != null) Text(text = title) },
+        title = {
+            if (title != null) {
+                // jstore: automotive readable title
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        },
         navigationIcon = {
             if (showNavigationIcon) {
-                IconButton(onClick = { activity?.onBackPressedDispatcher?.onBackPressed() }) {
+                // jstore: scaled touch target and icon for driver reachability
+                IconButton(
+                    onClick = { activity?.onBackPressedDispatcher?.onBackPressed() },
+                    modifier = Modifier.size(dimensionResource(R.dimen.jstore_touch_min))
+                ) {
                     Icon(
                         painter = navigationIcon,
-                        contentDescription = stringResource(R.string.action_back)
+                        contentDescription = stringResource(R.string.action_back),
+                        modifier = Modifier.size(dimensionResource(R.dimen.jstore_header_icon))
                     )
                 }
             }
