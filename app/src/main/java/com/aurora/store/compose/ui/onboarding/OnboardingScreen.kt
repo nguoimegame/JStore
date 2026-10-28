@@ -6,9 +6,11 @@
 
 package com.aurora.store.compose.ui.onboarding
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -77,6 +80,12 @@ private fun ScreenContent(
     val pagerState = rememberPagerState { pages.size }
     val coroutineScope = rememberCoroutineScope()
 
+    // jstore: only split into two columns on wide landscape displays; keep portrait automotive
+    // screens (e.g. 1280x1606) as a single column to give onboarding content full width.
+    val isLandscape =
+        LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val useTwoColumnLayout = !windowAdaptiveInfo.isWindowCompact && isLandscape
+
     fun isFinalPage(): Boolean = pagerState.currentPage == (pagerState.pageCount - 1)
 
     Scaffold(
@@ -100,10 +109,10 @@ private fun ScreenContent(
                         .navigationBarsPadding()
                         .padding(
                             vertical = dimensionResource(R.dimen.spacing_medium),
-                            horizontal = if (windowAdaptiveInfo.isWindowCompact) {
-                                dimensionResource(R.dimen.spacing_medium)
-                            } else {
+                            horizontal = if (useTwoColumnLayout) {
                                 dimensionResource(R.dimen.spacing_xlarge)
+                            } else {
+                                dimensionResource(R.dimen.jstore_space_lg)
                             }
                         ),
                     verticalAlignment = Alignment.CenterVertically,
@@ -113,8 +122,12 @@ private fun ScreenContent(
                     )
                 ) {
                     val buttonWidthModifier = when {
-                        windowAdaptiveInfo.isWindowCompact -> Modifier.weight(1F)
-                        else -> Modifier.widthIn(min = dimensionResource(R.dimen.width_button))
+                        !useTwoColumnLayout || windowAdaptiveInfo.isWindowCompact -> Modifier
+                            .weight(1F)
+                            .defaultMinSize(minHeight = dimensionResource(R.dimen.jstore_touch_min)) // jstore
+                        else -> Modifier
+                            .widthIn(min = dimensionResource(R.dimen.width_button))
+                            .defaultMinSize(minHeight = dimensionResource(R.dimen.jstore_touch_min)) // jstore
                     }
 
                     TextButton(
@@ -182,7 +195,8 @@ private fun ScreenContent(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (!windowAdaptiveInfo.isWindowCompact) {
+                // jstore: only show side-by-side logo on wide landscape displays
+                if (useTwoColumnLayout) {
                     Logo(modifier = Modifier.weight(1F))
                 }
 
