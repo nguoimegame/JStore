@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -53,13 +54,14 @@ fun Actions(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(PaddingValues(horizontal = dimensionResource(R.dimen.spacing_medium))),
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
+            // jstore: standard edge padding
+            .padding(PaddingValues(horizontal = dimensionResource(R.dimen.jstore_space_lg))),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_md))
     ) {
-        val buttonWidthModifier = when {
-            windowAdaptiveInfo.isWindowCompact -> Modifier.weight(1F)
-            else -> Modifier.widthIn(min = dimensionResource(R.dimen.width_button))
-        }
+        // jstore: equal width and automotive min height to prevent text truncation
+        val buttonWidthModifier = Modifier
+            .weight(1F)
+            .defaultMinSize(minHeight = dimensionResource(R.dimen.jstore_touch_min))
 
         FilledTonalButton(
             modifier = buttonWidthModifier,
