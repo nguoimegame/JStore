@@ -22,4 +22,7 @@
     <string name="jstore_about_upstream_subtitle">jstore 是 Aurora OSS 的 Aurora Store 的分支，与其无关联，也未获其认可。</string>
     <string name="jstore_sign_in_required">请先用 Google 账号登录 jstore。</string>
     <string name="jstore_about_tagline">专为 Jaecoo 车机打造</string>
+    <string name="jstore_see_all">查看全部 ›</string>
+    <string name="jstore_open">打开</string>
+    <string name="jstore_search_hint">搜索应用和游戏</string>
 </resources>

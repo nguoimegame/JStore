@@ -22,4 +22,7 @@
     <string name="jstore_about_upstream_subtitle">jstore — форк Aurora Store от Aurora OSS, не связан с ними и не одобрен ими.</string>
     <string name="jstore_sign_in_required">Сначала войдите в jstore с аккаунтом Google.</string>
     <string name="jstore_about_tagline">Для головных устройств Jaecoo</string>
+    <string name="jstore_see_all">Все ›</string>
+    <string name="jstore_open">Открыть</string>
+    <string name="jstore_search_hint">Поиск приложений и игр</string>
 </resources>

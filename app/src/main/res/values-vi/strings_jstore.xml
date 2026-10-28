@@ -22,4 +22,7 @@
     <string name="jstore_about_upstream_subtitle">jstore là bản fork của Aurora Store (Aurora OSS), không liên kết hay được họ bảo trợ.</string>
     <string name="jstore_sign_in_required">Hãy đăng nhập jstore bằng tài khoản Google trước.</string>
     <string name="jstore_about_tagline">Dành cho màn hình xe Jaecoo</string>
+    <string name="jstore_see_all">Tất cả ›</string>
+    <string name="jstore_open">Mở</string>
+    <string name="jstore_search_hint">Tìm kiếm ứng dụng &amp; trò chơi</string>
 </resources>
