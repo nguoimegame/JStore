@@ -58,7 +58,12 @@ fun deduplicateClusters(clusters: List<StreamCluster>, showHero: Boolean): List<
     val hero = heroApp(clusters) ?: return clusters
     return clusters.mapIndexed { index, cluster ->
         if (index == 0) {
-            cluster.copy(clusterAppList = cluster.clusterAppList.filter { it.packageName != hero.packageName })
+            cluster.copy(
+                clusterAppList = cluster.clusterAppList.filter {
+                    it.packageName !=
+                        hero.packageName
+                }
+            )
         } else {
             cluster
         }

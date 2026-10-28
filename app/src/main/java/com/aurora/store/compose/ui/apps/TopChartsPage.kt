@@ -16,9 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.SecondaryScrollableTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -42,12 +39,12 @@ import com.aurora.store.R
 import com.aurora.store.compose.composable.Placeholder
 import com.aurora.store.compose.composable.ShimmerAppRow
 import com.aurora.store.compose.composable.app.LargeAppListItem
-import com.aurora.store.jstore.ui.JstoreSegmentedTabs
-import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.compose.preview.AppPreviewProvider
 import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.data.model.ViewState
 import com.aurora.store.data.model.ViewState.Loading.getDataAs
+import com.aurora.store.jstore.ui.JstoreSegmentedTabs
+import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.viewmodel.topchart.TopChartViewModel
 
 private const val LOAD_MORE_THRESHOLD = 2
@@ -191,7 +188,9 @@ private fun TopChartsBody(
                     .weight(1f)
                     .fillMaxWidth(),
                 // jstore: card spacing & padding
-                contentPadding = PaddingValues(vertical = dimensionResource(R.dimen.jstore_space_sm)),
+                contentPadding = PaddingValues(
+                    vertical = dimensionResource(R.dimen.jstore_space_sm)
+                ),
                 verticalArrangement = Arrangement.spacedBy(
                     dimensionResource(R.dimen.jstore_space_sm)
                 )

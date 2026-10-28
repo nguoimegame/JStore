@@ -47,12 +47,12 @@ import com.aurora.store.compose.composable.ScrollHint
 import com.aurora.store.compose.composable.TopAppBar
 import com.aurora.store.compose.composable.app.InstalledAppListItem
 import com.aurora.store.compose.navigation.Destination
-import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.compose.preview.AppPreviewProvider
 import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.compose.ui.commons.InstalledAppMeta
 import com.aurora.store.compose.ui.commons.SortFilterSheet
 import com.aurora.store.compose.ui.commons.SortFilterState
+import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.viewmodel.all.InstalledViewModel
 import kotlin.random.Random
 import kotlinx.coroutines.flow.MutableStateFlow

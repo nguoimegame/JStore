@@ -121,13 +121,20 @@ private fun ScreenContent(
                         Alignment.End
                     )
                 ) {
+                    // jstore: ensure head-unit touch target height
                     val buttonWidthModifier = when {
-                        !useTwoColumnLayout || windowAdaptiveInfo.isWindowCompact -> Modifier
-                            .weight(1F)
-                            .defaultMinSize(minHeight = dimensionResource(R.dimen.jstore_touch_min)) // jstore
-                        else -> Modifier
-                            .widthIn(min = dimensionResource(R.dimen.width_button))
-                            .defaultMinSize(minHeight = dimensionResource(R.dimen.jstore_touch_min)) // jstore
+                        !useTwoColumnLayout || windowAdaptiveInfo.isWindowCompact ->
+                            Modifier
+                                .weight(1F)
+                                .defaultMinSize(
+                                    minHeight = dimensionResource(R.dimen.jstore_touch_min)
+                                )
+                        else ->
+                            Modifier
+                                .widthIn(min = dimensionResource(R.dimen.width_button))
+                                .defaultMinSize(
+                                    minHeight = dimensionResource(R.dimen.jstore_touch_min)
+                                )
                     }
 
                     TextButton(

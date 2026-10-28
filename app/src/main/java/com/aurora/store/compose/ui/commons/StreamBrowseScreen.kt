@@ -33,9 +33,9 @@ import com.aurora.store.compose.composable.Placeholder
 import com.aurora.store.compose.composable.TopAppBar
 import com.aurora.store.compose.composable.app.LargeAppListItem
 import com.aurora.store.compose.navigation.Destination
-import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.compose.preview.AppPreviewProvider
 import com.aurora.store.compose.preview.ThemePreviewProvider
+import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.viewmodel.browse.StreamBrowseViewModel
 import kotlin.random.Random
 import kotlin.uuid.Uuid
