@@ -12,6 +12,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -81,6 +82,7 @@ import com.aurora.store.compose.preview.AppPreviewProvider
 import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.compose.ui.details.AppDetailsScreen
 import com.aurora.store.data.model.SearchFilter
+import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.viewmodel.search.SearchViewModel
 import kotlin.random.Random
 import kotlin.uuid.Uuid
@@ -252,8 +254,12 @@ private fun ScreenContent(
                                 LazyColumn(
                                     state = listState,
                                     modifier = Modifier.fillMaxSize(),
+                                    // jstore: card spacing & padding
+                                    contentPadding = PaddingValues(
+                                        vertical = dimensionResource(R.dimen.jstore_space_sm)
+                                    ),
                                     verticalArrangement = Arrangement.spacedBy(
-                                        dimensionResource(R.dimen.spacing_medium)
+                                        dimensionResource(R.dimen.jstore_space_sm)
                                     )
                                 ) {
                                     items(
@@ -262,6 +268,8 @@ private fun ScreenContent(
                                     ) { index ->
                                         results[index]?.let { app ->
                                             LargeAppListItem(
+                                                // jstore: card styling
+                                                modifier = Modifier.jstoreCard(),
                                                 app = app,
                                                 onClick = { showDetailPane(app.packageName) }
                                             )

@@ -6,6 +6,7 @@
 package com.aurora.store.compose.ui.commons
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import com.aurora.store.compose.composable.Placeholder
 import com.aurora.store.compose.composable.TopAppBar
 import com.aurora.store.compose.composable.app.LargeAppListItem
 import com.aurora.store.compose.navigation.Destination
+import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.viewmodel.browse.ExpandedStreamBrowseViewModel
 import kotlin.uuid.Uuid
 
@@ -75,8 +77,12 @@ fun ExpandedStreamBrowseScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
+                        // jstore: card spacing & padding
+                        contentPadding = PaddingValues(
+                            vertical = dimensionResource(R.dimen.jstore_space_sm)
+                        ),
                         verticalArrangement = Arrangement.spacedBy(
-                            dimensionResource(R.dimen.spacing_medium)
+                            dimensionResource(R.dimen.jstore_space_sm)
                         )
                     ) {
                         items(
@@ -85,6 +91,8 @@ fun ExpandedStreamBrowseScreen(
                         ) { index ->
                             apps[index]?.let { app ->
                                 LargeAppListItem(
+                                    // jstore: card styling
+                                    modifier = Modifier.jstoreCard(),
                                     app = app,
                                     onClick = {
                                         onNavigateTo(Destination.AppDetails(app.packageName))

@@ -8,8 +8,10 @@ package com.aurora.store.compose.ui.downloads
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,6 +51,7 @@ import com.aurora.store.compose.composable.Placeholder
 import com.aurora.store.compose.composable.ScrollHint
 import com.aurora.store.compose.composable.TopAppBar
 import com.aurora.store.compose.navigation.Destination
+import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.compose.preview.AppPreviewProvider
 import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.compose.ui.commons.SortSheet
@@ -206,7 +209,14 @@ private fun ScreenContent(
                         val listState = rememberLazyListState()
                         Box(modifier = Modifier.fillMaxSize()) {
                             LazyColumn(
-                                state = listState
+                                state = listState,
+                                // jstore: card spacing & padding
+                                contentPadding = PaddingValues(
+                                    vertical = dimensionResource(R.dimen.jstore_space_sm)
+                                ),
+                                verticalArrangement = Arrangement.spacedBy(
+                                    dimensionResource(R.dimen.jstore_space_sm)
+                                )
                             ) {
                                 items(
                                     count = downloads.itemCount,
@@ -214,7 +224,10 @@ private fun ScreenContent(
                                 ) { index ->
                                     downloads[index]?.let { download ->
                                         DownloadListItem(
-                                            modifier = Modifier.animateItem(),
+                                            // jstore: card styling
+                                            modifier = Modifier
+                                                .animateItem()
+                                                .jstoreCard(),
                                             download = download,
                                             onClick = { actionsTarget = download }
                                         )

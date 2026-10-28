@@ -5,6 +5,8 @@
 
 package com.aurora.store.compose.ui.apps
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -12,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +27,7 @@ import com.aurora.store.compose.composable.Placeholder
 import com.aurora.store.compose.composable.ShimmerCategoryRow
 import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.data.model.ViewState
+import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.viewmodel.category.CategoryViewModel
 
 @Composable
@@ -60,13 +64,25 @@ internal fun CategoriesContent(
 @Composable
 private fun CategoriesBody(list: List<Category>?, onCategoryClick: (Category) -> Unit = {}) {
     if (list.isNullOrEmpty()) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            // jstore: card spacing & padding
+            contentPadding = PaddingValues(vertical = dimensionResource(R.dimen.jstore_space_sm)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm))
+        ) {
             items(10) { ShimmerCategoryRow() }
         }
     } else {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            // jstore: card spacing & padding
+            contentPadding = PaddingValues(vertical = dimensionResource(R.dimen.jstore_space_sm)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.jstore_space_sm))
+        ) {
             items(count = list.size, key = { list[it].title }) { index ->
                 CategoryItem(
+                    // jstore: card styling
+                    modifier = Modifier.jstoreCard(),
                     category = list[index],
                     onClick = { onCategoryClick(list[index]) }
                 )

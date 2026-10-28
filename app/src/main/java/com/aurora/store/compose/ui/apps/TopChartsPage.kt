@@ -42,6 +42,8 @@ import com.aurora.store.R
 import com.aurora.store.compose.composable.Placeholder
 import com.aurora.store.compose.composable.ShimmerAppRow
 import com.aurora.store.compose.composable.app.LargeAppListItem
+import com.aurora.store.jstore.ui.JstoreSegmentedTabs
+import com.aurora.store.jstore.ui.jstoreCard
 import com.aurora.store.compose.preview.AppPreviewProvider
 import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.data.model.ViewState
@@ -120,18 +122,16 @@ private fun TopChartsBody(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        SecondaryScrollableTabRow(
-            selectedTabIndex = selectedIndex,
-            edgePadding = dimensionResource(R.dimen.spacing_small)
-        ) {
-            chartTitles.forEachIndexed { index, titleRes ->
-                Tab(
-                    selected = selectedIndex == index,
-                    onClick = { onTabSelected(index) },
-                    text = { Text(stringResource(titleRes)) }
-                )
-            }
-        }
+        // jstore: modern automotive segmented tabs
+        JstoreSegmentedTabs(
+            titles = chartTitles.map { stringResource(it) },
+            selected = selectedIndex,
+            onSelect = onTabSelected,
+            modifier = Modifier.padding(
+                horizontal = dimensionResource(R.dimen.jstore_space_lg),
+                vertical = dimensionResource(R.dimen.jstore_space_sm)
+            )
+        )
 
         when {
             state is ViewState.Error -> Placeholder(
@@ -155,15 +155,18 @@ private fun TopChartsBody(
                         .weight(1f)
                         .fillMaxWidth(),
                     state = listState,
+                    // jstore: card spacing & padding
                     contentPadding = PaddingValues(
-                        vertical = dimensionResource(R.dimen.spacing_small)
+                        vertical = dimensionResource(R.dimen.jstore_space_sm)
                     ),
                     verticalArrangement = Arrangement.spacedBy(
-                        dimensionResource(R.dimen.spacing_xsmall)
+                        dimensionResource(R.dimen.jstore_space_sm)
                     )
                 ) {
                     items(count = apps.size, key = { apps[it].id }) { index ->
                         LargeAppListItem(
+                            // jstore: card styling
+                            modifier = Modifier.jstoreCard(),
                             app = apps[index],
                             onClick = { onAppClick(apps[index]) }
                         )
@@ -187,9 +190,10 @@ private fun TopChartsBody(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = dimensionResource(R.dimen.spacing_small)),
+                // jstore: card spacing & padding
+                contentPadding = PaddingValues(vertical = dimensionResource(R.dimen.jstore_space_sm)),
                 verticalArrangement = Arrangement.spacedBy(
-                    dimensionResource(R.dimen.spacing_xsmall)
+                    dimensionResource(R.dimen.jstore_space_sm)
                 )
             ) {
                 items(8) { ShimmerAppRow() }
