@@ -35,6 +35,7 @@ import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.jstore.ui.JstoreAppTile // jstore
 import com.aurora.store.jstore.ui.JstoreClusterCard // jstore
 import com.aurora.store.jstore.ui.JstoreHeroCard // jstore
+import com.aurora.store.jstore.ui.deduplicateClusters // jstore
 import com.aurora.store.jstore.ui.heroApp // jstore
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -116,6 +117,7 @@ fun StreamCarousel(
                 )
             }
         } else {
+            val displayClusters = deduplicateClusters(clusters, showHero) // jstore
             if (showHero) { // jstore
                 heroApp(clusters)?.let { hero ->
                     item(key = "jstore_hero") {
@@ -129,7 +131,7 @@ fun StreamCarousel(
                     }
                 }
             }
-            clusters.forEach { cluster ->
+            displayClusters.forEach { cluster ->
                 // jstore: each cluster is one card (title, "See all", row of tiles)
                 item(key = "cluster_${cluster.id}") {
                     JstoreClusterCard(

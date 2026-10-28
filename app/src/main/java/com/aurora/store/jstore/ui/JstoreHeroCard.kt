@@ -49,6 +49,22 @@ import com.aurora.store.compose.preview.ThemePreviewProvider
 fun heroApp(clusters: List<StreamCluster>): App? =
     clusters.firstOrNull()?.clusterAppList?.firstOrNull()
 
+/**
+ * Strips the hero app out of the first cluster when [showHero] is true so the hero app is not
+ * shown twice right next to each other on the head unit.
+ */
+fun deduplicateClusters(clusters: List<StreamCluster>, showHero: Boolean): List<StreamCluster> {
+    if (!showHero) return clusters
+    val hero = heroApp(clusters) ?: return clusters
+    return clusters.mapIndexed { index, cluster ->
+        if (index == 0) {
+            cluster.copy(clusterAppList = cluster.clusterAppList.filter { it.packageName != hero.packageName })
+        } else {
+            cluster
+        }
+    }
+}
+
 /** A large card at the top of For you, on JaecooApp's blue gradient. */
 @Composable
 fun JstoreHeroCard(app: App, onClick: () -> Unit, modifier: Modifier = Modifier) {

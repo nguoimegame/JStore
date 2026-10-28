@@ -30,4 +30,19 @@ class HeroAppTest {
         val hero = heroApp(listOf(cluster(1, "a", "b"), cluster(2, "c")))
         assertThat(hero?.packageName).isEqualTo("a")
     }
+
+    @Test
+    fun deduplicateClustersRemovesHeroFromFirstCluster() {
+        val clusters = listOf(cluster(1, "a", "b", "c"), cluster(2, "a", "d"))
+        val result = deduplicateClusters(clusters, showHero = true)
+        assertThat(result[0].clusterAppList.map { it.packageName }).containsExactly("b", "c").inOrder()
+        assertThat(result[1].clusterAppList.map { it.packageName }).containsExactly("a", "d").inOrder()
+    }
+
+    @Test
+    fun deduplicateClustersDoesNothingWhenShowHeroFalse() {
+        val clusters = listOf(cluster(1, "a", "b"))
+        val result = deduplicateClusters(clusters, showHero = false)
+        assertThat(result[0].clusterAppList.map { it.packageName }).containsExactly("a", "b").inOrder()
+    }
 }
