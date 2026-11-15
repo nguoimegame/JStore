@@ -14,6 +14,7 @@ Thiết kế: `docs/superpowers/specs/2026-10-26-jstore-split-design.md` và `20
 - JaecooApp **không** được thêm `gplayapi` hay bất kỳ thư viện GPL nào, không import class của jstore. jstore cũng không import code của JaecooApp.
 - Hai bên chỉ chép **file `.aidl`** (cùng package, cùng nội dung; bản trong jstore có thêm dòng SPDX ở đầu) và các hằng số dưới đây.
 - Mọi giá trị qua kênh: `String`, `int`, `long`, `boolean`, `Uri`, `Bundle`, `List` của chúng, và interface callback.
+- Log (cảnh báo, lỗi, crash) không đi qua hợp đồng này: jstore đẩy chúng vào cửa nhận log của JaecooApp theo [log-sink-contract.md](log-sink-contract.md).
 
 ## Package và ký APK
 
