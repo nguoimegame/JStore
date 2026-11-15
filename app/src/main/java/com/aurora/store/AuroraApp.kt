@@ -25,6 +25,7 @@ import com.aurora.store.data.event.EventFlow
 import com.aurora.store.data.helper.DownloadHelper
 import com.aurora.store.data.helper.UpdateHelper
 import com.aurora.store.data.receiver.PackageManagerReceiver
+import com.aurora.store.jstore.JstoreLog
 import com.aurora.store.util.CommonUtil
 import com.aurora.store.util.NotificationUtil
 import com.aurora.store.util.PackageUtil
@@ -71,6 +72,7 @@ class AuroraApp : Application(), Configuration.Provider, SingletonImageLoader.Fa
     override fun onCreate() {
         ComposeMaterial3Flags.isCheckboxStylingFixEnabled = true
         super.onCreate()
+        JstoreLog.init(this, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE.toLong())
         // Set the app theme
         val themeStyle = Preferences.getInteger(this, Preferences.PREFERENCE_THEME_STYLE)
         setAppTheme(themeStyle)

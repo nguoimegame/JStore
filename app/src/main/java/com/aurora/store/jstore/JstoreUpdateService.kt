@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.os.RemoteException
-import android.util.Log
 import androidx.core.content.FileProvider
 import com.aurora.extensions.safeDependentLibraries
 import com.aurora.gplayapi.data.models.AuthData
@@ -106,7 +105,7 @@ class JstoreUpdateService : Service() {
                 .getAppByPackageName(packages)
                 .map { toBundle(it.packageName, it.versionCode, it.versionName, it.isFree) }
         } catch (e: Exception) {
-            Log.w(TAG, "Play update check failed", e)
+            JstoreLog.w(TAG, "Play update check failed", e)
             emptyList()
         }
     }
@@ -124,7 +123,7 @@ class JstoreUpdateService : Service() {
                 // JaecooApp calls release() once it has installed them.
                 if (!callback.safely { onReady(uris) }) releaseDownload(packageName)
             } catch (e: Exception) {
-                Log.w(TAG, "Download of $packageName for JaecooApp failed", e)
+                JstoreLog.w(TAG, "Download of $packageName for JaecooApp failed", e)
                 releaseDownload(packageName)
                 callback.safely { onError(errorMessage(name, e)) }
             }

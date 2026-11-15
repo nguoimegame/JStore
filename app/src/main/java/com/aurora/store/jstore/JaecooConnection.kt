@@ -13,7 +13,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 import com.example.jaecooapp.installer.IInstallCallback
 import com.example.jaecooapp.installer.IJaecooInstaller
 import java.util.concurrent.CountDownLatch
@@ -125,7 +124,7 @@ object JaecooConnection {
                 result.get()
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Installer call failed", e)
+            JstoreLog.w(TAG, "Installer call failed", e)
             Result.Failed(e.message ?: e.javaClass.simpleName)
         } finally {
             connection.close(appContext)
@@ -159,7 +158,7 @@ object JaecooConnection {
                 context.bindService(bindIntent(), this, Context.BIND_AUTO_CREATE)
             } catch (e: SecurityException) {
                 // Our copy of the permission is not granted: the keys differ.
-                Log.w(TAG, "JaecooApp refused the bind", e)
+                JstoreLog.w(TAG, "JaecooApp refused the bind", e)
                 false
             }
             return if (didBind && connected.await(BIND_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
