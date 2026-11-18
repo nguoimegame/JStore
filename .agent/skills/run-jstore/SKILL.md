@@ -53,7 +53,9 @@ Start the real one explicitly:
 ## 4. Onboarding and login (fresh data: `$A shell pm clear com.example.jstore`)
 
 Grant permissions with adb BEFORE walking the onboarding (changing appops
-restarts the app, so do not do it mid-flow):
+restarts the app, so do not do it mid-flow). Note: when JaecooApp is also
+installed, jstore defaults to `Installer.JAECOO` and does not require
+`REQUEST_INSTALL_PACKAGES`; keep it for standalone emulator runs without JaecooApp:
 
 ```bash
 "$A" shell appops set com.example.jstore REQUEST_INSTALL_PACKAGES allow
@@ -104,14 +106,16 @@ Main screen tap targets at 1280x1606 @240: search field (640,233), tabs For you 
 Categories (240,348) (638,348) (1036,348), bottom bar Apps / Games / Updates (212,1450)
 (640,1450) (1065,1450).
 
-## Known UI observations
+## UI notes and what to check
 
-- Main screens follow docs/superpowers/specs/2026-10-27-jstore-headunit-ui-design.md:
-  cluster cards with 150dp tiles, hero card on For you, segmented tabs, header with account and
-  search field, head-unit bottom bar.
-- **Top charts crashes** (SIGSEGV in `App.requiresGMS` from `LargeAppListItem`, a null
-  `dependencies.dependentPackages` from Play). Pre-dates the head-unit UI.
-- Landscape 2544x960: header + search + hero leave room for only part of the first cluster.
-- Dark mode: the selected segmented tab barely stands out from its track.
-- Welcome and Permissions onboarding screens still use the two-column layout on portrait.
-- The emulator has no user apps, so the Updates list (cards) shows "No updates available".
+- Main screens follow `docs/superpowers/specs/2026-10-27-jstore-headunit-ui-design.md`:
+  cluster cards (`150dp` tiles on `< 1024dp`, `188dp` on `h1024dp` per `dimens_jstore.xml`),
+  hero card on For you, `JstoreSegmentedTabs`, full-width header with account and search field,
+  and either the `232dp` left rail (`< 1024dp`) or head-unit bottom bar (`>= 1024dp`).
+- Fixed since earlier passes (keep in mind when verifying regressions):
+  - Top charts `App.requiresGMS` crash guarded via `safeDependentPackages()` / `safeDependentLibraries()` (`App.kt`).
+  - Dark mode segmented tab contrast updated with `surfaceContainerHighest` + `outline` border (`JstoreSegmentedTabs.kt`).
+  - Welcome and Permissions onboarding switched to single-column layout on portrait displays (`OnboardingScreen.kt`).
+- Landscape `2544x960`: header + search + hero leave limited vertical room for the first cluster.
+- Clean emulator with no user-installed apps: the Updates list shows the empty state.
+- Testing `Installer.JAECOO` or log forwarding (`JstoreLog` / `LogSinkClient`) requires JaecooApp installed alongside jstore (`docs/jstore-contract.md`, `docs/log-sink-contract.md`).

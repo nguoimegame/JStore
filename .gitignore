@@ -54,3 +54,4 @@ signing.properties
 
 
 .kotlin/*
+.claude/skills/
