@@ -111,4 +111,34 @@ class StoreCatalogTest {
         cache.write("https://a", json)
         assertThat(cache.read()).isEqualTo("https://a" to json)
     }
+
+    @Test
+    fun aFetchThatThrowsCountsAsAFailedServer() {
+        val cat = StoreCatalog(
+            fetch = { url ->
+                if (url.startsWith(
+                        "noscheme"
+                    )
+                ) {
+                    throw IllegalArgumentException("unexpected url")
+                } else {
+                    json
+                }
+            },
+            cache = MemCache()
+        ).load(listOf("noscheme", "https://b"), "vi")!!
+        assertThat(cat.baseUrl).isEqualTo("https://b")
+    }
+
+    @Test
+    fun aFetchThatThrowsEverywhereFallsBackToCache() {
+        val cat = StoreCatalog(
+            { throw IllegalArgumentException("unexpected url") },
+            MemCache(
+                "https://a" to json
+            )
+        )
+            .load(listOf("noscheme"), "vi")!!
+        assertThat(cat.fromCache).isTrue()
+    }
 }

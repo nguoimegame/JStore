@@ -593,6 +593,10 @@ class StoreScreen(
     } catch (e: IOException) {
         JstoreLog.w(TAG, "Could not read $url", e)
         null
+    } catch (e: IllegalArgumentException) {
+        // OkHttp refuses a URL it cannot parse; an uncaught throw here would end jstore's process.
+        JstoreLog.w(TAG, "Not a usable address: $url", e)
+        null
     }
 
     companion object {

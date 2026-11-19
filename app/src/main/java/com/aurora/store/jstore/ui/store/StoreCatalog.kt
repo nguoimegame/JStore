@@ -51,13 +51,20 @@ class StoreCatalog(
      */
     fun load(serverUrls: List<String>, language: String): Catalog? {
         for (baseUrl in serverUrls) {
-            val body = fetch("$baseUrl/api/apps.json") ?: continue
+            val body = fetchOrNull("$baseUrl/api/apps.json") ?: continue
             val apps = parseOrNull(body, language) ?: continue
             cache.write(baseUrl, body)
             return Catalog(baseUrl, apps, fromCache = false)
         }
         val (baseUrl, body) = cache.read() ?: return null
         return parseOrNull(body, language)?.let { Catalog(baseUrl, it, fromCache = true) }
+    }
+
+    /** A server address the HTTP client rejects (no scheme, say) is a server that did not answer. */
+    private fun fetchOrNull(url: String): String? = try {
+        fetch(url)
+    } catch (_: IllegalArgumentException) {
+        null
     }
 
     private fun parseOrNull(json: String, language: String): List<CatalogApp>? = try {
