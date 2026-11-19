@@ -109,4 +109,15 @@ class ManageUpdatesTest {
         assertThat(ManageUpdates.isVersionNewer("v1.0", "1.0")).isFalse()
         assertThat(ManageUpdates.isVersionNewer("", "1.0")).isFalse()
     }
+
+    @Test
+    fun versionCompareCoversTheOldStoreCases() {
+        assertThat(ManageUpdates.isVersionNewer("3.5.0", "3.4.9")).isTrue()
+        assertThat(ManageUpdates.isVersionNewer("2.0.0", "v1.9.9")).isTrue()
+        assertThat(ManageUpdates.isVersionNewer("0.3.16.252432", "0.3.15")).isTrue()
+        assertThat(ManageUpdates.isVersionNewer("21.04.223", "21.03.100")).isTrue()
+        assertThat(ManageUpdates.isVersionNewer("v3.4.0", "3.4.0")).isFalse()
+        assertThat(ManageUpdates.isVersionNewer("21.02.100", "21.04.223")).isFalse()
+        assertThat(ManageUpdates.isVersionNewer("1.0.0", "1.0.0.1")).isFalse()
+    }
 }
