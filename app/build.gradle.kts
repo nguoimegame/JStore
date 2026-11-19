@@ -258,6 +258,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
     testImplementation(libs.google.truth)
+    testImplementation("org.json:json:20240303")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.google.truth)
     androidTestImplementation(libs.androidx.espresso.core)
