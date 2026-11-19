@@ -238,5 +238,14 @@
                 <action android:name="com.example.jstore.action.BIND_UPDATES" />
             </intent-filter>
         </service>
+        <!-- jstore: the store screen JaecooApp shows in its Kho ứng dụng tab. -->
+        <service
+            android:name=".jstore.embed.StoreUiService"
+            android:exported="true"
+            android:permission="com.example.jstore.permission.PLAY_UPDATES">
+            <intent-filter>
+                <action android:name="com.example.jstore.action.BIND_STORE_UI" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>
