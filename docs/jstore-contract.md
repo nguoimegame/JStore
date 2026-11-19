@@ -90,7 +90,7 @@ oneway interface IDownloadCallback {
 
 ## `IJstoreStoreUi` (jstore phục vụ): màn Kho ứng dụng nhúng trong JaecooApp
 
-jstore vẽ toàn bộ tab Kho ứng dụng (ba tab con Jaecoo, Google Play, Quản lý app); JaecooApp nhúng qua `SurfaceControlViewHost` (Android 11 trở lên), cùng cách tab Giọng nói nhúng JaecooAssistant. Service `StoreUiService` được bảo vệ bằng quyền `PLAY_UPDATES` và kiểm package của người gọi (`com.example.jaecooapp`).
+jstore vẽ toàn bộ tab Kho ứng dụng (hai tab con Jaecoo và Quản lý app; nút mở JStore nằm ở góc trên bên phải tab Jaecoo); JaecooApp nhúng qua `SurfaceControlViewHost` (Android 11 trở lên), cùng cách tab Giọng nói nhúng JaecooAssistant. Service `StoreUiService` được bảo vệ bằng quyền `PLAY_UPDATES` và kiểm package của người gọi (`com.example.jaecooapp`).
 
 ```aidl
 interface IJstoreStoreUi {
@@ -98,7 +98,7 @@ interface IJstoreStoreUi {
     Bundle attach(IBinder hostToken, int displayId, int width, int height,
                   in Bundle hostConfig, IJstoreStoreUiCallback callback); // "surface_package"
     void relayout(int width, int height, in Bundle hostConfig);
-    void showSection(String section);                         // "jaecoo" | "play" | "manage"
+    void showSection(String section);                         // "jaecoo" | "manage" ("play" from an older caller shows "jaecoo")
     void detach();
 }
 oneway interface IJstoreStoreUiCallback {

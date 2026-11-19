@@ -25,7 +25,7 @@ interface IJstoreStoreUi {
 
     void relayout(int width, int height, in Bundle hostConfig);
 
-    // "jaecoo" | "play" | "manage"
+    // "jaecoo" | "manage" ("play" from an older caller shows "jaecoo")
     void showSection(String section);
 
     void detach();
