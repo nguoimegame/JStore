@@ -74,7 +74,7 @@ class JstoreUpdateService : Service() {
 
     private val binder = object : IJstoreUpdates.Stub() {
 
-        override fun apiVersion(): Int = JaecooConnection.API_VERSION
+        override fun apiVersion(): Int = JaecooConnection.UPDATES_API_VERSION
 
         override fun latestVersions(packages: MutableList<String>?): MutableList<Bundle> {
             JaecooConnection.enforceCallerIsJaecoo(this@JstoreUpdateService)

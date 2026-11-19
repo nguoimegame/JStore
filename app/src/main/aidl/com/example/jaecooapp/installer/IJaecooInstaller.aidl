@@ -5,6 +5,7 @@
 package com.example.jaecooapp.installer;
 
 import android.net.Uri;
+import android.os.Bundle;
 import com.example.jaecooapp.installer.IInstallCallback;
 
 // Served by JaecooApp, which installs as Device Owner on jstore's behalf.
@@ -16,4 +17,17 @@ interface IJaecooInstaller {
     void install(String packageName, in List<Uri> apks, IInstallCallback callback);
 
     void uninstall(String packageName, IInstallCallback callback);
+
+    // Added in apiVersion 2. Keep them last: transaction codes follow declaration order.
+
+    // True when JaecooApp may hide apps (Device Owner or Profile Owner).
+    boolean canManageApps();
+
+    // The driver's apps, one Bundle each: packageName (String), label (String),
+    // versionCode (long), versionName (String), hidden (boolean), protected (boolean),
+    // icon (byte[] PNG, only for hidden apps). Blocking.
+    List<Bundle> listApps();
+
+    // False when refused (protected package, not allowed to manage) or failed.
+    boolean setHidden(String packageName, boolean hidden);
 }

@@ -29,7 +29,17 @@ object JaecooConnection {
 
     private const val TAG = "JaecooConnection"
 
-    const val API_VERSION = 1
+    /** Lowest IJaecooInstaller version that can install and uninstall for jstore. */
+    const val INSTALLER_API_VERSION_MIN = 1
+
+    /** Lowest IJaecooInstaller version that lists, hides and shows apps (the app manager). */
+    const val INSTALLER_API_VERSION_MANAGE = 2
+
+    /** apiVersion of IJstoreUpdates, which jstore serves. */
+    const val UPDATES_API_VERSION = 1
+
+    /** apiVersion of IJstoreStoreUi, the store screen jstore draws inside JaecooApp. */
+    const val STORE_UI_API_VERSION = 1
 
     const val JAECOO_PACKAGE = "com.example.jaecooapp"
     private const val INSTALLER_SERVICE = "com.example.jaecooapp.JaecooInstallerService"
@@ -76,6 +86,33 @@ object JaecooConnection {
     fun uninstall(context: Context, packageName: String): Result =
         call(context) { installer, callback -> installer.uninstall(packageName, callback) }
 
+    /** Whether an installer reporting [apiVersion] (null: not reachable) can run the app manager. */
+    fun supportsManager(apiVersion: Int?): Boolean =
+        (apiVersion ?: 0) >= INSTALLER_API_VERSION_MANAGE
+
+    /** apiVersion of JaecooApp's installer, or null when it cannot be reached. Blocking. */
+    fun installerApiVersion(context: Context): Int? = withInstaller(context) { it.apiVersion() }
+
+    /** Whether JaecooApp may hide apps. False when unreachable or too old. Blocking. */
+    fun canManageApps(context: Context): Boolean = withInstaller(context) {
+        supportsManager(it.apiVersion()) && it.canManageApps()
+    } ?: false
+
+    /** The driver's apps as JaecooApp lists them; empty when unreachable or too old. Blocking. */
+    fun listApps(context: Context): List<ManagedApp> = withInstaller(context) { installer ->
+        if (!supportsManager(installer.apiVersion())) {
+            emptyList()
+        } else {
+            installer.listApps().orEmpty().mapNotNull { ManagedApp.fromBundle(it) }
+        }
+    } ?: emptyList()
+
+    /** True when JaecooApp applied the change. Blocking. */
+    fun setHidden(context: Context, packageName: String, hidden: Boolean): Boolean =
+        withInstaller(context) {
+            supportsManager(it.apiVersion()) && it.setHidden(packageName, hidden)
+        } ?: false
+
     fun toResult(status: Int, message: String): Result = when (status) {
         STATUS_INSTALLED -> Result.Installed
         STATUS_LAUNCHED -> Result.Launched
@@ -98,6 +135,19 @@ object JaecooConnection {
     fun isPackageUid(packageManager: PackageManager, uid: Int, packageName: String): Boolean =
         packageManager.getPackagesForUid(uid)?.contains(packageName) == true
 
+    private fun <T> withInstaller(context: Context, block: (IJaecooInstaller) -> T): T? {
+        val connection = Connection()
+        val appContext = context.applicationContext
+        return try {
+            connection.open(appContext)?.let(block)
+        } catch (e: Exception) {
+            JstoreLog.w(TAG, "Installer call failed", e)
+            null
+        } finally {
+            connection.close(appContext)
+        }
+    }
+
     private fun call(
         context: Context,
         request: (IJaecooInstaller, IInstallCallback) -> Unit
@@ -106,7 +156,7 @@ object JaecooConnection {
         val appContext = context.applicationContext
         return try {
             val installer = connection.open(appContext)
-            if (installer == null || installer.apiVersion() < API_VERSION) {
+            if (installer == null || installer.apiVersion() < INSTALLER_API_VERSION_MIN) {
                 Result.Unavailable
             } else {
                 val done = CountDownLatch(1)
