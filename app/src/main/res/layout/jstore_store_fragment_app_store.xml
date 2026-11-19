@@ -19,8 +19,6 @@
 
     <include layout="@layout/jstore_store_section_app_store_local" />
 
-    <!-- Google Play is the separate jstore app: open or install it. -->
-    <include layout="@layout/jstore_store_section_app_store_jstore" />
 
     <!-- Installed user apps: updates, open, uninstall, launcher visibility. -->
     <include layout="@layout/jstore_store_section_app_store_manage" />

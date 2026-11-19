@@ -38,7 +38,6 @@
     <string name="jstore_store_app_store_live_feed">● الكتالوج المباشر (%1$d تطبيقات)</string>
     <string name="jstore_store_app_store_offline_mode">● الوضع غير المتصل - %1$s</string>
     <string name="jstore_store_app_store_tab_local">متجر Jaecoo</string>
-    <string name="jstore_store_app_store_tab_online">المتجر عبر الإنترنت</string>
     <string name="jstore_store_app_store_title">متجر تطبيقات المقصورة</string>
     <string name="jstore_store_app_visibility_badge_hidden">مخفي</string>
     <string name="jstore_store_app_visibility_empty">لم يتم العثور على تطبيقات مستخدم على هذه الشاشة.</string>
@@ -66,12 +65,7 @@
     <string name="jstore_store_jaecoo_store_notice_action_open">فتح MicroG RE</string>
     <string name="jstore_store_jaecoo_store_notice_content">لاستخدام تطبيقات Google مثل YouTube و Maps، يلزم تثبيت MicroG RE وفتحه وتسجيل الدخول بحساب Google.</string>
     <string name="jstore_store_jaecoo_store_notice_title">تنبيه</string>
-    <string name="jstore_store_jstore_card_desc">تصفّح تطبيقات Google Play وابحث عنها وثبّتها من تطبيق jstore.</string>
-    <string name="jstore_store_jstore_card_title">تطبيقات Google Play موجودة في jstore</string>
     <string name="jstore_store_jstore_open">فتح jstore</string>
-    <string name="jstore_store_jstore_status_installed">● Google Play • jstore</string>
-    <string name="jstore_store_jstore_status_update">● يتوفر jstore %1$s</string>
-    <string name="jstore_store_jstore_update">تحديث jstore</string>
     <string name="jstore_store_loading_apps">جارٍ الاتصال بخادم Jaecoo…</string>
     <string name="jstore_store_nav_app_visibility">إدارة التطبيقات</string>
     <string name="jstore_store_open_app">فتح</string>

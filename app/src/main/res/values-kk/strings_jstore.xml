@@ -38,7 +38,6 @@
     <string name="jstore_store_app_store_live_feed">● Тікелей каталог (%1$d қолданба)</string>
     <string name="jstore_store_app_store_offline_mode">● Офлайн режимі - %1$s</string>
     <string name="jstore_store_app_store_tab_local">Jaecoo дүкені</string>
-    <string name="jstore_store_app_store_tab_online">Онлайн дүкен</string>
     <string name="jstore_store_app_store_title">Кокпит қолданбалар дүкені</string>
     <string name="jstore_store_app_visibility_badge_hidden">Жасырылған</string>
     <string name="jstore_store_app_visibility_empty">Бұл құрылғыдан пайдаланушы қолданбалары табылмады.</string>
@@ -66,12 +65,7 @@
     <string name="jstore_store_jaecoo_store_notice_action_open">MicroG RE ашу</string>
     <string name="jstore_store_jaecoo_store_notice_content">YouTube және Google Maps сияқты Google қолданбаларын пайдалану үшін MicroG RE орнатып, оны ашып, Google есептік жазбаңызға кіру қажет.</string>
     <string name="jstore_store_jaecoo_store_notice_title">Ескерту</string>
-    <string name="jstore_store_jstore_card_desc">Google Play қолданбаларын jstore қолданбасында қарап, іздеп, орнатыңыз.</string>
-    <string name="jstore_store_jstore_card_title">Google Play қолданбалары jstore ішінде</string>
     <string name="jstore_store_jstore_open">jstore ашу</string>
-    <string name="jstore_store_jstore_status_installed">● Google Play • jstore</string>
-    <string name="jstore_store_jstore_status_update">● jstore %1$s қолжетімді</string>
-    <string name="jstore_store_jstore_update">jstore жаңарту</string>
     <string name="jstore_store_loading_apps">Jaecoo серверіне қосылуда…</string>
     <string name="jstore_store_nav_app_visibility">Қолданбаларды басқару</string>
     <string name="jstore_store_open_app">Ашу</string>

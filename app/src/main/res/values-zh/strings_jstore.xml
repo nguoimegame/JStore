@@ -41,7 +41,6 @@
     <string name="jstore_store_app_store_live_feed">● 在线目录（%1$d 个应用）</string>
     <string name="jstore_store_app_store_offline_mode">● 离线模式 - %1$s</string>
     <string name="jstore_store_app_store_tab_local">Jaecoo 商店</string>
-    <string name="jstore_store_app_store_tab_online">在线商店</string>
     <string name="jstore_store_app_store_title">车载应用市场</string>
     <string name="jstore_store_app_visibility_badge_hidden">已隐藏</string>
     <string name="jstore_store_app_visibility_empty">车机上未找到用户应用。</string>
@@ -69,12 +68,7 @@
     <string name="jstore_store_jaecoo_store_notice_action_open">打开 MicroG RE</string>
     <string name="jstore_store_jaecoo_store_notice_content">若要使用 YouTube 和谷歌地图等 Google 应用，需安装 MicroG RE，打开该应用并登录 Google 账号。</string>
     <string name="jstore_store_jaecoo_store_notice_title">提示</string>
-    <string name="jstore_store_jstore_card_desc">在 jstore 应用中浏览、搜索并安装 Google Play 应用。</string>
-    <string name="jstore_store_jstore_card_title">Google Play 应用在 jstore 中</string>
     <string name="jstore_store_jstore_open">打开 jstore</string>
-    <string name="jstore_store_jstore_status_installed">● Google Play • jstore</string>
-    <string name="jstore_store_jstore_status_update">● jstore %1$s 可用</string>
-    <string name="jstore_store_jstore_update">更新 jstore</string>
     <string name="jstore_store_loading_apps">正在连接到 Jaecoo 服务器…</string>
     <string name="jstore_store_nav_app_visibility">应用管理</string>
     <string name="jstore_store_open_app">打开</string>

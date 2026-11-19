@@ -41,7 +41,6 @@
     <string name="jstore_store_app_store_live_feed">● Live catalog (%1$d apps)</string>
     <string name="jstore_store_app_store_offline_mode">● Offline mode - %1$s</string>
     <string name="jstore_store_app_store_tab_local">Jaecoo store</string>
-    <string name="jstore_store_app_store_tab_online">Online store</string>
     <string name="jstore_store_app_store_title">In-Cabin App Store</string>
     <string name="jstore_store_app_visibility_badge_hidden">Hidden</string>
     <string name="jstore_store_app_visibility_empty">No user apps found on this head unit.</string>
@@ -69,12 +68,7 @@
     <string name="jstore_store_jaecoo_store_notice_action_open">Open MicroG RE</string>
     <string name="jstore_store_jaecoo_store_notice_content">To use Google apps such as YouTube and Maps, please install MicroG RE, open it, and sign in with your Google account.</string>
     <string name="jstore_store_jaecoo_store_notice_title">Notice</string>
-    <string name="jstore_store_jstore_card_desc">Browse, search and install apps from Google Play in the jstore app.</string>
-    <string name="jstore_store_jstore_card_title">Google Play apps are in jstore</string>
     <string name="jstore_store_jstore_open">Open jstore</string>
-    <string name="jstore_store_jstore_status_installed">● Google Play • jstore</string>
-    <string name="jstore_store_jstore_status_update">● jstore %1$s is available</string>
-    <string name="jstore_store_jstore_update">Update jstore</string>
     <string name="jstore_store_loading_apps">Connecting to Jaecoo server…</string>
     <string name="jstore_store_nav_app_visibility">App Manager</string>
     <string name="jstore_store_open_app">Open</string>

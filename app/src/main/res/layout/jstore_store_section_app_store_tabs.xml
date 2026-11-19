@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Store switch: the Jaecoo server catalogue, Google Play, or installed app manager.
+  Store switch: the Jaecoo server catalogue or the installed app manager.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -22,22 +22,6 @@
         android:paddingStart="@dimen/jstore_store_space_xs"
         android:paddingEnd="@dimen/jstore_store_space_xs"
         android:text="@string/jstore_store_app_store_tab_local"
-        android:textColor="@color/jstore_store_content_secondary"
-        android:textSize="@dimen/jstore_store_text_body_sm"
-        android:autoSizeMaxTextSize="@dimen/jstore_store_text_body_sm"
-        android:autoSizeMinTextSize="@dimen/jstore_store_tab_text_min"
-        android:autoSizeTextType="uniform" />
-
-    <TextView
-        android:id="@+id/segStoreOnline"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/jstore_store_touch_min"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:maxLines="1"
-        android:paddingStart="@dimen/jstore_store_space_xs"
-        android:paddingEnd="@dimen/jstore_store_space_xs"
-        android:text="@string/jstore_store_app_store_tab_online"
         android:textColor="@color/jstore_store_content_secondary"
         android:textSize="@dimen/jstore_store_text_body_sm"
         android:autoSizeMaxTextSize="@dimen/jstore_store_text_body_sm"

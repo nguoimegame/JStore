@@ -41,7 +41,6 @@
     <string name="jstore_store_app_store_live_feed">● Каталог онлайн (%1$d прилож.)</string>
     <string name="jstore_store_app_store_offline_mode">● Офлайн режим - %1$s</string>
     <string name="jstore_store_app_store_tab_local">Магазин Jaecoo</string>
-    <string name="jstore_store_app_store_tab_online">Онлайн магазин</string>
     <string name="jstore_store_app_store_title">Магазин приложений кокпита</string>
     <string name="jstore_store_app_visibility_badge_hidden">Скрыто</string>
     <string name="jstore_store_app_visibility_empty">Пользовательские приложения не найдены на этом устройстве.</string>
@@ -69,12 +68,7 @@
     <string name="jstore_store_jaecoo_store_notice_action_open">Открыть MicroG RE</string>
     <string name="jstore_store_jaecoo_store_notice_content">Для работы сервисов Google (YouTube, Google Карты) необходимо установить MicroG RE, открыть приложение и войти в аккаунт Google.</string>
     <string name="jstore_store_jaecoo_store_notice_title">Уведомление</string>
-    <string name="jstore_store_jstore_card_desc">Просматривайте, ищите и устанавливайте приложения Google Play в приложении jstore.</string>
-    <string name="jstore_store_jstore_card_title">Приложения Google Play теперь в jstore</string>
     <string name="jstore_store_jstore_open">Открыть jstore</string>
-    <string name="jstore_store_jstore_status_installed">● Google Play • jstore</string>
-    <string name="jstore_store_jstore_status_update">● Доступен jstore %1$s</string>
-    <string name="jstore_store_jstore_update">Обновить jstore</string>
     <string name="jstore_store_loading_apps">Подключение к серверу Jaecoo…</string>
     <string name="jstore_store_nav_app_visibility">Управление приложениями</string>
     <string name="jstore_store_open_app">Открыть</string>

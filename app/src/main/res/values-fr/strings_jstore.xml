@@ -38,7 +38,6 @@
     <string name="jstore_store_app_store_live_feed">● Catalogue en direct (%1$d applis)</string>
     <string name="jstore_store_app_store_offline_mode">● Mode hors ligne - %1$s</string>
     <string name="jstore_store_app_store_tab_local">Boutique Jaecoo</string>
-    <string name="jstore_store_app_store_tab_online">Boutique en ligne</string>
     <string name="jstore_store_app_store_title">Boutique d\'applications du cockpit</string>
     <string name="jstore_store_app_visibility_badge_hidden">Masquée</string>
     <string name="jstore_store_app_visibility_empty">Aucune application utilisateur trouvée sur cet écran.</string>
@@ -66,12 +65,7 @@
     <string name="jstore_store_jaecoo_store_notice_action_open">Ouvrir MicroG RE</string>
     <string name="jstore_store_jaecoo_store_notice_content">Pour utiliser les applications Google telles que YouTube et Maps, installez MicroG RE, ouvrez-le et connectez-vous avec votre compte Google.</string>
     <string name="jstore_store_jaecoo_store_notice_title">Remarque</string>
-    <string name="jstore_store_jstore_card_desc">Parcourez, recherchez et installez des applications Google Play dans l\'application jstore.</string>
-    <string name="jstore_store_jstore_card_title">Les applications Google Play sont dans jstore</string>
     <string name="jstore_store_jstore_open">Ouvrir jstore</string>
-    <string name="jstore_store_jstore_status_installed">● Google Play • jstore</string>
-    <string name="jstore_store_jstore_status_update">● jstore %1$s est disponible</string>
-    <string name="jstore_store_jstore_update">Mettre à jour jstore</string>
     <string name="jstore_store_loading_apps">Connexion au serveur Jaecoo…</string>
     <string name="jstore_store_nav_app_visibility">Gestion des apps</string>
     <string name="jstore_store_open_app">Ouvrir</string>

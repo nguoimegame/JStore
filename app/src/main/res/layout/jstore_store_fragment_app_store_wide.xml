@@ -33,7 +33,6 @@
 
     <include layout="@layout/jstore_store_section_app_store_local" />
 
-    <include layout="@layout/jstore_store_section_app_store_jstore" />
 
     <include layout="@layout/jstore_store_section_app_store_manage" />
 </LinearLayout>

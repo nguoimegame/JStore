@@ -41,7 +41,6 @@
     <string name="jstore_store_app_store_live_feed">● Danh mục trực tuyến (%1$d ứng dụng)</string>
     <string name="jstore_store_app_store_offline_mode">● Chế độ ngoại tuyến - %1$s</string>
     <string name="jstore_store_app_store_tab_local">Kho Jaecoo</string>
-    <string name="jstore_store_app_store_tab_online">Online store</string>
     <string name="jstore_store_app_store_title">Kho Ứng Dụng In-Cabin</string>
     <string name="jstore_store_app_visibility_badge_hidden">Đang ẩn</string>
     <string name="jstore_store_app_visibility_empty">Không tìm thấy app người dùng nào trên đầu máy này.</string>
@@ -69,12 +68,7 @@
     <string name="jstore_store_jaecoo_store_notice_action_open">Mở MicroG RE</string>
     <string name="jstore_store_jaecoo_store_notice_content">Để sử dụng các ứng dụng của google như Youtube và Map, cần cài MicroG RE , mở ứng dụng này lên và login tài khoản google</string>
     <string name="jstore_store_jaecoo_store_notice_title">Thông báo</string>
-    <string name="jstore_store_jstore_card_desc">Duyệt, tìm và cài ứng dụng từ Google Play trong app jstore.</string>
-    <string name="jstore_store_jstore_card_title">Ứng dụng Google Play nằm trong jstore</string>
     <string name="jstore_store_jstore_open">Mở jstore</string>
-    <string name="jstore_store_jstore_status_installed">● Google Play • jstore</string>
-    <string name="jstore_store_jstore_status_update">● Có jstore %1$s</string>
-    <string name="jstore_store_jstore_update">Cập nhật jstore</string>
     <string name="jstore_store_loading_apps">Đang kết nối máy chủ Jaecoo…</string>
     <string name="jstore_store_nav_app_visibility">Quản lý ứng dụng</string>
     <string name="jstore_store_open_app">Mở</string>

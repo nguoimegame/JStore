@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  App store header: title, catalogue status and refresh. The title block hides
+  App store header: title, catalogue status, refresh and the tab's own button (open jstore, or install from phone). The title block hides
   on screens under 1024dp tall; refresh stays.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -78,4 +78,23 @@
         android:textSize="@dimen/jstore_store_text_caption"
         android:textStyle="bold"
         android:visibility="gone" />
+
+    <!-- Shown on the Jaecoo store tab: opens jstore's own Google Play screens. -->
+    <Button
+        android:id="@+id/btnOpenJstore"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/jstore_store_button_height"
+        android:layout_marginStart="@dimen/jstore_store_space_md"
+        android:background="@drawable/jstore_store_bg_button_accent"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:minWidth="0dp"
+        android:paddingStart="@dimen/jstore_store_space_lg"
+        android:paddingEnd="@dimen/jstore_store_space_lg"
+        android:stateListAnimator="@null"
+        android:text="@string/jstore_store_jstore_open"
+        android:textAllCaps="false"
+        android:textColor="@color/jstore_store_content_on_accent"
+        android:textSize="@dimen/jstore_store_text_caption"
+        android:textStyle="bold" />
 </LinearLayout>

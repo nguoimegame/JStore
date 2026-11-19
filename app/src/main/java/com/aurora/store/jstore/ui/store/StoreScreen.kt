@@ -48,7 +48,6 @@ class StoreScreen(
 
     private enum class Tab(val section: String) {
         LOCAL(StoreHostConfig.SECTION_JAECOO),
-        ONLINE(StoreHostConfig.SECTION_PLAY),
         MANAGE(StoreHostConfig.SECTION_MANAGE)
     }
 
@@ -67,19 +66,13 @@ class StoreScreen(
     private val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
     private val statusText: TextView = view.findViewById(R.id.statusText)
     private val panelLocal: View = view.findViewById(R.id.panelLocalStore)
-    private val panelJstore: View = view.findViewById(R.id.panelJstore)
     private val panelManage: View = view.findViewById(R.id.panelManageApps)
     private val btnFromPhone: View = view.findViewById(R.id.btnAppManagerFromPhone)
-    private val jstoreTitle: TextView = view.findViewById(R.id.tvJstoreTitle)
-    private val jstoreDesc: TextView = view.findViewById(R.id.tvJstoreDesc)
-    private val jstoreProgress: ProgressBar = view.findViewById(R.id.pbJstoreInstall)
-    private val jstoreButton: Button = view.findViewById(R.id.btnJstore)
-    private val jstoreUpdateButton: Button = view.findViewById(R.id.btnJstoreUpdate)
+    private val btnOpenJstore: View = view.findViewById(R.id.btnOpenJstore)
     private val bannerNotice: View = view.findViewById(R.id.bannerLocalStoreNotice)
     private val btnNoticeAction: Button = view.findViewById(R.id.btnNoticeAction)
     private val segments: Map<Tab, TextView> = mapOf(
         Tab.LOCAL to view.findViewById(R.id.segStoreLocal),
-        Tab.ONLINE to view.findViewById(R.id.segStoreOnline),
         Tab.MANAGE to view.findViewById(R.id.segStoreManage)
     )
 
@@ -89,7 +82,6 @@ class StoreScreen(
     private var allApps: List<StoreAppItem> = emptyList()
     private var adapter: StoreAppAdapter? = null
     private var serverBaseUrl = config.serverUrls.firstOrNull().orEmpty()
-    private var jstoreRelease: JstoreRelease? = null
     private var noticeDismissed = false
     private var closed = false
 
@@ -123,8 +115,7 @@ class StoreScreen(
         recyclerView.layoutManager =
             if (columns > 1) GridLayoutManager(context, columns) else LinearLayoutManager(context)
 
-        jstoreButton.setOnClickListener { openPlay() }
-        jstoreUpdateButton.setOnClickListener { host.requestJstoreUpdate() }
+        btnOpenJstore.setOnClickListener { openJstore() }
         view.findViewById<View>(R.id.btnNoticeDismiss).setOnClickListener {
             noticeDismissed = true
             bannerNotice.visibility = View.GONE
@@ -155,7 +146,7 @@ class StoreScreen(
     // ------------------------------------------------------------------ Screen
 
     override fun select(section: String) {
-        Tab.values().firstOrNull { it.section == section }?.let(::select)
+        select(Tab.values().firstOrNull { it.section == section } ?: Tab.LOCAL)
     }
 
     override fun currentSection(): String = currentTab.section
@@ -181,13 +172,9 @@ class StoreScreen(
     private fun select(tab: Tab) {
         currentTab = tab
         panelLocal.visibility = if (tab == Tab.LOCAL) View.VISIBLE else View.GONE
-        panelJstore.visibility = if (tab == Tab.ONLINE) View.VISIBLE else View.GONE
         panelManage.visibility = if (tab == Tab.MANAGE) View.VISIBLE else View.GONE
         btnFromPhone.visibility = if (tab == Tab.MANAGE) View.VISIBLE else View.GONE
-        if (tab == Tab.ONLINE) {
-            bindPlayCard()
-            if (jstoreRelease == null) loadRelease()
-        }
+        btnOpenJstore.visibility = if (tab == Tab.LOCAL) View.VISIBLE else View.GONE
         manage.setSelected(tab == Tab.MANAGE)
 
         for ((value, segment) in segments) {
@@ -212,7 +199,6 @@ class StoreScreen(
     private fun refreshCurrent() {
         when (currentTab) {
             Tab.LOCAL -> loadCatalog()
-            Tab.ONLINE -> loadRelease()
             Tab.MANAGE -> manage.reload(checkUpdates = true)
         }
     }
@@ -239,7 +225,6 @@ class StoreScreen(
             adapter?.submitList(allApps)
         }
         if (changed == MICROG_PACKAGE || changed == GMS_PACKAGE) updateNoticeBanner()
-        if (changed == context.packageName) bindPlayCard()
         manage.reload(checkUpdates = false, onlyIfLoaded = true)
     }
 
@@ -524,59 +509,13 @@ class StoreScreen(
         }
     }
 
-    // ------------------------------------------------------------------ Google Play card
+    // ------------------------------------------------------------------ jstore button
 
-    /**
-     * jstore is the running app here, so the card only opens it and offers the update when
-     * GitHub has a newer release than this build; installing it is JaecooApp's job.
-     */
-    private fun bindPlayCard() {
-        val installedVersion = try {
-            context.packageManager.getPackageInfo(context.packageName, 0).versionName.orEmpty()
-        } catch (_: PackageManager.NameNotFoundException) {
-            ""
-        }
-        val release = jstoreRelease
-        val updatable =
-            release != null && ManageUpdates.isVersionNewer(release.versionName, installedVersion)
-        jstoreProgress.visibility = View.GONE
-        jstoreUpdateButton.visibility = if (updatable) View.VISIBLE else View.GONE
-        jstoreTitle.setText(R.string.jstore_store_jstore_card_title)
-        jstoreDesc.setText(R.string.jstore_store_jstore_card_desc)
-        jstoreButton.setText(R.string.jstore_store_jstore_open)
-        if (updatable) {
-            setStatus(
-                Tab.ONLINE,
-                context.getString(
-                    R.string.jstore_store_jstore_status_update,
-                    release!!.versionName
-                ),
-                R.color.jstore_store_status_warning
-            )
-        } else {
-            setStatus(
-                Tab.ONLINE,
-                context.getString(R.string.jstore_store_jstore_status_installed),
-                R.color.jstore_store_status_success
-            )
-        }
-    }
-
-    private fun openPlay() {
+    /** Opens jstore's own Google Play screens; JaecooApp starts the activity (the surface cannot). */
+    private fun openJstore() {
         context.packageManager.getLaunchIntentForPackage(
             context.packageName
         )?.let(host::startActivity)
-    }
-
-    private fun loadRelease() {
-        bindPlayCard()
-        thread(name = "store-release") {
-            val release = latestRelease()
-            onUi {
-                if (release != null) jstoreRelease = release
-                bindPlayCard()
-            }
-        }
     }
 
     /** GitHub's latest jstore release, or null when it cannot be reached. Blocking. */

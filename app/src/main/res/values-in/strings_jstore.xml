@@ -38,7 +38,6 @@
     <string name="jstore_store_app_store_live_feed">● Katalog langsung (%1$d aplikasi)</string>
     <string name="jstore_store_app_store_offline_mode">● Mode offline - %1$s</string>
     <string name="jstore_store_app_store_tab_local">Toko Jaecoo</string>
-    <string name="jstore_store_app_store_tab_online">Online store</string>
     <string name="jstore_store_app_store_title">Toko Aplikasi Dalam Kabin</string>
     <string name="jstore_store_app_visibility_badge_hidden">Disembunyikan</string>
     <string name="jstore_store_app_visibility_empty">Tidak ada aplikasi pengguna di unit kepala ini.</string>
@@ -66,12 +65,7 @@
     <string name="jstore_store_jaecoo_store_notice_action_open">Buka MicroG RE</string>
     <string name="jstore_store_jaecoo_store_notice_content">Untuk menggunakan aplikasi Google seperti YouTube dan Maps, silakan pasang MicroG RE, buka aplikasi tersebut, lalu masuk dengan akun Google.</string>
     <string name="jstore_store_jaecoo_store_notice_title">Pemberitahuan</string>
-    <string name="jstore_store_jstore_card_desc">Jelajahi, cari, dan pasang aplikasi dari Google Play di aplikasi jstore.</string>
-    <string name="jstore_store_jstore_card_title">Aplikasi Google Play ada di jstore</string>
     <string name="jstore_store_jstore_open">Buka jstore</string>
-    <string name="jstore_store_jstore_status_installed">● Google Play • jstore</string>
-    <string name="jstore_store_jstore_status_update">● jstore %1$s tersedia</string>
-    <string name="jstore_store_jstore_update">Perbarui jstore</string>
     <string name="jstore_store_loading_apps">Menghubungkan ke server Jaecoo…</string>
     <string name="jstore_store_nav_app_visibility">Kelola Aplikasi</string>
     <string name="jstore_store_open_app">Buka</string>

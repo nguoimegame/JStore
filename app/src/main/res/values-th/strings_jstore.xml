@@ -38,7 +38,6 @@
     <string name="jstore_store_app_store_live_feed">● แคตตาล็อกออนไลน์ (%1$d แอป)</string>
     <string name="jstore_store_app_store_offline_mode">● โหมดออฟไลน์ - %1$s</string>
     <string name="jstore_store_app_store_tab_local">ร้าน Jaecoo</string>
-    <string name="jstore_store_app_store_tab_online">Online store</string>
     <string name="jstore_store_app_store_title">ร้านแอปในห้องโดยสาร</string>
     <string name="jstore_store_app_visibility_badge_hidden">ซ่อนอยู่</string>
     <string name="jstore_store_app_visibility_empty">ไม่พบแอปของผู้ใช้บนเครื่องนี้</string>
@@ -66,12 +65,7 @@
     <string name="jstore_store_jaecoo_store_notice_action_open">เปิด MicroG RE</string>
     <string name="jstore_store_jaecoo_store_notice_content">หากต้องการใช้งานแอป Google เช่น YouTube และ Google Maps จำเป็นต้องติดตั้ง MicroG RE เปิดแอป และลงชื่อเข้าใช้บัญชี Google</string>
     <string name="jstore_store_jaecoo_store_notice_title">ประกาศ</string>
-    <string name="jstore_store_jstore_card_desc">เรียกดู ค้นหา และติดตั้งแอปจาก Google Play ในแอป jstore</string>
-    <string name="jstore_store_jstore_card_title">แอป Google Play อยู่ใน jstore</string>
     <string name="jstore_store_jstore_open">เปิด jstore</string>
-    <string name="jstore_store_jstore_status_installed">● Google Play • jstore</string>
-    <string name="jstore_store_jstore_status_update">● มี jstore %1$s แล้ว</string>
-    <string name="jstore_store_jstore_update">อัปเดต jstore</string>
     <string name="jstore_store_loading_apps">กำลังเชื่อมต่อกับเซิร์ฟเวอร์ Jaecoo…</string>
     <string name="jstore_store_nav_app_visibility">จัดการแอป</string>
     <string name="jstore_store_open_app">เปิด</string>
