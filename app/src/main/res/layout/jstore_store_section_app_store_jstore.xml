@@ -34,7 +34,7 @@
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
                 android:src="@drawable/jstore_store_ic_nav_appstore"
-                app:tint="@color/jstore_store_icon_active" />
+                android:tint="@color/jstore_store_icon_active" />
         </FrameLayout>
 
         <LinearLayout

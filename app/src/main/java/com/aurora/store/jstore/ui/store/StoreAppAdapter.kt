@@ -68,6 +68,7 @@ class StoreAppAdapter(
         val view = LayoutInflater.from(
             parent.context
         ).inflate(R.layout.jstore_store_item_app, parent, false)
+        StoreViews.disableFocusHighlight(view)
         return ViewHolder(view)
     }
 

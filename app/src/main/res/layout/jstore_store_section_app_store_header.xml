@@ -54,7 +54,7 @@
         android:focusable="true"
         android:padding="@dimen/jstore_store_space_sm"
         android:src="@drawable/jstore_store_ic_refresh"
-        app:tint="@color/jstore_store_icon_default" />
+        android:tint="@color/jstore_store_icon_default" />
 
     <!-- Shown on the App Manager tab so the driver can push an APK from their phone. -->
     <Button

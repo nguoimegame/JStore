@@ -83,7 +83,7 @@
             android:focusable="true"
             android:padding="@dimen/jstore_store_space_sm"
             android:src="@drawable/jstore_store_ic_close"
-            app:tint="@color/jstore_store_content_muted" />
+            android:tint="@color/jstore_store_content_muted" />
     </LinearLayout>
 
     <ProgressBar

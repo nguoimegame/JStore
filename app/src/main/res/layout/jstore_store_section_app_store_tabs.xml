@@ -24,9 +24,9 @@
         android:text="@string/jstore_store_app_store_tab_local"
         android:textColor="@color/jstore_store_content_secondary"
         android:textSize="@dimen/jstore_store_text_body_sm"
-        app:autoSizeMaxTextSize="@dimen/jstore_store_text_body_sm"
-        app:autoSizeMinTextSize="@dimen/jstore_store_tab_text_min"
-        app:autoSizeTextType="uniform" />
+        android:autoSizeMaxTextSize="@dimen/jstore_store_text_body_sm"
+        android:autoSizeMinTextSize="@dimen/jstore_store_tab_text_min"
+        android:autoSizeTextType="uniform" />
 
     <TextView
         android:id="@+id/segStoreOnline"
@@ -40,9 +40,9 @@
         android:text="@string/jstore_store_app_store_tab_online"
         android:textColor="@color/jstore_store_content_secondary"
         android:textSize="@dimen/jstore_store_text_body_sm"
-        app:autoSizeMaxTextSize="@dimen/jstore_store_text_body_sm"
-        app:autoSizeMinTextSize="@dimen/jstore_store_tab_text_min"
-        app:autoSizeTextType="uniform" />
+        android:autoSizeMaxTextSize="@dimen/jstore_store_text_body_sm"
+        android:autoSizeMinTextSize="@dimen/jstore_store_tab_text_min"
+        android:autoSizeTextType="uniform" />
 
     <TextView
         android:id="@+id/segStoreManage"
@@ -56,7 +56,7 @@
         android:text="@string/jstore_store_nav_app_visibility"
         android:textColor="@color/jstore_store_content_secondary"
         android:textSize="@dimen/jstore_store_text_body_sm"
-        app:autoSizeMaxTextSize="@dimen/jstore_store_text_body_sm"
-        app:autoSizeMinTextSize="@dimen/jstore_store_tab_text_min"
-        app:autoSizeTextType="uniform" />
+        android:autoSizeMaxTextSize="@dimen/jstore_store_text_body_sm"
+        android:autoSizeMinTextSize="@dimen/jstore_store_tab_text_min"
+        android:autoSizeTextType="uniform" />
 </LinearLayout>

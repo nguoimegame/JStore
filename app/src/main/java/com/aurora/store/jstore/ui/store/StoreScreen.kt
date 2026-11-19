@@ -83,6 +83,17 @@ class StoreScreen(
         Tab.MANAGE to view.findViewById(R.id.segStoreManage)
     )
 
+    private val statusByTab = mutableMapOf<Tab, Pair<CharSequence, Int>>()
+    private var currentTab = Tab.LOCAL
+    private var catalog: StoreCatalog.Catalog? = null
+    private var allApps: List<StoreAppItem> = emptyList()
+    private var adapter: StoreAppAdapter? = null
+    private var serverBaseUrl = config.serverUrls.firstOrNull().orEmpty()
+    private var jstoreRelease: JstoreRelease? = null
+    private var noticeDismissed = false
+    private var closed = false
+
+    // Built after the state above: its first status line is written during construction.
     private val manage = ManagePanel(
         context = context,
         root = view,
@@ -97,16 +108,6 @@ class StoreScreen(
         }
     )
 
-    private val statusByTab = mutableMapOf<Tab, Pair<CharSequence, Int>>()
-    private var currentTab = Tab.LOCAL
-    private var catalog: StoreCatalog.Catalog? = null
-    private var allApps: List<StoreAppItem> = emptyList()
-    private var adapter: StoreAppAdapter? = null
-    private var serverBaseUrl = config.serverUrls.firstOrNull().orEmpty()
-    private var jstoreRelease: JstoreRelease? = null
-    private var noticeDismissed = false
-    private var closed = false
-
     private val packageReceiver = object : BroadcastReceiver() {
         override fun onReceive(receiverContext: Context, intent: Intent) {
             val changed = intent.data?.schemeSpecificPart ?: return
@@ -115,6 +116,9 @@ class StoreScreen(
     }
 
     init {
+        // A surface window never enters touch mode, so Android would paint a focus highlight on
+        // the first focusable view (the first tab) for good. The store has no keyboard focus UI.
+        StoreViews.disableFocusHighlight(view)
         val columns = context.resources.getInteger(R.integer.jstore_store_app_list_columns)
         recyclerView.layoutManager =
             if (columns > 1) GridLayoutManager(context, columns) else LinearLayoutManager(context)
