@@ -24,23 +24,34 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
+import com.aurora.store.data.network.HttpClient
 import com.aurora.store.jstore.JaecooConnection
 import com.aurora.store.jstore.JstoreLog
+import com.aurora.store.jstore.PlayUpdates
 import com.aurora.store.jstore.ui.store.StoreScreenFactory
 import com.example.jstore.store.IJstoreStoreUi
 import com.example.jstore.store.IJstoreStoreUiCallback
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.FutureTask
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import javax.inject.Inject
 
 /**
  * The store screen (Jaecoo catalogue, Google Play, app manager) drawn here and shown inside
  * JaecooApp through a SurfaceControlViewHost. See docs/jstore-contract.md, IJstoreStoreUi.
  * Same approach as JaecooAssistant's AssistantUiService.
  */
+@AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.R)
 class StoreUiService : Service() {
+
+    @Inject
+    lateinit var httpClient: HttpClient
+
+    @Inject
+    lateinit var play: PlayUpdates
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -206,7 +217,8 @@ class StoreUiService : Service() {
             themed,
             config,
             section ?: config.initialSection,
-            hostBridge()
+            hostBridge(),
+            StoreScreenFactory.Deps(httpClient, play)
         )
         screen = created
         root.addView(created.view as View)

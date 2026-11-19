@@ -1,0 +1,39 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+  <!-- Dark card background with rounded corners -->
+  <path
+      android:fillColor="#0F172A"
+      android:pathData="M14,2h20c6.63,0 12,5.37 12,12v20c0,6.63 -5.37,12 -12,12H14c-6.63,0 -12,-5.37 -12,-12V14c0,-6.63 5.37,-12 12,-12z" />
+  <!-- Subtle border -->
+  <path
+      android:strokeColor="#334155"
+      android:strokeWidth="1.2"
+      android:pathData="M14,2h20c6.63,0 12,5.37 12,12v20c0,6.63 -5.37,12 -12,12H14c-6.63,0 -12,-5.37 -12,-12V14c0,-6.63 5.37,-12 12,-12z" />
+  <!-- microG 'm' / 'G' ribbon loop 1 (Cyan/Blue) -->
+  <path
+      android:strokeColor="#06B6D4"
+      android:strokeWidth="3.6"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"
+      android:pathData="M13,34V18.5c0,-3 2,-4.5 5,-4.5s5,2 5,5V34" />
+  <!-- microG ribbon loop 2 (Amber/Orange) -->
+  <path
+      android:strokeColor="#F59E0B"
+      android:strokeWidth="3.6"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"
+      android:pathData="M23,23c1,-3 3.5,-5 7,-5s6,2.5 6,6V34" />
+  <!-- Accent terminal dots -->
+  <path
+      android:fillColor="#06B6D4"
+      android:pathData="M13,34m-2.8,0a2.8,2.8 0,1 1,5.6 0a2.8,2.8 0,1 1,-5.6 0" />
+  <path
+      android:fillColor="#3B82F6"
+      android:pathData="M23,34m-2.8,0a2.8,2.8 0,1 1,5.6 0a2.8,2.8 0,1 1,-5.6 0" />
+  <path
+      android:fillColor="#EF4444"
+      android:pathData="M36,34m-2.8,0a2.8,2.8 0,1 1,5.6 0a2.8,2.8 0,1 1,-5.6 0" />
+</vector>

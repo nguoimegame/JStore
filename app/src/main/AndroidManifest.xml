@@ -247,5 +247,13 @@
                 <action android:name="com.example.jstore.action.BIND_STORE_UI" />
             </intent-filter>
         </service>
+        <!-- jstore: asks the driver before the store screen removes an app. -->
+        <activity
+            android:name=".jstore.ui.store.StoreDialogActivity"
+            android:exported="true"
+            android:permission="com.example.jstore.permission.PLAY_UPDATES"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.Translucent.Transparent" />
     </application>
 </manifest>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<resources>
+    <style name="jstore_store_Button.Accent" parent="">
+        <item name="android:background">@drawable/jstore_store_bg_button_accent</item>
+        <item name="android:textColor">@color/jstore_store_content_on_accent</item>
+        <item name="android:textSize">@dimen/jstore_store_text_body_sm</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">@dimen/jstore_store_touch_min</item>
+        <item name="android:paddingStart">@dimen/jstore_store_space_xl</item>
+        <item name="android:paddingEnd">@dimen/jstore_store_space_xl</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+    <style name="jstore_store_Button.Secondary" parent="jstore_store_Button.Accent">
+        <item name="android:background">@drawable/jstore_store_bg_button_secondary</item>
+        <item name="android:textColor">@color/jstore_store_content_primary</item>
+    </style>
+    <style name="jstore_store_Button.Warning" parent="jstore_store_Button.Accent">
+        <item name="android:background">@drawable/jstore_store_bg_button_warning</item>
+        <item name="android:textColor">@color/jstore_store_content_on_accent</item>
+    </style>
+    <style name="jstore_store_Widget.JaecooApp.SwitchCompat" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:thumb">@drawable/jstore_store_switch_thumb</item>
+        <item name="track">@drawable/jstore_store_switch_track</item>
+        <item name="switchMinWidth">@dimen/jstore_store_switch_track_width</item>
+        <item name="android:minWidth">@dimen/jstore_store_switch_track_width</item>
+        <item name="android:minHeight">@dimen/jstore_store_touch_min</item>
+    </style>
+</resources>

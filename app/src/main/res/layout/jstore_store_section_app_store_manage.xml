@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The "App Manager" tab: installed user apps with updates, open/uninstall
+  actions, and launcher visibility switches.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/panelManageApps"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <ProgressBar
+        android:id="@+id/progressAppManager"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginStart="@dimen/jstore_store_content_margin_start"
+        android:layout_marginTop="@dimen/jstore_store_space_sm"
+        android:layout_marginEnd="@dimen/jstore_store_content_margin_end"
+        android:layout_marginBottom="@dimen/jstore_store_space_xs"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/jstore_store_accent_primary" />
+
+    <TextView
+        android:id="@+id/tvAppManagerEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/jstore_store_content_margin_start"
+        android:layout_marginTop="@dimen/jstore_store_space_2xl"
+        android:layout_marginEnd="@dimen/jstore_store_content_margin_end"
+        android:gravity="center"
+        android:text="@string/jstore_store_app_visibility_empty"
+        android:textColor="@color/jstore_store_content_secondary"
+        android:textSize="@dimen/jstore_store_text_body_sm"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerAppManager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/jstore_store_content_margin_start"
+        android:paddingTop="@dimen/jstore_store_space_sm"
+        android:paddingEnd="@dimen/jstore_store_content_margin_end"
+        android:paddingBottom="@dimen/jstore_store_space_2xl"
+        android:scrollbars="none"
+        tools:listitem="@layout/jstore_store_item_app_manager" />
+</LinearLayout>

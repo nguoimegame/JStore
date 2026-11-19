@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<resources>
+    <item name="jstore_store_fragment_layout" type="layout">@layout/jstore_store_fragment_app_store</item>
+</resources>

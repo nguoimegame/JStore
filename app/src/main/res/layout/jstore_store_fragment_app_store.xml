@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Content pane only. The navigation rail and the wallpaper behind it belong to
+  the shell, which hosts this fragment; the background stays transparent so that
+  wallpaper shows through.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Topbar (Cockpit Header with proper padding and wrap_content to avoid being obscured) -->
+    <include layout="@layout/jstore_store_section_app_store_header" />
+
+    <!-- Store switch: the Jaecoo server catalogue or Google Play. -->
+    <include layout="@layout/jstore_store_section_app_store_tabs" />
+
+    <include layout="@layout/jstore_store_section_app_store_local" />
+
+    <!-- Google Play is the separate jstore app: open or install it. -->
+    <include layout="@layout/jstore_store_section_app_store_jstore" />
+
+    <!-- Installed user apps: updates, open, uninstall, launcher visibility. -->
+    <include layout="@layout/jstore_store_section_app_store_manage" />
+</LinearLayout>

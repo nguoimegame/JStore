@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The Jaecoo catalogue: MicroG notice, loading bar and the app list.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/panelLocalStore"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:orientation="vertical">
+
+    <!-- MicroG & Google Services Notice Banner -->
+    <LinearLayout
+        android:id="@+id/bannerLocalStoreNotice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/jstore_store_content_margin_start"
+        android:layout_marginTop="@dimen/jstore_store_space_xs"
+        android:layout_marginEnd="@dimen/jstore_store_content_margin_end"
+        android:layout_marginBottom="@dimen/jstore_store_space_xs"
+        android:background="@drawable/jstore_store_bg_card"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/jstore_store_space_lg"
+        android:paddingTop="@dimen/jstore_store_space_md"
+        android:paddingEnd="@dimen/jstore_store_space_md"
+        android:paddingBottom="@dimen/jstore_store_space_md">
+
+        <ImageView
+            android:id="@+id/ivNoticeIcon"
+            android:layout_width="@dimen/jstore_store_icon_md"
+            android:layout_height="@dimen/jstore_store_icon_md"
+            android:layout_gravity="top"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="@dimen/jstore_store_space_md"
+            android:importantForAccessibility="no"
+            android:src="@drawable/jstore_store_ic_app_microg" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvNoticeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/jstore_store_jaecoo_store_notice_title"
+                android:textColor="@color/jstore_store_content_primary"
+                android:textSize="@dimen/jstore_store_text_body_sm"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvNoticeContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/jstore_store_space_xs"
+                android:lineSpacingMultiplier="1.15"
+                android:text="@string/jstore_store_jaecoo_store_notice_content"
+                android:textColor="@color/jstore_store_content_secondary"
+                android:textSize="@dimen/jstore_store_text_caption" />
+
+            <Button
+                android:id="@+id/btnNoticeAction"
+                style="@style/jstore_store_Button.Accent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/jstore_store_space_sm"
+                android:minWidth="160dp"
+                android:text="@string/jstore_store_jaecoo_store_notice_action_open" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btnNoticeDismiss"
+            android:layout_width="@dimen/jstore_store_touch_min"
+            android:layout_height="@dimen/jstore_store_touch_min"
+            android:layout_gravity="top"
+            android:layout_marginStart="@dimen/jstore_store_space_xs"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/jstore_store_close"
+            android:focusable="true"
+            android:padding="@dimen/jstore_store_space_sm"
+            android:src="@drawable/jstore_store_ic_close"
+            app:tint="@color/jstore_store_content_muted" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginStart="@dimen/jstore_store_content_margin_start"
+        android:layout_marginEnd="@dimen/jstore_store_content_margin_end"
+        android:layout_marginTop="@dimen/jstore_store_space_xs"
+        android:layout_marginBottom="@dimen/jstore_store_space_xs"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/jstore_store_accent_primary"
+        android:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/jstore_store_content_margin_start"
+        android:paddingTop="@dimen/jstore_store_space_sm"
+        android:paddingEnd="@dimen/jstore_store_content_margin_end"
+        android:paddingBottom="@dimen/jstore_store_space_2xl"
+        android:scrollbars="none" />
+</LinearLayout>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<resources>
+    <color name="jstore_store_accent_primary">#2B7ACE</color>
+    <color name="jstore_store_accent_primary_dark">#20A8CF</color>
+    <color name="jstore_store_accent_soft">#1B2B44</color>
+    <color name="jstore_store_content_muted">#66ECEFF4</color>
+    <color name="jstore_store_content_on_accent">#0E0E13</color>
+    <color name="jstore_store_content_on_danger">#0E0E13</color>
+    <color name="jstore_store_content_primary">#ECEFF4</color>
+    <color name="jstore_store_content_secondary">#99ECEFF4</color>
+    <color name="jstore_store_gradient_center">#131517</color>
+    <color name="jstore_store_gradient_end">#111214</color>
+    <color name="jstore_store_gradient_start">#131517</color>
+    <color name="jstore_store_icon_active">#4A93EE</color>
+    <color name="jstore_store_icon_default">#99ECEFF4</color>
+    <color name="jstore_store_radio_button_gradient_end">#2B7ACE</color>
+    <color name="jstore_store_radio_button_gradient_start">#20A8CF</color>
+    <color name="jstore_store_radio_group_bg">#992C2E33</color>
+    <color name="jstore_store_ripple_accent">#334A93EE</color>
+    <color name="jstore_store_ripple_on_accent">#33000000</color>
+    <color name="jstore_store_status_danger">#F2686B</color>
+    <color name="jstore_store_status_danger_soft">#3A1B1D</color>
+    <color name="jstore_store_status_success">#4ECB8F</color>
+    <color name="jstore_store_status_success_soft">#14312A</color>
+    <color name="jstore_store_status_warning">#E8A34A</color>
+    <color name="jstore_store_status_warning_soft">#38291480</color>
+    <color name="jstore_store_surface_border">#2E3137</color>
+    <color name="jstore_store_surface_card">#1D1F22</color>
+    <color name="jstore_store_surface_disabled">#2E3137</color>
+    <color name="jstore_store_surface_divider">#26292F</color>
+    <color name="jstore_store_surface_variant">#24272B</color>
+    <color name="jstore_store_switch_thumb_color">#ECEFF4</color>
+    <color name="jstore_store_switch_track_off">#3A3A46</color>
+    <color name="jstore_store_switch_track_on">#2590CE</color>
+</resources>

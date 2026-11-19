@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<resources>
+    <dimen name="jstore_store_app_list_item_gap">0dp</dimen>
+    <dimen name="jstore_store_content_margin_end">50dp</dimen>
+    <dimen name="jstore_store_content_margin_start">60dp</dimen>
+    <dimen name="jstore_store_header_min_height">@dimen/jstore_store_topbar_height</dimen>
+    <dimen name="jstore_store_header_padding_bottom_compact">@dimen/jstore_store_space_md</dimen>
+    <dimen name="jstore_store_header_padding_top">@dimen/jstore_store_space_2xl</dimen>
+    <dimen name="jstore_store_text_body">36sp</dimen>
+    <dimen name="jstore_store_text_body_sm">32sp</dimen>
+    <dimen name="jstore_store_text_caption">28sp</dimen>
+    <dimen name="jstore_store_text_label">26sp</dimen>
+    <dimen name="jstore_store_text_title">40sp</dimen>
+</resources>

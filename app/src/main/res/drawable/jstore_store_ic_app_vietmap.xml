@@ -1,0 +1,28 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+  <!-- Dark card background -->
+  <path
+      android:fillColor="#0F172A"
+      android:pathData="M14,2h20c6.63,0 12,5.37 12,12v20c0,6.63 -5.37,12 -12,12H14c-6.63,0 -12,-5.37 -12,-12V14c0,-6.63 5.37,-12 12,-12z" />
+  <!-- Subtle border -->
+  <path
+      android:strokeColor="#334155"
+      android:strokeWidth="1.2"
+      android:pathData="M14,2h20c6.63,0 12,5.37 12,12v20c0,6.63 -5.37,12 -12,12H14c-6.63,0 -12,-5.37 -12,-12V14c0,-6.63 5.37,-12 12,-12z" />
+  <!-- Stylized V Navigation Logo (Red) -->
+  <path
+      android:fillColor="#EF4444"
+      android:pathData="M12,14l12,22 12,-22h-7l-5,12 -5,-12z" />
+  <!-- Radar Wave Accent (Sky Blue) -->
+  <path
+      android:strokeColor="#38BDF8"
+      android:strokeWidth="2.5"
+      android:strokeLineCap="round"
+      android:pathData="M24,10c5,0 9,3 11,6" />
+  <path
+      android:fillColor="#38BDF8"
+      android:pathData="M24,18m-2.8,0a2.8,2.8 0,1 1,5.6 0a2.8,2.8 0,1 1,-5.6 0" />
+</vector>

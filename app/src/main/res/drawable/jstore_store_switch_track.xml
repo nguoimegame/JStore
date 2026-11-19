@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/jstore_store_switch_track_on" />
+            <corners android:radius="@dimen/jstore_store_radius_pill" />
+            <size
+                android:width="@dimen/jstore_store_switch_track_width"
+                android:height="@dimen/jstore_store_switch_track_height" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/jstore_store_switch_track_off" />
+            <corners android:radius="@dimen/jstore_store_radius_pill" />
+            <size
+                android:width="@dimen/jstore_store_switch_track_width"
+                android:height="@dimen/jstore_store_switch_track_height" />
+        </shape>
+    </item>
+</selector>

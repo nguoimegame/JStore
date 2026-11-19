@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+  <!-- Dark card background -->
+  <path
+      android:fillColor="#0F172A"
+      android:pathData="M14,2h20c6.63,0 12,5.37 12,12v20c0,6.63 -5.37,12 -12,12H14c-6.63,0 -12,-5.37 -12,-12V14c0,-6.63 5.37,-12 12,-12z" />
+  <!-- Subtle border -->
+  <path
+      android:strokeColor="#334155"
+      android:strokeWidth="1.2"
+      android:pathData="M14,2h20c6.63,0 12,5.37 12,12v20c0,6.63 -5.37,12 -12,12H14c-6.63,0 -12,-5.37 -12,-12V14c0,-6.63 5.37,-12 12,-12z" />
+  <!-- APKPure Rounded Green Badge -->
+  <path
+      android:fillColor="#22C55E"
+      android:pathData="M14,10h20c5,0 8,3 8,8v12c0,5 -3,8 -8,8H14c-5,0 -8,-3 -8,-8V18c0,-5 3,-8 8,-8z" />
+  <!-- Stylized APKPure 'A' Play Shape (White) -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M19,16l11,8 -11,8z" />
+  <path
+      android:fillColor="#BBF7D0"
+      android:pathData="M25,21l8,3 -8,3z" />
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M16,24m-2.2,0a2.2,2.2 0,1 1,4.4 0a2.2,2.2 0,1 1,-4.4 0" />
+</vector>

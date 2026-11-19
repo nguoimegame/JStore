@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  App store, arrangement for screens under 1024dp tall. The store switch shares
+  one row with the header's refresh button instead of a row of its own, which
+  gives the list (two columns here, see app_list_columns) that row back.
+
+  Same sections as fragment_app_store; inflated through @layout/fragment_app_store_layout.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <include
+            layout="@layout/jstore_store_section_app_store_tabs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/jstore_store_content_margin_start"
+            android:layout_weight="1" />
+
+        <include
+            layout="@layout/jstore_store_section_app_store_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <include layout="@layout/jstore_store_section_app_store_local" />
+
+    <include layout="@layout/jstore_store_section_app_store_jstore" />
+
+    <include layout="@layout/jstore_store_section_app_store_manage" />
+</LinearLayout>

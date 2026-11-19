@@ -200,7 +200,7 @@ class PlayUpdates @Inject constructor(
         active.remove(packageName)
     }
 
-    private fun downloadDir(packageName: String) =
+    fun downloadDir(packageName: String) =
         File(context.cacheDir, "jaecoo/${File(packageName).name}")
 
     fun errorMessage(name: String, error: Exception): String = when (error) {

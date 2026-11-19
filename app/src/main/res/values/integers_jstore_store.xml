@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<resources>
+    <integer name="jstore_store_app_list_columns">2</integer>
+    <integer name="jstore_store_tall_only_visibility">2</integer>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="@dimen/jstore_store_switch_thumb_inset"
+        android:top="@dimen/jstore_store_switch_thumb_inset"
+        android:right="@dimen/jstore_store_switch_thumb_inset"
+        android:bottom="@dimen/jstore_store_switch_thumb_inset">
+        <shape android:shape="oval">
+            <solid android:color="@color/jstore_store_switch_thumb_color" />
+            <size
+                android:width="@dimen/jstore_store_switch_thumb_size"
+                android:height="@dimen/jstore_store_switch_thumb_size" />
+        </shape>
+    </item>
+</layer-list>

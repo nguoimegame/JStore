@@ -1,0 +1,603 @@
+/*
+ * SPDX-FileCopyrightText: 2026 nguoimegame
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+package com.aurora.store.jstore.ui.store
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.aurora.store.R
+import com.aurora.store.jstore.JaecooConnection
+import com.aurora.store.jstore.JstoreLog
+import com.aurora.store.jstore.embed.StoreHostConfig
+import java.io.File
+import java.io.IOException
+import java.util.Locale
+import kotlin.concurrent.thread
+
+/**
+ * The Kho ứng dụng tab, as JaecooApp used to draw it and now drawn here: the Jaecoo server
+ * catalogue, a card for Google Play (jstore itself), and the app manager. Everything it cannot
+ * do from inside a surface (open an activity, show a toast, install, uninstall) it asks of
+ * JaecooApp through [StoreScreenFactory.Host] or [JaecooConnection].
+ */
+@Suppress("TooManyFunctions", "LargeClass")
+class StoreScreen(
+    private val context: Context,
+    private val config: StoreHostConfig,
+    initialSection: String,
+    private val host: StoreScreenFactory.Host,
+    private val deps: StoreScreenFactory.Deps
+) : StoreScreenFactory.Screen {
+
+    private enum class Tab(val section: String) {
+        LOCAL(StoreHostConfig.SECTION_JAECOO),
+        ONLINE(StoreHostConfig.SECTION_PLAY),
+        MANAGE(StoreHostConfig.SECTION_MANAGE)
+    }
+
+    override val view: View =
+        LayoutInflater.from(context).inflate(R.layout.jstore_store_fragment_layout, null, false)
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val ops = StoreOps(context.applicationContext, deps.httpClient, deps.play)
+    private val catalogSource =
+        StoreCatalog(
+            ::fetchText,
+            StoreCatalog.FileCatalogCache(File(context.cacheDir, "jstore_store"))
+        )
+
+    private val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
+    private val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
+    private val statusText: TextView = view.findViewById(R.id.statusText)
+    private val panelLocal: View = view.findViewById(R.id.panelLocalStore)
+    private val panelJstore: View = view.findViewById(R.id.panelJstore)
+    private val panelManage: View = view.findViewById(R.id.panelManageApps)
+    private val btnFromPhone: View = view.findViewById(R.id.btnAppManagerFromPhone)
+    private val jstoreTitle: TextView = view.findViewById(R.id.tvJstoreTitle)
+    private val jstoreDesc: TextView = view.findViewById(R.id.tvJstoreDesc)
+    private val jstoreProgress: ProgressBar = view.findViewById(R.id.pbJstoreInstall)
+    private val jstoreButton: Button = view.findViewById(R.id.btnJstore)
+    private val jstoreUpdateButton: Button = view.findViewById(R.id.btnJstoreUpdate)
+    private val bannerNotice: View = view.findViewById(R.id.bannerLocalStoreNotice)
+    private val btnNoticeAction: Button = view.findViewById(R.id.btnNoticeAction)
+    private val segments: Map<Tab, TextView> = mapOf(
+        Tab.LOCAL to view.findViewById(R.id.segStoreLocal),
+        Tab.ONLINE to view.findViewById(R.id.segStoreOnline),
+        Tab.MANAGE to view.findViewById(R.id.segStoreManage)
+    )
+
+    private val manage = ManagePanel(
+        context = context,
+        root = view,
+        host = host,
+        ops = ops,
+        play = deps.play,
+        catalogOf = { catalog },
+        jstoreRelease = { latestRelease() },
+        onStatus = { text, colorRes -> setStatus(Tab.MANAGE, text, colorRes) },
+        confirmUninstall = { app, onConfirmed ->
+            confirmUninstall(app.packageName, app.label, onConfirmed)
+        }
+    )
+
+    private val statusByTab = mutableMapOf<Tab, Pair<CharSequence, Int>>()
+    private var currentTab = Tab.LOCAL
+    private var catalog: StoreCatalog.Catalog? = null
+    private var allApps: List<StoreAppItem> = emptyList()
+    private var adapter: StoreAppAdapter? = null
+    private var serverBaseUrl = config.serverUrls.firstOrNull().orEmpty()
+    private var jstoreRelease: JstoreRelease? = null
+    private var noticeDismissed = false
+    private var closed = false
+
+    private val packageReceiver = object : BroadcastReceiver() {
+        override fun onReceive(receiverContext: Context, intent: Intent) {
+            val changed = intent.data?.schemeSpecificPart ?: return
+            onUi { onPackageChanged(changed) }
+        }
+    }
+
+    init {
+        val columns = context.resources.getInteger(R.integer.jstore_store_app_list_columns)
+        recyclerView.layoutManager =
+            if (columns > 1) GridLayoutManager(context, columns) else LinearLayoutManager(context)
+
+        jstoreButton.setOnClickListener { openPlay() }
+        jstoreUpdateButton.setOnClickListener { host.requestJstoreUpdate() }
+        view.findViewById<View>(R.id.btnNoticeDismiss).setOnClickListener {
+            noticeDismissed = true
+            bannerNotice.visibility = View.GONE
+        }
+        btnNoticeAction.setOnClickListener { handleNoticeAction() }
+        btnFromPhone.setOnClickListener { host.requestPhoneUpload() }
+        view.findViewById<View>(R.id.btnRefreshApps).setOnClickListener { refreshCurrent() }
+        statusText.setOnClickListener { refreshCurrent() }
+        for ((tab, segment) in segments) segment.setOnClickListener { select(tab) }
+
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addAction(Intent.ACTION_PACKAGE_REPLACED)
+            addDataScheme("package")
+        }
+        ContextCompat.registerReceiver(
+            context.applicationContext,
+            packageReceiver,
+            filter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+
+        select(Tab.values().firstOrNull { it.section == initialSection } ?: Tab.LOCAL)
+        loadCatalog()
+    }
+
+    // ------------------------------------------------------------------ Screen
+
+    override fun select(section: String) {
+        Tab.values().firstOrNull { it.section == section }?.let(::select)
+    }
+
+    override fun currentSection(): String = currentTab.section
+
+    override fun dispose() {
+        closed = true
+        handler.removeCallbacksAndMessages(null)
+        manage.dispose()
+        StoreDialogResults.stopListening()
+        try {
+            context.applicationContext.unregisterReceiver(packageReceiver)
+        } catch (_: IllegalArgumentException) {
+            // Never registered, or already gone.
+        }
+    }
+
+    private fun onUi(block: () -> Unit) {
+        handler.post { if (!closed) block() }
+    }
+
+    // ------------------------------------------------------------------ tabs and status
+
+    private fun select(tab: Tab) {
+        currentTab = tab
+        panelLocal.visibility = if (tab == Tab.LOCAL) View.VISIBLE else View.GONE
+        panelJstore.visibility = if (tab == Tab.ONLINE) View.VISIBLE else View.GONE
+        panelManage.visibility = if (tab == Tab.MANAGE) View.VISIBLE else View.GONE
+        btnFromPhone.visibility = if (tab == Tab.MANAGE) View.VISIBLE else View.GONE
+        if (tab == Tab.ONLINE) {
+            bindPlayCard()
+            if (jstoreRelease == null) loadRelease()
+        }
+        manage.setSelected(tab == Tab.MANAGE)
+
+        for ((value, segment) in segments) {
+            val isCurrent = value == tab
+            segment.isSelected = isCurrent
+            val background = if (isCurrent) {
+                R.drawable.jstore_store_bg_radio_button
+            } else {
+                android.R.color.transparent
+            }
+            segment.setBackgroundResource(background)
+            val textColor = if (isCurrent) {
+                R.color.jstore_store_content_on_accent
+            } else {
+                R.color.jstore_store_content_secondary
+            }
+            segment.setTextColor(ContextCompat.getColor(context, textColor))
+        }
+        applyStatus()
+    }
+
+    private fun refreshCurrent() {
+        when (currentTab) {
+            Tab.LOCAL -> loadCatalog()
+            Tab.ONLINE -> loadRelease()
+            Tab.MANAGE -> manage.reload(checkUpdates = true)
+        }
+    }
+
+    /** Each tab keeps its own status line for when the driver switches back to it. */
+    private fun setStatus(
+        tab: Tab,
+        text: CharSequence,
+        colorRes: Int = R.color.jstore_store_content_secondary
+    ) {
+        statusByTab[tab] = text to colorRes
+        if (tab == currentTab) applyStatus()
+    }
+
+    private fun applyStatus() {
+        val (text, colorRes) = statusByTab[currentTab] ?: return
+        statusText.text = text
+        statusText.setTextColor(ContextCompat.getColor(context, colorRes))
+    }
+
+    private fun onPackageChanged(changed: String) {
+        if (allApps.any { it.packageName == changed }) {
+            refreshInstalledStatus()
+            adapter?.submitList(allApps)
+        }
+        if (changed == MICROG_PACKAGE || changed == GMS_PACKAGE) updateNoticeBanner()
+        if (changed == context.packageName) bindPlayCard()
+        manage.reload(checkUpdates = false, onlyIfLoaded = true)
+    }
+
+    // ------------------------------------------------------------------ Jaecoo catalogue
+
+    private fun loadCatalog() {
+        progressBar.visibility = View.VISIBLE
+        setStatus(Tab.LOCAL, context.getString(R.string.jstore_store_loading_apps))
+        val language = config.language ?: Locale.getDefault().language
+        thread(name = "store-catalog") {
+            val loaded = catalogSource.load(config.serverUrls, language)
+            onUi {
+                progressBar.visibility = View.GONE
+                if (loaded != null && loaded.apps.isNotEmpty()) {
+                    catalog = loaded
+                    serverBaseUrl = loaded.baseUrl
+                    if (loaded.fromCache) {
+                        setOffline()
+                    } else {
+                        setStatus(
+                            Tab.LOCAL,
+                            context.getString(
+                                R.string.jstore_store_app_store_live_feed,
+                                loaded.apps.size
+                            ),
+                            R.color.jstore_store_status_success
+                        )
+                    }
+                    setupAdapter(loaded.apps.map(StoreAppItem::from))
+                } else {
+                    setOffline()
+                    setupAdapter(emptyList())
+                }
+            }
+        }
+    }
+
+    private fun setOffline() = setStatus(
+        Tab.LOCAL,
+        context.getString(
+            R.string.jstore_store_app_store_offline_mode,
+            context.getString(R.string.jstore_store_server_error)
+        ),
+        R.color.jstore_store_status_warning
+    )
+
+    private fun setupAdapter(apps: List<StoreAppItem>) {
+        allApps = apps
+        refreshInstalledStatus()
+        updateNoticeBanner()
+        val existing = adapter
+        if (existing == null) {
+            val created = StoreAppAdapter(allApps, serverBaseUrl) { handleAppAction(it) }
+            created.onAppUninstall =
+                { app -> confirmUninstall(app.packageName, app.name) { uninstall(app) } }
+            adapter = created
+            recyclerView.adapter = created
+        } else {
+            existing.serverBaseUrl = serverBaseUrl
+            existing.submitList(allApps)
+        }
+    }
+
+    private fun refreshInstalledStatus() {
+        val packageManager = context.packageManager
+        for (app in allApps) {
+            if (app.packageName.isEmpty()) {
+                // Nothing can be said without a package name; do not trust the catalogue's own flag.
+                app.isInstalled = false
+                app.installedVersion = null
+                app.hasUpdate = false
+                continue
+            }
+            val info = try {
+                packageManager.getPackageInfo(app.packageName, 0)
+            } catch (_: PackageManager.NameNotFoundException) {
+                null
+            }
+            if (info != null) {
+                app.isInstalled = true
+                val installed = info.versionName.orEmpty()
+                app.installedVersion = installed
+                app.hasUpdate = app.version.isNotEmpty() &&
+                    installed.isNotEmpty() &&
+                    ManageUpdates.isVersionNewer(app.version, installed)
+            } else {
+                // A ROM that filters package visibility answers NameNotFound for apps that are
+                // there; the launcher intent declared in <queries> is the second opinion.
+                app.isInstalled = packageManager.getLaunchIntentForPackage(app.packageName) != null
+                app.installedVersion = null
+                app.hasUpdate = false
+            }
+        }
+    }
+
+    private fun handleAppAction(app: StoreAppItem) {
+        if (app.packageName == JAECOO_PACKAGE && (app.hasUpdate || !app.isInstalled)) {
+            // JaecooApp updates itself; installing over it would end the screen that asked.
+            host.startActivity(
+                Intent().setClassName(JAECOO_PACKAGE, JAECOO_SHELL).putExtra(EXTRA_TAB, TAB_SYSTEM)
+            )
+            return
+        }
+        if (app.hasUpdate || !app.isInstalled) {
+            if (app.downloadUrl.isNotEmpty()) {
+                downloadAndInstall(app)
+            } else {
+                host.toast(
+                    context.getString(R.string.jstore_store_appstore_no_download_url, app.name)
+                )
+            }
+            return
+        }
+        val launch = if (app.packageName.isEmpty()) {
+            null
+        } else {
+            context.packageManager.getLaunchIntentForPackage(
+                app.packageName
+            )
+        }
+        if (launch != null) {
+            host.startActivity(launch)
+        } else {
+            host.toast(context.getString(R.string.jstore_store_appstore_opening_app, app.name))
+        }
+    }
+
+    private fun downloadAndInstall(app: StoreAppItem) {
+        if (app.isDownloading) return
+        app.isDownloading = true
+        app.downloadProgress = 0
+        adapter?.notifyAppProgress(app.id, 0, true)
+
+        val action = context.getString(
+            if (app.hasUpdate) R.string.jstore_store_update_app else R.string.jstore_store_install
+        ).lowercase()
+        host.toast(
+            context.getString(
+                R.string.jstore_store_appstore_downloading_to_action,
+                app.name,
+                action
+            )
+        )
+
+        val url = StoreCatalog.resolveUrl(serverBaseUrl, app.downloadUrl)
+        thread(name = "store-install") {
+            val apk = ops.download(
+                url = url,
+                packageName = app.packageName,
+                fileName = StoreOps.fileNameFor(app.downloadUrl, app.id),
+                estimatedBytes = StoreOps.parseEstimatedBytes(app.fileSize),
+                sha256 = app.sha256
+            ) { progress -> onUi { adapter?.notifyAppProgress(app.id, progress, true) } }
+            val result = if (apk != null) {
+                onUi {
+                    adapter?.notifyAppProgress(app.id, StoreAppAdapter.PROGRESS_INSTALLING, true)
+                }
+                ops.install(app.packageName, apk)
+            } else {
+                null
+            }
+            onUi {
+                app.isDownloading = false
+                app.downloadProgress = 0
+                adapter?.notifyAppProgress(app.id, 0, false)
+                reportInstall(result)
+            }
+        }
+    }
+
+    private fun reportInstall(result: JaecooConnection.Result?) {
+        when (result) {
+            is JaecooConnection.Result.Installed -> {
+                host.toast(
+                    context.getString(R.string.jstore_store_appstore_device_owner_install_success)
+                )
+                // A silent install never leaves the screen, so the buttons must be re-read here.
+                refreshInstalledStatus()
+                adapter?.submitList(allApps)
+                updateNoticeBanner()
+            }
+            is JaecooConnection.Result.Launched -> host.toast(
+                context.getString(R.string.jstore_store_installing_apk)
+            )
+            is JaecooConnection.Result.Failed ->
+                host.toast(
+                    context.getString(R.string.jstore_store_appstore_install_error, result.message)
+                )
+            JaecooConnection.Result.Unavailable -> host.toast(
+                context.getString(R.string.jstore_jaecooapp_required)
+            )
+            JaecooConnection.Result.Uninstalled -> Unit
+            null -> host.toast(context.getString(R.string.jstore_store_appstore_download_failed))
+        }
+    }
+
+    // ------------------------------------------------------------------ uninstall
+
+    /** A window cannot open inside the surface: JaecooApp starts the confirmation activity for us. */
+    private fun confirmUninstall(packageName: String, label: String, onConfirmed: () -> Unit) {
+        if (packageName.isEmpty()) {
+            host.toast(context.getString(R.string.jstore_store_appstore_unknown_package, label))
+            return
+        }
+        StoreDialogResults.listen { answered, confirmed ->
+            if (answered == packageName && confirmed) onUi(onConfirmed)
+        }
+        host.startActivity(StoreDialogActivity.confirmUninstallIntent(context, packageName, label))
+    }
+
+    private fun uninstall(app: StoreAppItem) {
+        host.toast(context.getString(R.string.jstore_store_uninstalling, app.name))
+        thread(name = "store-uninstall") {
+            val result = JaecooConnection.uninstall(context, app.packageName)
+            onUi {
+                when (result) {
+                    is JaecooConnection.Result.Uninstalled -> {
+                        host.toast(
+                            context.getString(R.string.jstore_store_uninstall_done, app.name)
+                        )
+                        refreshInstalledStatus()
+                        adapter?.submitList(allApps)
+                        updateNoticeBanner()
+                    }
+                    is JaecooConnection.Result.Failed ->
+                        host.toast(
+                            context.getString(
+                                R.string.jstore_store_uninstall_failed,
+                                app.name,
+                                result.message
+                            )
+                        )
+                    else -> Unit
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------ MicroG notice
+
+    private fun updateNoticeBanner() {
+        if (noticeDismissed) {
+            bannerNotice.visibility = View.GONE
+            return
+        }
+        bannerNotice.visibility = View.VISIBLE
+        btnNoticeAction.setText(
+            if (microGInstalled()) {
+                R.string.jstore_store_jaecoo_store_notice_action_open
+            } else {
+                R.string.jstore_store_jaecoo_store_notice_action_install
+            }
+        )
+    }
+
+    private fun microGInstalled() =
+        isPackageInstalled(MICROG_PACKAGE) || isPackageInstalled(GMS_PACKAGE)
+
+    private fun isPackageInstalled(packageName: String): Boolean = try {
+        context.packageManager.getPackageInfo(packageName, 0)
+        true
+    } catch (_: PackageManager.NameNotFoundException) {
+        context.packageManager.getLaunchIntentForPackage(packageName) != null
+    }
+
+    private fun handleNoticeAction() {
+        if (microGInstalled()) {
+            val pm = context.packageManager
+            val launch =
+                pm.getLaunchIntentForPackage(MICROG_PACKAGE)
+                    ?: pm.getLaunchIntentForPackage(GMS_PACKAGE)
+            host.startActivity(launch ?: Intent(Settings.ACTION_SYNC_SETTINGS))
+            return
+        }
+        val microg = allApps.firstOrNull {
+            it.id == "microg-re" || it.packageName == MICROG_PACKAGE
+        }
+        if (microg != null) {
+            handleAppAction(microg)
+        } else {
+            host.toast(context.getString(R.string.jstore_store_loading_apps))
+        }
+    }
+
+    // ------------------------------------------------------------------ Google Play card
+
+    /**
+     * jstore is the running app here, so the card only opens it and offers the update when
+     * GitHub has a newer release than this build; installing it is JaecooApp's job.
+     */
+    private fun bindPlayCard() {
+        val installedVersion = try {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName.orEmpty()
+        } catch (_: PackageManager.NameNotFoundException) {
+            ""
+        }
+        val release = jstoreRelease
+        val updatable =
+            release != null && ManageUpdates.isVersionNewer(release.versionName, installedVersion)
+        jstoreProgress.visibility = View.GONE
+        jstoreUpdateButton.visibility = if (updatable) View.VISIBLE else View.GONE
+        jstoreTitle.setText(R.string.jstore_store_jstore_card_title)
+        jstoreDesc.setText(R.string.jstore_store_jstore_card_desc)
+        jstoreButton.setText(R.string.jstore_store_jstore_open)
+        if (updatable) {
+            setStatus(
+                Tab.ONLINE,
+                context.getString(
+                    R.string.jstore_store_jstore_status_update,
+                    release!!.versionName
+                ),
+                R.color.jstore_store_status_warning
+            )
+        } else {
+            setStatus(
+                Tab.ONLINE,
+                context.getString(R.string.jstore_store_jstore_status_installed),
+                R.color.jstore_store_status_success
+            )
+        }
+    }
+
+    private fun openPlay() {
+        context.packageManager.getLaunchIntentForPackage(
+            context.packageName
+        )?.let(host::startActivity)
+    }
+
+    private fun loadRelease() {
+        bindPlayCard()
+        thread(name = "store-release") {
+            val release = latestRelease()
+            onUi {
+                if (release != null) jstoreRelease = release
+                bindPlayCard()
+            }
+        }
+    }
+
+    /** GitHub's latest jstore release, or null when it cannot be reached. Blocking. */
+    private fun latestRelease(): JstoreRelease? = JstoreReleases.latest { url ->
+        fetchText(url, mapOf("Accept" to "application/vnd.github+json"))
+    }
+
+    private fun fetchText(url: String): String? = fetchText(url, emptyMap())
+
+    private fun fetchText(url: String, headers: Map<String, String>): String? = try {
+        deps.httpClient.call(url, headers).use { response ->
+            if (response.isSuccessful) response.body.string() else null
+        }
+    } catch (e: IOException) {
+        JstoreLog.w(TAG, "Could not read $url", e)
+        null
+    }
+
+    companion object {
+        private const val TAG = "StoreScreen"
+        private const val MICROG_PACKAGE = "app.revanced.android.gms"
+        private const val GMS_PACKAGE = "com.google.android.gms"
+        private const val JAECOO_PACKAGE = "com.example.jaecooapp"
+        private const val JAECOO_SHELL = "com.example.jaecooapp.ShellActivity"
+        private const val EXTRA_TAB = "tab"
+        private const val TAB_SYSTEM = "system"
+    }
+}

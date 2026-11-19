@@ -1,0 +1,39 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+  <!-- Dark card background -->
+  <path
+      android:fillColor="#0F172A"
+      android:pathData="M14,2h20c6.63,0 12,5.37 12,12v20c0,6.63 -5.37,12 -12,12H14c-6.63,0 -12,-5.37 -12,-12V14c0,-6.63 5.37,-12 12,-12z" />
+  <!-- Subtle border -->
+  <path
+      android:strokeColor="#334155"
+      android:strokeWidth="1.2"
+      android:pathData="M14,2h20c6.63,0 12,5.37 12,12v20c0,6.63 -5.37,12 -12,12H14c-6.63,0 -12,-5.37 -12,-12V14c0,-6.63 5.37,-12 12,-12z" />
+  <!-- Map Pin Body (Red) -->
+  <path
+      android:fillColor="#EA4335"
+      android:pathData="M24,7c-7.73,0 -14,6.27 -14,14c0,9.5 14,18 14,18s14,-8.5 14,-18c0,-7.73 -6.27,-14 -14,-14z" />
+  <!-- Blue Sector -->
+  <path
+      android:fillColor="#4285F4"
+      android:pathData="M24,7c-3.5,0 -7.2,1.8 -9.5,4.8l9.5,9.5 9.5,-9.5C31.2,8.8 27.5,7 24,7z" />
+  <!-- Green Sector -->
+  <path
+      android:fillColor="#34A853"
+      android:pathData="M10,21c0,5.5 5.5,12 14,18l-9.5,-17c-2.8,-0.3 -4.5,-1 -4.5,-1z" />
+  <!-- Yellow Sector -->
+  <path
+      android:fillColor="#FBBC05"
+      android:pathData="M38,21c0,5.5 -5.5,12 -14,18l9.5,-17c2.8,-0.3 4.5,-1 4.5,-1z" />
+  <!-- Center White Circle -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M24,21m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+  <!-- Center Dark Dot -->
+  <path
+      android:fillColor="#1E293B"
+      android:pathData="M24,21m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0" />
+</vector>

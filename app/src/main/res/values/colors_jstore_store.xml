@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 nguoimegame
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<resources>
+    <color name="jstore_store_accent_primary">#3292F5</color>
+    <color name="jstore_store_accent_primary_dark">#1657BE</color>
+    <color name="jstore_store_accent_soft">#DCE9F7</color>
+    <color name="jstore_store_amber_100">#FCEEDA</color>
+    <color name="jstore_store_amber_700">#B45309</color>
+    <color name="jstore_store_content_muted">#6617191E</color>
+    <color name="jstore_store_content_on_accent">#FFFFFF</color>
+    <color name="jstore_store_content_on_danger">@color/jstore_store_neutral_0</color>
+    <color name="jstore_store_content_primary">#17191E</color>
+    <color name="jstore_store_content_secondary">#9917191E</color>
+    <color name="jstore_store_gradient_center">#E5EAEF</color>
+    <color name="jstore_store_gradient_end">#DFE5EC</color>
+    <color name="jstore_store_gradient_start">#E5EAEF</color>
+    <color name="jstore_store_green_100">#DFF3EA</color>
+    <color name="jstore_store_green_600">#0E8A5F</color>
+    <color name="jstore_store_icon_active">#3292F5</color>
+    <color name="jstore_store_icon_default">#9917191E</color>
+    <color name="jstore_store_neutral_0">#FFFFFF</color>
+    <color name="jstore_store_radio_button_gradient_end">#3292F5</color>
+    <color name="jstore_store_radio_button_gradient_start">#49D0FA</color>
+    <color name="jstore_store_radio_group_bg">#7FD3DBE3</color>
+    <color name="jstore_store_red_100">#FBE3E3</color>
+    <color name="jstore_store_red_600">#D22D2D</color>
+    <color name="jstore_store_ripple_accent">#263292F5</color>
+    <color name="jstore_store_ripple_on_accent">#33FFFFFF</color>
+    <color name="jstore_store_status_danger">@color/jstore_store_red_600</color>
+    <color name="jstore_store_status_danger_soft">@color/jstore_store_red_100</color>
+    <color name="jstore_store_status_success">@color/jstore_store_green_600</color>
+    <color name="jstore_store_status_success_soft">@color/jstore_store_green_100</color>
+    <color name="jstore_store_status_warning">@color/jstore_store_amber_700</color>
+    <color name="jstore_store_status_warning_soft">@color/jstore_store_amber_100</color>
+    <color name="jstore_store_surface_border">#D1D8E0</color>
+    <color name="jstore_store_surface_card">#FFFFFF</color>
+    <color name="jstore_store_surface_disabled">#D1D8E0</color>
+    <color name="jstore_store_surface_divider">#D1D8E0</color>
+    <color name="jstore_store_surface_variant">#DEE3E8</color>
+    <color name="jstore_store_switch_thumb_color">#FFFFFF</color>
+    <color name="jstore_store_switch_track_off">#DEE3E8</color>
+    <color name="jstore_store_switch_track_on">#3DB0F7</color>
+</resources>

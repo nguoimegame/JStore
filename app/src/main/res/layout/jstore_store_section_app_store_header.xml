@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  App store header: title, catalogue status and refresh. The title block hides
+  on screens under 1024dp tall; refresh stays.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/jstore_store_header_min_height"
+    android:background="@drawable/jstore_store_bg_header_cockpit"
+    android:gravity="center_vertical|end"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/jstore_store_content_margin_start"
+    android:paddingTop="@dimen/jstore_store_header_padding_top"
+    android:paddingEnd="@dimen/jstore_store_content_margin_end"
+    android:paddingBottom="@dimen/jstore_store_header_padding_bottom_compact">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="@integer/jstore_store_tall_only_visibility">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/jstore_store_app_store_title"
+            android:textColor="@color/jstore_store_content_primary"
+            android:textSize="@dimen/jstore_store_text_title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/jstore_store_space_xs"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@string/jstore_store_loading_apps"
+            android:textColor="@color/jstore_store_content_secondary"
+            android:textSize="@dimen/jstore_store_text_caption" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btnRefreshApps"
+        android:layout_width="@dimen/jstore_store_touch_min"
+        android:layout_height="@dimen/jstore_store_touch_min"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/jstore_store_cd_refresh"
+        android:focusable="true"
+        android:padding="@dimen/jstore_store_space_sm"
+        android:src="@drawable/jstore_store_ic_refresh"
+        app:tint="@color/jstore_store_icon_default" />
+
+    <!-- Shown on the App Manager tab so the driver can push an APK from their phone. -->
+    <Button
+        android:id="@+id/btnAppManagerFromPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/jstore_store_button_height"
+        android:layout_marginStart="@dimen/jstore_store_space_md"
+        android:background="@drawable/jstore_store_bg_button_accent"
+        android:drawableStart="@drawable/jstore_store_ic_phone_upload"
+        android:drawablePadding="@dimen/jstore_store_space_sm"
+        android:drawableTint="@color/jstore_store_content_on_accent"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:minWidth="0dp"
+        android:paddingStart="@dimen/jstore_store_space_lg"
+        android:paddingEnd="@dimen/jstore_store_space_lg"
+        android:stateListAnimator="@null"
+        android:text="@string/jstore_store_apk_phone_title"
+        android:textAllCaps="false"
+        android:textColor="@color/jstore_store_content_on_accent"
+        android:textSize="@dimen/jstore_store_text_caption"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</LinearLayout>
