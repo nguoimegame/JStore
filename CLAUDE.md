@@ -34,3 +34,7 @@ Google Play client (`com.example.jstore`, namespace `com.aurora.store`, GPL-3.0)
 - Build debug: `./gradlew.bat :app:assembleVanillaDebug`
 - Kiểm tra bắt buộc trước khi hoàn thành thay đổi: `./gradlew.bat ktlintCheck testVanillaDebugUnitTest`
 - Chạy và kiểm tra UI trên emulator (`otoAutomative`): dùng skill `run-jstore` ([.agent/skills/run-jstore/SKILL.md](.agent/skills/run-jstore/SKILL.md)).
+
+## Hệ sinh thái & Repo liên quan
+
+@../SYSTEM_MAP.md
