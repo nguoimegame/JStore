@@ -55,3 +55,4 @@ signing.properties
 
 .kotlin/*
 .claude/skills/
+graphify-out/
