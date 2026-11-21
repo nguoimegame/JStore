@@ -33,4 +33,34 @@ class ServerFilesTest {
         assertThat(ServerFiles.acceptUnverified(withSha256, isServer)).isFalse()
         assertThat(ServerFiles.acceptUnverified(withSha1, isServer)).isFalse()
     }
+
+    @Test
+    fun existingHashlessFileIsNeverReused() {
+        val server = PlayFile(name = "app.apk", url = serverUrl)
+        val play = PlayFile(name = "base.apk", url = "https://play/base.apk")
+        assertThat(ServerFiles.mayReuseExisting(server)).isFalse()
+        assertThat(ServerFiles.mayReuseExisting(play)).isFalse()
+    }
+
+    @Test
+    fun existingFileWithHashMayBeReused() {
+        assertThat(
+            ServerFiles.mayReuseExisting(PlayFile(name = "a.apk", url = serverUrl, sha256 = "ab"))
+        ).isTrue()
+        assertThat(
+            ServerFiles.mayReuseExisting(PlayFile(name = "a.apk", url = "https://p", sha1 = "ab"))
+        ).isTrue()
+    }
+
+    @Test
+    fun expiredServerUrlFailsWithoutPlayFallback() {
+        val file = PlayFile(name = "app.apk", url = serverUrl, sha256 = "ab")
+        assertThat(ServerFiles.repurchaseOnExpiredUrl(file, isServer)).isFalse()
+    }
+
+    @Test
+    fun expiredPlayUrlIsRepurchased() {
+        val file = PlayFile(name = "base.apk", url = "https://play/base.apk")
+        assertThat(ServerFiles.repurchaseOnExpiredUrl(file, isServer)).isTrue()
+    }
 }

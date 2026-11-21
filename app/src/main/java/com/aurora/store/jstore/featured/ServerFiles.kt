@@ -16,4 +16,21 @@ object ServerFiles {
      */
     fun acceptUnverified(file: PlayFile, isServerUrl: (String) -> Boolean): Boolean =
         file.sha256.isBlank() && file.sha1.isBlank() && isServerUrl(file.url)
+
+    /**
+     * True when a file already on disk may skip the download because its hash still matches.
+     * A hashless file never may: the only hashless files that verify are the Jaecoo server's,
+     * and their path is keyed by a synthetic versionCode that stays the same when the server
+     * publishes a new version, so an old file there could be an older APK.
+     */
+    fun mayReuseExisting(file: PlayFile): Boolean =
+        file.sha256.isNotBlank() || file.sha1.isNotBlank()
+
+    /**
+     * True when a 403/410 on [file] should drop the file list so the retry buys fresh Play URLs.
+     * A Jaecoo server file has no Play purchase behind it: re-buying would fail, or fetch a
+     * different Play APK under the synthetic versionCode.
+     */
+    fun repurchaseOnExpiredUrl(file: PlayFile, isServerUrl: (String) -> Boolean): Boolean =
+        !isServerUrl(file.url)
 }

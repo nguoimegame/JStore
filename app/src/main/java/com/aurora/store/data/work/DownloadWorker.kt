@@ -443,7 +443,8 @@ class DownloadWorker @AssistedInject constructor(
             val file = PathUtil.getLocalFile(context, gFile, download)
 
             // If file exists and has integrity intact, no need to download again
-            if (file.exists() && verifyFile(gFile)) {
+            // jstore: a hashless file is trusted only right after this download, never as found
+            if (file.exists() && ServerFiles.mayReuseExisting(gFile) && verifyFile(gFile)) {
                 Log.i(TAG, "$file is already downloaded!")
                 downloadedBytes += file.length()
                 verifiedFiles.add(file.absolutePath)
@@ -470,6 +471,13 @@ class DownloadWorker @AssistedInject constructor(
                     // the download sat queued. Drop the stale file lists so the retry
                     // re-purchases fresh URLs instead of hammering the dead one.
                     if (code == HTTP_FORBIDDEN || code == HTTP_GONE) {
+                        // jstore: a Jaecoo server file has no Play purchase to fall back on
+                        jaecooServerApps.ensureLoaded()
+                        val isServer = jaecooServerApps::isServerFileUrl
+                        if (!ServerFiles.repurchaseOnExpiredUrl(gFile, isServer)) {
+                            JstoreLog.w(TAG, "Jaecoo server refused ${gFile.name} (code=$code)")
+                            throw DownloadFailedException()
+                        }
                         Log.w(TAG, "Download URL for ${download.packageName} expired (code=$code)")
                         downloadDao.updateFiles(download.packageName, emptyList())
                         downloadDao.updateSharedLibs(
