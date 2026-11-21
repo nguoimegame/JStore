@@ -104,6 +104,45 @@ class ManageUpdatesTest {
     }
 
     @Test
+    fun withFeaturedAddsDownloadableOnly() {
+        val waze = listOf(catalogApp("com.waze", "5.0"))
+        val catalog = StoreCatalog.Catalog("https://a", waze, true)
+        val noUrl = catalogApp("no.url", "1").copy(downloadUrl = "")
+        val noPackage = catalogApp("x", "1").copy(packageName = "")
+        val merged = ManageUpdates.withFeatured(
+            catalog,
+            listOf(catalogApp("feat.one", "2"), noUrl, noPackage)
+        )!!
+        assertThat(merged.apps.map { it.packageName }).containsExactly("com.waze", "feat.one")
+        assertThat(merged.baseUrl).isEqualTo("https://a")
+        assertThat(merged.fromCache).isTrue()
+        val none = ManageUpdates.withFeatured(null, listOf(catalogApp("feat.one", "2")))
+        assertThat(none).isNull()
+    }
+
+    @Test
+    fun withFeaturedCatalogueWins() {
+        val waze = listOf(catalogApp("com.waze", "5.0"))
+        val catalog = StoreCatalog.Catalog("https://a", waze, false)
+        val merged = ManageUpdates.withFeatured(catalog, listOf(catalogApp("com.waze", "9.0")))!!
+        assertThat(merged.apps).hasSize(1)
+        assertThat(merged.apps.single().version).isEqualTo("5.0")
+    }
+
+    @Test
+    fun pickUsesFeaturedServerVersion() {
+        val asked = mutableListOf<String>()
+        val catalog = StoreCatalog.Catalog("https://a", emptyList(), false)
+        val merged = ManageUpdates.withFeatured(catalog, listOf(catalogApp("feat.one", "2.0")))
+        val updates = ManageUpdates.pick(listOf(app("feat.one", "1.0")), null, merged) {
+            asked += it
+            emptyList()
+        }
+        assertThat(asked).isEmpty()
+        assertThat(updates.getValue("feat.one").source).isEqualTo(ManageUpdates.Source.JAECOO)
+    }
+
+    @Test
     fun versionCompare() {
         assertThat(ManageUpdates.isVersionNewer("1.10.0", "1.9.9")).isTrue()
         assertThat(ManageUpdates.isVersionNewer("v1.0", "1.0")).isFalse()

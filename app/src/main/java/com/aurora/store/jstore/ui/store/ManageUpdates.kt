@@ -30,6 +30,22 @@ object ManageUpdates {
         val sha256: String = ""
     )
 
+    /**
+     * [catalog] plus the featured apps the server can serve, so the manager updates them from the
+     * server instead of Google Play. The catalogue wins when both list a package.
+     */
+    fun withFeatured(
+        catalog: StoreCatalog.Catalog?,
+        featured: List<StoreCatalog.CatalogApp>
+    ): StoreCatalog.Catalog? {
+        if (catalog == null) return null
+        val known = catalog.apps.map { it.packageName }.toMutableSet()
+        val extra = featured.filter {
+            it.downloadUrl.isNotEmpty() && it.packageName.isNotEmpty() && known.add(it.packageName)
+        }
+        return if (extra.isEmpty()) catalog else catalog.copy(apps = catalog.apps + extra)
+    }
+
     /** [play] asks Google Play for the packages given; it blocks. */
     fun pick(
         apps: List<ManagedApp>,

@@ -26,6 +26,7 @@ import com.aurora.store.R
 import com.aurora.store.jstore.JaecooConnection
 import com.aurora.store.jstore.JstoreLog
 import com.aurora.store.jstore.embed.StoreHostConfig
+import com.aurora.store.jstore.featured.FeaturedList
 import java.io.File
 import java.io.IOException
 import java.util.Locale
@@ -62,6 +63,9 @@ class StoreScreen(
             StoreCatalog.FileCatalogCache(File(context.cacheDir, "jstore_store"))
         )
 
+    private val featuredSource =
+        FeaturedList(::fetchText, File(context.cacheDir, "jstore_store/featured.json"))
+
     private val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
     private val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
     private val statusText: TextView = view.findViewById(R.id.statusText)
@@ -79,6 +83,11 @@ class StoreScreen(
     private val statusByTab = mutableMapOf<Tab, Pair<CharSequence, Int>>()
     private var currentTab = Tab.LOCAL
     private var catalog: StoreCatalog.Catalog? = null
+
+    // Catalogue plus the server's featured apps, for the app manager only. One reference, written
+    // whole, so the update check (another thread) never sees a catalogue/featured mismatch.
+    @Volatile
+    private var managerCatalog: StoreCatalog.Catalog? = null
     private var allApps: List<StoreAppItem> = emptyList()
     private var adapter: StoreAppAdapter? = null
     private var serverBaseUrl = config.serverUrls.firstOrNull().orEmpty()
@@ -92,7 +101,7 @@ class StoreScreen(
         host = host,
         ops = ops,
         play = deps.play,
-        catalogOf = { catalog },
+        catalogOf = { managerCatalog },
         jstoreRelease = { latestRelease() },
         onStatus = { text, colorRes -> setStatus(Tab.MANAGE, text, colorRes) },
         confirmUninstall = { app, onConfirmed ->
@@ -236,10 +245,16 @@ class StoreScreen(
         val language = config.language ?: Locale.getDefault().language
         thread(name = "store-catalog") {
             val loaded = catalogSource.load(config.serverUrls, language)
+            val forManager = if (loaded != null && loaded.apps.isNotEmpty()) {
+                ManageUpdates.withFeatured(loaded, featuredSource.load(loaded.baseUrl, language))
+            } else {
+                null
+            }
             onUi {
                 progressBar.visibility = View.GONE
                 if (loaded != null && loaded.apps.isNotEmpty()) {
                     catalog = loaded
+                    managerCatalog = forManager
                     serverBaseUrl = loaded.baseUrl
                     if (loaded.fromCache) {
                         setOffline()
