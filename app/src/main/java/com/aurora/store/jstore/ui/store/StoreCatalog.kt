@@ -134,13 +134,17 @@ class StoreCatalog(
             } ?: obj.optString("description", "")
         }
 
-        fun parse(json: String, language: String): List<CatalogApp> {
+        fun parse(
+            json: String,
+            language: String,
+            defaultName: String = "Unknown App"
+        ): List<CatalogApp> {
             val array = JSONArray(json)
             return (0 until array.length()).map { index ->
                 val obj = array.getJSONObject(index)
                 CatalogApp(
                     id = obj.optString("id", index.toString()),
-                    name = obj.optString("name", "Unknown App"),
+                    name = obj.optString("name", defaultName),
                     description = resolveDescription(obj, language),
                     iconUrl = obj.optString("iconUrl", ""),
                     category = obj.optString("category", ""),
