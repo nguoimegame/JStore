@@ -80,4 +80,5 @@
     <string name="jstore_store_uninstalling">جارٍ إلغاء تثبيت %1$s…</string>
     <string name="jstore_store_update_app">تحديث</string>
     <string name="jstore_store_update_available">تحديث متوفر</string>
+    <string name="jstore_featured_title">تطبيقات لـ Jaecoo</string>
 </resources>

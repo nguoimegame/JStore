@@ -80,4 +80,5 @@
     <string name="jstore_store_uninstalling">Desinstalando %1$s…</string>
     <string name="jstore_store_update_app">Actualizar</string>
     <string name="jstore_store_update_available">Actualización disponible</string>
+    <string name="jstore_featured_title">Apps para Jaecoo</string>
 </resources>

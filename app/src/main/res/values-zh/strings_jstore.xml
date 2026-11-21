@@ -83,4 +83,5 @@
     <string name="jstore_store_uninstalling">正在卸载 %1$s…</string>
     <string name="jstore_store_update_app">更新</string>
     <string name="jstore_store_update_available">有新版本</string>
+    <string name="jstore_featured_title">Jaecoo 专属应用</string>
 </resources>

@@ -83,4 +83,5 @@
     <string name="jstore_store_uninstalling">Đang gỡ %1$s…</string>
     <string name="jstore_store_update_app">Cập nhật</string>
     <string name="jstore_store_update_available">Có bản mới</string>
+    <string name="jstore_featured_title">Ứng dụng cho Jaecoo</string>
 </resources>

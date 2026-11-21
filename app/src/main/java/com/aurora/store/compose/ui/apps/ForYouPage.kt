@@ -8,15 +8,18 @@ package com.aurora.store.compose.ui.apps
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.aurora.gplayapi.data.models.App
 import com.aurora.gplayapi.data.models.StreamCluster
 import com.aurora.gplayapi.helpers.contracts.StreamContract
 import com.aurora.store.HomeStash
 import com.aurora.store.compose.composable.StreamCarousel
 import com.aurora.store.data.model.ViewState
+import com.aurora.store.jstore.ui.JaecooFeaturedViewModel // jstore
 import com.aurora.store.viewmodel.homestream.StreamViewModel
 
 @Composable
@@ -37,6 +40,12 @@ internal fun ForYouContent(
 
     @Suppress("UNCHECKED_CAST")
     val streamBundle = (state as? ViewState.Success<*>)?.data as? HomeStash
+    // jstore: Jaecoo server apps cluster, Apps tab only
+    val jstoreTopApps = if (pageType == 0) {
+        hiltViewModel<JaecooFeaturedViewModel>().apps.collectAsState().value
+    } else {
+        emptyList()
+    }
     StreamCarousel(
         modifier = Modifier.fillMaxSize(),
         streamBundle = streamBundle?.get(category),
@@ -44,6 +53,7 @@ internal fun ForYouContent(
         onAppClick = onAppClick,
         onClusterScrolled = onClusterScrolled,
         onScrolledToEnd = onScrolledToEnd,
-        showHero = true // jstore
+        showHero = true, // jstore
+        jstoreTopApps = jstoreTopApps // jstore
     )
 }

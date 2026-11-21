@@ -80,4 +80,5 @@
     <string name="jstore_store_uninstalling">%1$s жойылуда…</string>
     <string name="jstore_store_update_app">Жаңарту</string>
     <string name="jstore_store_update_available">Жаңарту қолжетімді</string>
+    <string name="jstore_featured_title">Jaecoo қолданбалары</string>
 </resources>

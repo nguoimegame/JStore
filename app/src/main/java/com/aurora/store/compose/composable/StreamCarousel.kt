@@ -35,6 +35,7 @@ import com.aurora.store.compose.preview.ThemePreviewProvider
 import com.aurora.store.jstore.ui.JstoreAppTile // jstore
 import com.aurora.store.jstore.ui.JstoreClusterCard // jstore
 import com.aurora.store.jstore.ui.JstoreHeroCard // jstore
+import com.aurora.store.jstore.ui.JstoreServerCluster // jstore
 import com.aurora.store.jstore.ui.deduplicateClusters // jstore
 import com.aurora.store.jstore.ui.heroApp // jstore
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -52,7 +53,9 @@ fun StreamCarousel(
     onClusterScrolled: (StreamCluster) -> Unit = {},
     onScrolledToEnd: () -> Unit = {},
     // jstore: featured card above the clusters (For you)
-    showHero: Boolean = false
+    showHero: Boolean = false,
+    // jstore: Jaecoo server apps cluster right after the hero (For you, Apps)
+    jstoreTopApps: List<App> = emptyList()
 ) {
     val bundleLoaded = streamBundle != null
     LaunchedEffect(lazyListState, bundleLoaded) {
@@ -130,6 +133,17 @@ fun StreamCarousel(
                             onClick = { onAppClick(hero) }
                         )
                     }
+                }
+            }
+            if (jstoreTopApps.isNotEmpty()) { // jstore
+                item(key = "jstore_server_cluster") {
+                    JstoreServerCluster(
+                        modifier = Modifier.padding(
+                            horizontal = dimensionResource(R.dimen.jstore_space_lg)
+                        ),
+                        apps = jstoreTopApps,
+                        onAppClick = onAppClick
+                    )
                 }
             }
             displayClusters.forEach { cluster ->

@@ -80,4 +80,5 @@
     <string name="jstore_store_uninstalling">กำลังถอนการติดตั้ง %1$s…</string>
     <string name="jstore_store_update_app">อัปเดต</string>
     <string name="jstore_store_update_available">มีการอัปเดต</string>
+    <string name="jstore_featured_title">แอปสำหรับ Jaecoo</string>
 </resources>
