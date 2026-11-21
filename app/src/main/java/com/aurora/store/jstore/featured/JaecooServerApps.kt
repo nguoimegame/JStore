@@ -136,7 +136,8 @@ class JaecooServerApps @Inject constructor(
         null
     }
 
-    private fun installed(packageName: String): Installed? = try {
+    /** What is installed now for [packageName]; null when it is not installed. */
+    fun installed(packageName: String): Installed? = try {
         val info = PackageUtil.getPackageInfo(context, packageName)
         Installed(
             versionName = info.versionName.orEmpty(),

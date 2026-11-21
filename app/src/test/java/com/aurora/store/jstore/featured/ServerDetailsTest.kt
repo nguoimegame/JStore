@@ -9,6 +9,7 @@ import com.aurora.gplayapi.data.models.App
 import com.aurora.gplayapi.data.models.Artwork
 import com.aurora.gplayapi.data.models.EncodedCertificateSet
 import com.aurora.gplayapi.data.models.PlayFile
+import com.aurora.store.jstore.ui.store.StoreCatalog.CatalogApp
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -32,6 +33,7 @@ class ServerDetailsTest {
         isInstalled = false
     )
 
+    // The merged app from the last load; its install state is stale on purpose.
     private val server = App(
         packageName = pkg,
         displayName = "Server name",
@@ -42,13 +44,34 @@ class ServerDetailsTest {
         versionCode = 21L,
         size = 200L,
         fileList = listOf(PlayFile(name = "$pkg.apk", url = "https://server/app.apk")),
-        certificateSetList = listOf(EncodedCertificateSet(certificateSet = "device", sha256 = "")),
+        certificateSetList = listOf(EncodedCertificateSet(certificateSet = "stale", sha256 = "")),
         isInstalled = true
     )
 
+    private fun entry(downloadUrl: String, version: String = "2.0.0") = ServerEntry(
+        CatalogApp(
+            id = pkg,
+            name = "Server name",
+            description = "",
+            iconUrl = "",
+            category = "",
+            version = version,
+            packageName = pkg,
+            downloadUrl = downloadUrl,
+            fileSize = "",
+            sha256 = ""
+        ),
+        fromCatalogue = true
+    )
+
+    private val fileEntry = entry("/apk/app.apk")
+    private val textEntry = entry("")
+    private val failed = Result.failure<App>(IllegalStateException("not on Play"))
+
     @Test
     fun playWithServerFileTakesServerTextAndFile() {
-        val app = ServerDetails.resolve(Result.success(play), server, hasServerFile = true)!!
+        val live = Installed("1.0.0", 10L, listOf("device"))
+        val app = ServerDetails.resolve(Result.success(play), server, fileEntry, live)!!
 
         assertThat(app.displayName).isEqualTo("Server name")
         assertThat(app.iconArtwork.url).isEqualTo("https://server/icon.png")
@@ -57,17 +80,17 @@ class ServerDetailsTest {
         assertThat(app.versionName).isEqualTo("2.0.0")
         assertThat(app.size).isEqualTo(200L)
         assertThat(app.fileList).isEqualTo(server.fileList)
-        assertThat(app.versionCode).isEqualTo(21L)
-        assertThat(app.certificateSetList).isEqualTo(server.certificateSetList)
         assertThat(app.isInstalled).isTrue()
+        assertThat(app.certificateSetList.map { it.certificateSet }).containsExactly("device")
         // Everything else stays Play's.
         assertThat(app.screenshots).isEqualTo(play.screenshots)
         assertThat(app.labeledRating).isEqualTo("4.5")
     }
 
     @Test
-    fun playWithoutServerFileKeepsPlayFileAndVersionCode() {
-        val app = ServerDetails.resolve(Result.success(play), server, hasServerFile = false)!!
+    fun playWithoutServerFileKeepsPlayFileAndInstallState() {
+        val live = Installed("1.0.0", 10L, listOf("device"))
+        val app = ServerDetails.resolve(Result.success(play), server, textEntry, live)!!
 
         assertThat(app.displayName).isEqualTo("Server name")
         assertThat(app.versionName).isEqualTo("2.0.0")
@@ -80,31 +103,84 @@ class ServerDetailsTest {
     }
 
     @Test
+    fun liveInstallBeatsStaleSnapshotSoNoUpdateLoop() {
+        // Snapshot: not installed, versionCode 11. Live: server 2.0.0 already installed as code 10.
+        val stale = server.copy(isInstalled = false, versionCode = 11L)
+        val live = Installed("2.0.0", 10L, listOf("device"))
+
+        val app = ServerDetails.resolve(Result.success(play), stale, fileEntry, live)!!
+
+        assertThat(app.isInstalled).isTrue()
+        assertThat(app.versionCode).isEqualTo(10L)
+    }
+
+    @Test
+    fun liveInstallOlderThanServerIsOneAbove() {
+        val live = Installed("1.5.0", 15L, listOf("device"))
+
+        val app = ServerDetails.resolve(Result.success(play), server, fileEntry, live)!!
+
+        assertThat(app.versionCode).isEqualTo(16L)
+    }
+
+    @Test
+    fun notInstalledLiveUsesPlayVersionCode() {
+        val app = ServerDetails.resolve(Result.success(play), server, fileEntry, null)!!
+
+        assertThat(app.isInstalled).isFalse()
+        assertThat(app.versionCode).isEqualTo(10L)
+        assertThat(app.certificateSetList).isEqualTo(play.certificateSetList)
+    }
+
+    @Test
+    fun notInstalledServerOnlyUsesOne() {
+        val app = ServerDetails.resolve(failed, server, fileEntry, null)!!
+
+        assertThat(app.isInstalled).isFalse()
+        assertThat(app.versionCode).isEqualTo(1L)
+    }
+
+    @Test
     fun playOnlyWhenServerUnknown() {
-        assertThat(ServerDetails.resolve(Result.success(play), null, hasServerFile = false))
+        val live = Installed("1.0.0", 10L, listOf("device"))
+
+        assertThat(ServerDetails.resolve(Result.success(play), null, null, live))
             .isSameInstanceAs(play)
     }
 
     @Test
     fun playFailsServerOnly() {
-        val failed = Result.failure<App>(IllegalStateException("not on Play"))
+        val live = Installed("2.0.0", 21L, listOf("device"))
+        val app = ServerDetails.resolve(failed, server, fileEntry, live)!!
 
-        assertThat(ServerDetails.resolve(failed, server, hasServerFile = true))
-            .isSameInstanceAs(server)
+        assertThat(app).isEqualTo(
+            server.copy(
+                certificateSetList = listOf(
+                    EncodedCertificateSet(certificateSet = "device", sha256 = "")
+                )
+            )
+        )
+        assertThat(ServerDetails.isServerOnly(failed, server)).isTrue()
     }
 
     @Test
     fun blankPlayFallsBackToServer() {
         val blank = Result.success(App(packageName = pkg))
 
-        assertThat(ServerDetails.resolve(blank, server, hasServerFile = false))
-            .isSameInstanceAs(server)
+        val app = ServerDetails.resolve(blank, server, textEntry, null)!!
+
+        assertThat(app).isEqualTo(server.copy(isInstalled = false))
+        assertThat(ServerDetails.isServerOnly(blank, server)).isTrue()
+    }
+
+    @Test
+    fun playUsableIsNotServerOnly() {
+        assertThat(ServerDetails.isServerOnly(Result.success(play), server)).isFalse()
+        assertThat(ServerDetails.isServerOnly(failed, null)).isFalse()
     }
 
     @Test
     fun bothMissingIsNull() {
-        val failed = Result.failure<App>(IllegalStateException("not on Play"))
-
-        assertThat(ServerDetails.resolve(failed, null, hasServerFile = false)).isNull()
+        assertThat(ServerDetails.resolve(failed, null, null, null)).isNull()
     }
 }

@@ -220,11 +220,13 @@ class AppDetailsViewModel @Inject constructor(
                     if (it is CancellationException || server == null) throw it
                     JstoreLog.w(TAG, "Play has no details for $packageName, using the server's", it)
                 }
-                val hasServerFile =
-                    jaecooServerApps.entry(packageName)?.app?.downloadUrl?.isNotEmpty() == true
-                _app.value = ServerDetails.resolve(play, server, hasServerFile)
-                    ?: error("No details for $packageName")
-                serverOnly = server != null && _app.value === server
+                _app.value = ServerDetails.resolve(
+                    play,
+                    server,
+                    jaecooServerApps.entry(packageName),
+                    jaecooServerApps.installed(packageName)
+                ) ?: error("No details for $packageName")
+                serverOnly = ServerDetails.isServerOnly(play, server)
                 val existingDownload = downloadHelper.getDownload(packageName)
 
                 // A COMPLETED record for an app that is no longer installed means the app was
