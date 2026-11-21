@@ -46,6 +46,9 @@ import com.aurora.store.data.providers.AuthProvider
 import com.aurora.store.data.providers.GoogleAccountTokenProvider
 import com.aurora.store.data.room.download.Download
 import com.aurora.store.data.room.download.DownloadDao
+import com.aurora.store.jstore.JstoreLog
+import com.aurora.store.jstore.featured.JaecooServerApps
+import com.aurora.store.jstore.featured.ServerFiles
 import com.aurora.store.util.CertUtil
 import com.aurora.store.util.NotificationUtil
 import com.aurora.store.util.PackageUtil
@@ -84,6 +87,7 @@ class DownloadWorker @AssistedInject constructor(
     private val appInstaller: AppInstaller,
     private val httpClient: IHttpClient,
     private val accountRepository: AccountRepository,
+    private val jaecooServerApps: JaecooServerApps, // jstore: server apps may ship without a hash
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters
 ) : AuthWorker(authProvider, tokenProvider, context, workerParams) {
@@ -666,6 +670,14 @@ class DownloadWorker @AssistedInject constructor(
 
         if (algorithm == Algorithm.SHA1) {
             Log.w(TAG, "No SHA-256 for ${gFile.name}, falling back to SHA-1")
+        }
+
+        // jstore: trust a hashless file only when it comes from the Jaecoo server
+        if (expectedSha.isBlank() &&
+            ServerFiles.acceptUnverified(gFile, jaecooServerApps::isServerFileUrl)
+        ) {
+            JstoreLog.w(TAG, "Installing ${gFile.name} from the Jaecoo server without a hash")
+            return true
         }
 
         if (expectedSha.isBlank()) return false
