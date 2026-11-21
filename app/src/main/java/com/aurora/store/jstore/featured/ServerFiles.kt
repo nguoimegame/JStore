@@ -27,6 +27,14 @@ object ServerFiles {
         file.sha256.isNotBlank() || file.sha1.isNotBlank()
 
     /**
+     * True when a partial `.tmp` of [file] may be resumed. A hashless Jaecoo server file may not:
+     * the partial could belong to an older server version under the same path, and nothing
+     * would catch the mixed result.
+     */
+    fun mayResumePartial(file: PlayFile, isServerUrl: (String) -> Boolean): Boolean =
+        !acceptUnverified(file, isServerUrl)
+
+    /**
      * True when a 403/410 on [file] should drop the file list so the retry buys fresh Play URLs.
      * A Jaecoo server file has no Play purchase behind it: re-buying would fail, or fetch a
      * different Play APK under the synthetic versionCode.

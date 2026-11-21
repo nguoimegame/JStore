@@ -450,6 +450,13 @@ class DownloadWorker @AssistedInject constructor(
                 verifiedFiles.add(file.absolutePath)
                 return@withContext true
             }
+            // jstore: ... nor is its partial resumed (it may be an older server version)
+            if (!ServerFiles.mayReuseExisting(gFile)) {
+                jaecooServerApps.ensureLoaded()
+                if (!ServerFiles.mayResumePartial(gFile, jaecooServerApps::isServerFileUrl)) {
+                    File(file.absolutePath + ".tmp").delete()
+                }
+            }
 
             try {
                 // Download as a temporary file to avoid installing corrupted files

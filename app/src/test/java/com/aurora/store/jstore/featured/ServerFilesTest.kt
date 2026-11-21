@@ -53,6 +53,20 @@ class ServerFilesTest {
     }
 
     @Test
+    fun hashlessServerFileRestartsFromZero() {
+        val file = PlayFile(name = "app.apk", url = serverUrl)
+        assertThat(ServerFiles.mayResumePartial(file, isServer)).isFalse()
+    }
+
+    @Test
+    fun partialsResumeForPlayAndHashedServerFiles() {
+        val play = PlayFile(name = "base.apk", url = "https://play/base.apk")
+        val hashedServer = PlayFile(name = "app.apk", url = serverUrl, sha256 = "ab")
+        assertThat(ServerFiles.mayResumePartial(play, isServer)).isTrue()
+        assertThat(ServerFiles.mayResumePartial(hashedServer, isServer)).isTrue()
+    }
+
+    @Test
     fun expiredServerUrlFailsWithoutPlayFallback() {
         val file = PlayFile(name = "app.apk", url = serverUrl, sha256 = "ab")
         assertThat(ServerFiles.repurchaseOnExpiredUrl(file, isServer)).isFalse()
