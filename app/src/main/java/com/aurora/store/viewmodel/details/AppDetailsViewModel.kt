@@ -59,6 +59,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async // jstore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -216,13 +217,17 @@ class AppDetailsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 // jstore: prefer the Jaecoo server's data; fall back to it when Play fails.
-                // Wait for the server list briefly only; the load goes on for later callers.
-                withTimeoutOrNull(SERVER_WAIT_MS) { jaecooServerApps.ensureLoaded() }
-                val play = runCatching {
-                    appDetailsHelper.getAppByPackageName(packageName).copy(
-                        isInstalled = PackageUtil.isInstalled(context, packageName)
-                    )
+                // Ask Play while waiting (briefly) for the server list; the load goes on for
+                // later callers.
+                val playLookup = async {
+                    runCatching {
+                        appDetailsHelper.getAppByPackageName(packageName).copy(
+                            isInstalled = PackageUtil.isInstalled(context, packageName)
+                        )
+                    }
                 }
+                withTimeoutOrNull(SERVER_WAIT_MS) { jaecooServerApps.ensureLoaded() }
+                val play = playLookup.await()
                 val server = jaecooServerApps.app(packageName)
                 val entry = jaecooServerApps.entry(packageName)
                 play.exceptionOrNull()?.let {
