@@ -94,6 +94,20 @@ buộc, thứ tự trong file là thứ tự hiển thị:
 
 Thiếu file hoặc file hỏng: coi như danh sách chọn rỗng (vẫn hiện app kho Jaecoo).
 
+**Server: featured.json** (đã cài đặt; schema `apps.json` không được mô tả ở tài liệu nào khác trong repo này,
+nên ghi ở đây, không sửa `docs/jstore-contract.md`):
+
+- Đường dẫn: `<server>/api/featured.json`; `<server>` lấy từ cache catalogue tải lần cuối.
+- Schema: mảng đối tượng như `apps.json`. Bắt buộc `packageName`; tùy chọn `name`, `iconUrl`,
+  `description`/`descriptions`, `version`, `fileSize`, `downloadUrl`, `sha256`, `category`.
+- Thứ tự trong file là thứ tự hiển thị.
+- Quyền sở hữu: mọi package trong `apps.json` thuộc server. Mục `featured.json` chỉ thuộc server khi có
+  `downloadUrl` (tải và cập nhật từ server, trường của server thắng Google Play). Mục chỉ có `packageName`
+  (có thể thêm `name`) thuộc Play và lấy chi tiết từ Play.
+- `sha256` là tùy chọn: file từ server Jaecoo không có `sha256` được cài mà không kiểm hash; file từ Play
+  luôn được kiểm.
+- Cài đặt: `jstore/featured/` (xem §5.2, §5.3, §5.6).
+
 ### 5.2 Tải dữ liệu — `jstore/featured/` (tên gói là đề xuất)
 
 1. Lấy server: thử server trong `server.txt` của cache `jstore_store` (nếu có).
