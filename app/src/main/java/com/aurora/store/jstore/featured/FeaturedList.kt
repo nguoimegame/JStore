@@ -5,12 +5,11 @@
 
 package com.aurora.store.jstore.featured
 
+import com.aurora.store.jstore.ui.store.StoreCache
 import com.aurora.store.jstore.ui.store.StoreCatalog
 import com.aurora.store.jstore.ui.store.StoreCatalog.CatalogApp
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 import org.json.JSONException
 
 /**
@@ -54,26 +53,12 @@ class FeaturedList(private val fetch: (url: String) -> String?, private val cach
         null
     }
 
-    /**
-     * Writes to a temp file next to the cache, then moves it over the cache in one step, so a
-     * failed or concurrent write (the Kho tab and [JaecooServerApps] share this file) never leaves
-     * a partial body behind.
-     */
+    /** Replaced in one step: the Kho tab and [JaecooServerApps] both write this file. */
     private fun writeCache(json: String) {
-        var temp: File? = null
         try {
-            val dir = cacheFile.absoluteFile.parentFile ?: return
-            dir.mkdirs()
-            temp = File.createTempFile(cacheFile.name, ".tmp", dir).also { it.writeText(json) }
-            Files.move(
-                temp.toPath(),
-                cacheFile.toPath(),
-                StandardCopyOption.REPLACE_EXISTING,
-                StandardCopyOption.ATOMIC_MOVE
-            )
+            StoreCache.writeAtomically(cacheFile, json)
         } catch (_: IOException) {
             // Without a cache the next offline start shows no featured apps; nothing else breaks.
-            temp?.delete()
         }
     }
 }

@@ -13,12 +13,13 @@ import com.aurora.gplayapi.data.models.App
 import com.aurora.gplayapi.helpers.AppDetailsHelper
 import com.aurora.store.data.network.HttpClient
 import com.aurora.store.jstore.JstoreLog
+import com.aurora.store.jstore.ui.store.StoreCache
 import com.aurora.store.jstore.ui.store.StoreCatalog
+import com.aurora.store.jstore.ui.store.StoreHttp
 import com.aurora.store.util.CertUtil
 import com.aurora.store.util.PackageUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
-import java.io.IOException
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Provider
@@ -137,11 +138,10 @@ class JaecooServerApps @Inject constructor(
     private suspend fun reload(): Unit = withContext(Dispatchers.IO) {
         gate.attempted()
         try {
-            val dir = File(context.cacheDir, CACHE_DIR)
             val loaded = build(
-                fetch = ::fetchText,
-                cache = StoreCatalog.FileCatalogCache(dir),
-                featuredCache = File(dir, FEATURED_FILE),
+                fetch = { StoreHttp.fetchText(httpClient, TAG, it) },
+                cache = StoreCatalog.FileCatalogCache(StoreCache.dir(context.cacheDir)),
+                featuredCache = StoreCache.featuredFile(context.cacheDir),
                 language = Locale.getDefault().language,
                 play = { appDetailsHelper.get().getAppByPackageName(it) },
                 installed = ::installed
@@ -154,19 +154,6 @@ class JaecooServerApps @Inject constructor(
             // Keep the last good load rather than empty the cluster.
             JstoreLog.w(TAG, "Could not load the Jaecoo server apps", e)
         }
-    }
-
-    private fun fetchText(url: String): String? = try {
-        httpClient.call(url).use { response ->
-            if (response.isSuccessful) response.body.string() else null
-        }
-    } catch (e: IOException) {
-        JstoreLog.w(TAG, "Could not read $url", e)
-        null
-    } catch (e: IllegalArgumentException) {
-        // OkHttp refuses a URL it cannot parse; an uncaught throw here would end jstore's process.
-        JstoreLog.w(TAG, "Not a usable address: $url", e)
-        null
     }
 
     /** What is installed now for [packageName]; null when it is not installed. */
@@ -183,8 +170,6 @@ class JaecooServerApps @Inject constructor(
 
     companion object {
         private const val TAG = "JaecooServerApps"
-        private const val CACHE_DIR = "jstore_store"
-        private const val FEATURED_FILE = "featured.json"
 
         /**
          * One load, blocking: the catalogue (or its cache), the featured list (only its cache when

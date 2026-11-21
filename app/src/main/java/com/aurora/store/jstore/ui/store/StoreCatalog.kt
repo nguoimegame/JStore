@@ -85,10 +85,10 @@ class StoreCatalog(
         }
 
         override fun write(baseUrl: String, json: String) {
+            // Each file is replaced whole: the Kho tab and JaecooServerApps both write here.
             try {
-                directory.mkdirs()
-                body.writeText(json)
-                server.writeText(baseUrl)
+                StoreCache.writeAtomically(body, json)
+                StoreCache.writeAtomically(server, baseUrl)
             } catch (_: IOException) {
                 // Without a cache the next offline start shows an empty catalogue; nothing else breaks.
             }

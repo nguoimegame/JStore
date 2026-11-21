@@ -24,11 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aurora.store.R
 import com.aurora.store.jstore.JaecooConnection
-import com.aurora.store.jstore.JstoreLog
 import com.aurora.store.jstore.embed.StoreHostConfig
 import com.aurora.store.jstore.featured.FeaturedList
-import java.io.File
-import java.io.IOException
 import java.util.Locale
 import kotlin.concurrent.thread
 
@@ -60,11 +57,11 @@ class StoreScreen(
     private val catalogSource =
         StoreCatalog(
             ::fetchText,
-            StoreCatalog.FileCatalogCache(File(context.cacheDir, "jstore_store"))
+            StoreCatalog.FileCatalogCache(StoreCache.dir(context.cacheDir))
         )
 
     private val featuredSource =
-        FeaturedList(::fetchText, File(context.cacheDir, "jstore_store/featured.json"))
+        FeaturedList(::fetchText, StoreCache.featuredFile(context.cacheDir))
 
     private val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
     private val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
@@ -245,6 +242,9 @@ class StoreScreen(
         val language = config.language ?: Locale.getDefault().language
         thread(name = "store-catalog") {
             val loaded = catalogSource.load(config.serverUrls, language)
+            // The manager gets the plain catalogue now, from this thread so the featured one
+            // below always lands after it; a featured.json that never loads leaves it in place.
+            if (loaded != null && loaded.apps.isNotEmpty()) managerCatalog = loaded
             onUi {
                 progressBar.visibility = View.GONE
                 if (loaded != null && loaded.apps.isNotEmpty()) {
@@ -542,20 +542,8 @@ class StoreScreen(
         fetchText(url, mapOf("Accept" to "application/vnd.github+json"))
     }
 
-    private fun fetchText(url: String): String? = fetchText(url, emptyMap())
-
-    private fun fetchText(url: String, headers: Map<String, String>): String? = try {
-        deps.httpClient.call(url, headers).use { response ->
-            if (response.isSuccessful) response.body.string() else null
-        }
-    } catch (e: IOException) {
-        JstoreLog.w(TAG, "Could not read $url", e)
-        null
-    } catch (e: IllegalArgumentException) {
-        // OkHttp refuses a URL it cannot parse; an uncaught throw here would end jstore's process.
-        JstoreLog.w(TAG, "Not a usable address: $url", e)
-        null
-    }
+    private fun fetchText(url: String, headers: Map<String, String> = emptyMap()): String? =
+        StoreHttp.fetchText(deps.httpClient, TAG, url, headers)
 
     companion object {
         private const val TAG = "StoreScreen"
