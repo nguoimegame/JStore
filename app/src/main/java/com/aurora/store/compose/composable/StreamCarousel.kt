@@ -6,10 +6,12 @@
 package com.aurora.store.compose.composable
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column // jstore
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope // jstore
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -91,6 +93,17 @@ fun StreamCarousel(
         }
 
     if (clusters.isEmpty()) {
+        if (jstoreTopApps.isNotEmpty()) { // jstore: the server cluster stays above the placeholder
+            Column(modifier = modifier.fillMaxSize()) {
+                JstoreServerClusterCard(jstoreTopApps, onAppClick)
+                Placeholder(
+                    modifier = Modifier.weight(1f),
+                    painter = painterResource(R.drawable.ic_apps),
+                    message = stringResource(R.string.no_apps_available)
+                )
+            }
+            return
+        }
         Placeholder(
             modifier = modifier,
             painter = painterResource(R.drawable.ic_apps),
@@ -113,6 +126,7 @@ fun StreamCarousel(
         )
     ) {
         if (clusters.size == 1) {
+            jstoreServerClusterItem(jstoreTopApps, onAppClick) // jstore
             val apps = clusters.first().clusterAppList
             items(count = apps.size, key = { apps[it].id }) { index ->
                 LargeAppListItem(
@@ -135,17 +149,7 @@ fun StreamCarousel(
                     }
                 }
             }
-            if (jstoreTopApps.isNotEmpty()) { // jstore
-                item(key = "jstore_server_cluster") {
-                    JstoreServerCluster(
-                        modifier = Modifier.padding(
-                            horizontal = dimensionResource(R.dimen.jstore_space_lg)
-                        ),
-                        apps = jstoreTopApps,
-                        onAppClick = onAppClick
-                    )
-                }
-            }
+            jstoreServerClusterItem(jstoreTopApps, onAppClick) // jstore
             displayClusters.forEach { cluster ->
                 // jstore: each cluster is one card (title, "See all", row of tiles)
                 item(key = "cluster_${cluster.id}") {
@@ -174,6 +178,22 @@ fun StreamCarousel(
             item(key = "shimmer_footer") { ShimmerCarouselSection() }
         }
     }
+}
+
+// jstore: the Jaecoo server apps cluster, as one list item when there are any
+private fun LazyListScope.jstoreServerClusterItem(apps: List<App>, onAppClick: (App) -> Unit) {
+    if (apps.isEmpty()) return
+    item(key = "jstore_server_cluster") { JstoreServerClusterCard(apps, onAppClick) }
+}
+
+// jstore
+@Composable
+private fun JstoreServerClusterCard(apps: List<App>, onAppClick: (App) -> Unit) {
+    JstoreServerCluster(
+        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.jstore_space_lg)),
+        apps = apps,
+        onAppClick = onAppClick
+    )
 }
 
 @Composable
