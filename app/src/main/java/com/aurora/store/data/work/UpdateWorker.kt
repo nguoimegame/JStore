@@ -36,6 +36,8 @@ import com.aurora.store.data.room.update.IgnoredUpdateDao
 import com.aurora.store.data.room.update.Update
 import com.aurora.store.data.room.update.UpdateDao
 import com.aurora.store.data.room.update.isIgnoredBy
+import com.aurora.store.jstore.featured.JaecooServerApps
+import com.aurora.store.jstore.featured.ServerUpdates
 import com.aurora.store.util.CertUtil
 import com.aurora.store.util.NotificationUtil
 import com.aurora.store.util.PackageUtil
@@ -73,6 +75,7 @@ class UpdateWorker @AssistedInject constructor(
     private val authProvider: AuthProvider,
     tokenProvider: GoogleAccountTokenProvider,
     private val appDetailsHelper: AppDetailsHelper,
+    private val jaecooServerApps: JaecooServerApps, // jstore: server-owned app updates
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters
 ) : AuthWorker(authProvider, tokenProvider, context, workerParams) {
@@ -233,7 +236,11 @@ class UpdateWorker @AssistedInject constructor(
                 emptySet()
             }
 
-            val updates = appDetailsHelper.getAppByPackageName(filteredPackages)
+            // jstore: server-owned packages take their updates from the Jaecoo server only.
+            jaecooServerApps.refresh()
+            val serverOwned = jaecooServerApps.ownedPackages()
+            val updates = appDetailsHelper
+                .getAppByPackageName(ServerUpdates.forPlay(filteredPackages, serverOwned))
                 .filter { it.displayName.isNotEmpty() }
                 .filter { PackageUtil.isUpdatable(context, it.packageName, it.versionCode) }
                 .toMutableList()
@@ -250,6 +257,13 @@ class UpdateWorker @AssistedInject constructor(
             } else {
                 updateDao.delete(context.packageName)
             }
+
+            // jstore: server updates skip the Aurora-only / installer filters, not the blacklist.
+            updates += ServerUpdates.updates(
+                serverOwned.filterNot { blacklistProvider.isBlacklisted(it) }.toSet(),
+                jaecooServerApps::app,
+                jaecooServerApps::installed
+            )
 
             return@withContext updates.map {
                 Update.fromApp(
