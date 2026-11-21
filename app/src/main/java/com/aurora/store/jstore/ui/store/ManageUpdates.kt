@@ -10,8 +10,8 @@ import com.aurora.store.jstore.PlayVersion
 
 /**
  * Which installed apps have a newer build, and where it comes from, in the order JaecooApp's
- * app manager used: jstore from its GitHub releases, apps in the Jaecoo catalogue from the
- * catalogue, everything else from Google Play.
+ * app manager used: jstore from its GitHub releases, apps the Jaecoo catalogue ships (with a
+ * `downloadUrl`) from the catalogue, everything else from Google Play.
  */
 object ManageUpdates {
 
@@ -59,9 +59,10 @@ object ManageUpdates {
         val others = apps.filter { it.packageName != JSTORE_PACKAGE }
         updates += catalogUpdates(others, catalog)
 
-        val catalogPackages = catalog?.apps?.map {
-            it.packageName
-        }?.filter { it.isNotEmpty() }?.toSet().orEmpty()
+        // Only apps the catalogue ships stay away from Play; a URL-less entry is a Play app.
+        val catalogPackages = catalog?.apps
+            ?.filter { it.downloadUrl.isNotEmpty() && it.packageName.isNotEmpty() }
+            ?.map { it.packageName }?.toSet().orEmpty()
         val forPlay = others.filter { it.packageName !in catalogPackages }
         if (forPlay.isNotEmpty()) {
             updates +=

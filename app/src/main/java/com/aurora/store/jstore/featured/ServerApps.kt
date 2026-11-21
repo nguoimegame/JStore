@@ -29,9 +29,11 @@ object ServerApps {
             .filter { it.app.packageName.isNotBlank() }
             .distinctBy { it.app.packageName }
 
-    /** The server ships (or vouches for) this app, as opposed to only naming a Play app. */
-    fun isServerOwned(entry: ServerEntry): Boolean =
-        entry.fromCatalogue || entry.app.downloadUrl.isNotEmpty()
+    /**
+     * The server ships this app's APK. In either file, an entry without a `downloadUrl` only
+     * names a Play app: it lends its text, but Play owns its updates.
+     */
+    fun isServerOwned(entry: ServerEntry): Boolean = entry.app.downloadUrl.isNotEmpty()
 
     /**
      * The code the update pipeline compares: one above the installed code when the server version

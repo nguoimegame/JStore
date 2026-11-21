@@ -48,11 +48,16 @@ class ServerAppsTest {
 
     @Test
     fun ownership() {
-        assertThat(ServerApps.isServerOwned(serverEntry(entry("a"), fromCatalogue = true))).isTrue()
-        assertThat(
-            ServerApps.isServerOwned(serverEntry(entry("a", downloadUrl = "/a.apk")))
-        ).isTrue()
+        val withUrl = entry("a", downloadUrl = "/a.apk")
+        assertThat(ServerApps.isServerOwned(serverEntry(withUrl, fromCatalogue = true))).isTrue()
+        assertThat(ServerApps.isServerOwned(serverEntry(withUrl))).isTrue()
         assertThat(ServerApps.isServerOwned(serverEntry(entry("a")))).isFalse()
+    }
+
+    @Test
+    fun catalogueEntryWithoutUrlIsPlayOwned() {
+        assertThat(ServerApps.isServerOwned(serverEntry(entry("a"), fromCatalogue = true)))
+            .isFalse()
     }
 
     @Test

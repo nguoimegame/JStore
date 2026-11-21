@@ -74,6 +74,24 @@ class ManageUpdatesTest {
     }
 
     @Test
+    fun pickSendsUrlLessCatalogueAppToPlay() {
+        val asked = mutableListOf<String>()
+        val catalog = StoreCatalog.Catalog(
+            "https://a",
+            listOf(catalogApp("com.spotify", "9.0").copy(downloadUrl = "")),
+            false
+        )
+        val updates = ManageUpdates.pick(listOf(app("com.spotify", "1.0", 1)), null, catalog) {
+            asked += it
+            listOf(PlayVersion("com.spotify", 5, "2.0", isFree = true))
+        }
+        assertThat(asked).containsExactly("com.spotify")
+        val spotify = updates.getValue("com.spotify")
+        assertThat(spotify.source).isEqualTo(ManageUpdates.Source.PLAY)
+        assertThat(spotify.versionCode).isEqualTo(5)
+    }
+
+    @Test
     fun playAppUpdatesByVersionCode() {
         val updates = ManageUpdates.pick(listOf(app("x.y", "1", 1)), null, null) {
             listOf(PlayVersion("x.y", 9, "2", isFree = true))

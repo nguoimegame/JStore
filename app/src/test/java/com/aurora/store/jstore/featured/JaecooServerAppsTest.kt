@@ -107,8 +107,8 @@ class JaecooServerAppsTest {
         assertThat(snapshot.apps.map { it.packageName })
             .containsExactly("com.jaecoo.music", "com.jaecoo.radio")
             .inOrder()
-        assertThat(snapshot.ownedPackages())
-            .containsExactly("com.jaecoo.music", "com.spotify.music", "com.jaecoo.radio")
+        // Spotify is in apps.json without a downloadUrl: Play owns it.
+        assertThat(snapshot.ownedPackages()).containsExactly("com.jaecoo.music", "com.jaecoo.radio")
         assertThat(snapshot.entry("com.waze")?.fromCatalogue).isFalse()
         assertThat(snapshot.app("com.spotify.music")).isNull()
     }
@@ -133,6 +133,19 @@ class JaecooServerAppsTest {
             .containsExactly("com.jaecoo.music", "com.waze", "com.jaecoo.radio")
             .inOrder()
         assertThat(snapshot.app("com.waze")?.displayName).isEqualTo("Waze")
+    }
+
+    @Test
+    fun urlLessCatalogueAppIsSentToPlay() {
+        cache().write("https://srv", catalogue)
+
+        val snapshot = build(fetch = ::live)
+        val forPlay = ServerUpdates.forPlay(
+            listOf("com.jaecoo.music", "com.spotify.music", "com.waze", "com.jaecoo.radio"),
+            snapshot.ownedPackages()
+        )
+
+        assertThat(forPlay).containsExactly("com.spotify.music", "com.waze").inOrder()
     }
 
     @Test

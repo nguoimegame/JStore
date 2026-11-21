@@ -59,8 +59,10 @@ Thành công khi:
   Tab Kho ứng dụng hiện cài file catalogue không có mã băm (`StoreCatalog.sha256Matches` trả true khi rỗng);
   người dùng chốt giữ cùng hành vi đó cho jstore.
 - Trình quản lý app trong JaecooApp (`JstoreUpdateService` → `PlayUpdates`, danh sách cập nhật từ
-  `ManageUpdates.pick`) đã coi **mọi** package trong `apps.json` là do catalogue quản lý: lấy cập nhật từ
-  catalogue (nếu có `downloadUrl` và tên phiên bản mới hơn), không bao giờ hỏi Play.
+  `ManageUpdates.pick`) trước đây coi **mọi** package trong `apps.json` là do catalogue quản lý. Người dùng
+  chốt đổi: chỉ package trong `apps.json` **có `downloadUrl`** lấy cập nhật từ catalogue (khi tên phiên bản
+  mới hơn) và không bao giờ hỏi Play; package trong `apps.json` không có `downloadUrl` được hỏi Play như
+  mọi app khác.
 - `apps.json` chỉ có `version` dạng tên (`"2.1.0"`), không có `versionCode`; người dùng chọn **so theo
   tên phiên bản** (như `ManageUpdates.isVersionNewer`), không thêm `versionCode` vào server.
 
@@ -101,9 +103,10 @@ nên ghi ở đây, không sửa `docs/jstore-contract.md`):
 - Schema: mảng đối tượng như `apps.json`. Bắt buộc `packageName`; tùy chọn `name`, `iconUrl`,
   `description`/`descriptions`, `version`, `fileSize`, `downloadUrl`, `sha256`, `category`.
 - Thứ tự trong file là thứ tự hiển thị.
-- Quyền sở hữu: mọi package trong `apps.json` thuộc server. Mục `featured.json` chỉ thuộc server khi có
-  `downloadUrl` (tải và cập nhật từ server, trường của server thắng Google Play). Mục chỉ có `packageName`
-  (có thể thêm `name`) thuộc Play và lấy chi tiết từ Play.
+- Quyền sở hữu (giống nhau cho `apps.json` và `featured.json`): một mục chỉ thuộc server khi có
+  `downloadUrl` (tải và cập nhật từ server, trường của server thắng Google Play). Mục không có
+  `downloadUrl` thuộc Play: vẫn hiện trong cụm và cho trang chi tiết mượn tên/icon/mô tả, nhưng cập nhật
+  lấy từ Play.
 - `sha256` là tùy chọn: file từ server Jaecoo không có `sha256` được cài mà không kiểm hash; file từ Play
   luôn được kiểm.
 - Cài đặt: `jstore/featured/` (xem §5.2, §5.3, §5.6).
@@ -140,12 +143,11 @@ Phần 2–5 là logic thuần (đầu vào: chuỗi JSON + danh sách `App` Pla
 Đánh dấu "nguồn server": giữ một bản đồ `packageName → ServerApp` trong repository để các bước sau
 (chi tiết, cập nhật) biết app nào tải từ server, thay vì nhét cờ vào `App`.
 
-**App nào thuộc server** (quyết định của người viết, để khớp `ManageUpdates` sẵn có):
+**App nào thuộc server** (người dùng chốt; cùng một quy tắc cho cả hai file và cả hai danh sách cập nhật):
 
-- Mọi package trong `apps.json`: thuộc server, có hay không có `downloadUrl`. Không có `downloadUrl` thì
-  không cập nhật từ đâu cả (như `ManageUpdates` hôm nay), nhưng vẫn cài được từ Play nếu Play có.
-- Mục `featured.json` có `downloadUrl`: thuộc server.
-- Mục `featured.json` không có `downloadUrl`: thuộc Play (chỉ mượn tên/icon/mô tả từ server).
+- Mục có `downloadUrl` (trong `apps.json` hay `featured.json`): thuộc server.
+- Mục không có `downloadUrl` (trong `apps.json` hay `featured.json`): thuộc Play. Vẫn hiện trong cụm, vẫn
+  cho trang chi tiết mượn tên/icon/mô tả, nhưng cập nhật lấy từ Play ở tab Cập nhật của jstore.
 
 **Thiếu `sha256`** (người dùng chốt: cho phép, như tab Kho ứng dụng): `DownloadWorker.verifyFile`
 (upstream, `// jstore:`) coi file là hợp lệ khi không có mã băm **và** URL của file là link server Jaecoo
@@ -194,9 +196,9 @@ Phần 2–5 là logic thuần (đầu vào: chuỗi JSON + danh sách `App` Pla
 Một quy tắc chọn nguồn dùng chung cho **cả hai nơi** (người dùng chốt: giống nhau), viết một lần trong
 jstore và gọi từ cả hai:
 
-- Package thuộc server (theo 5.3): cập nhật chỉ từ server khi có `downloadUrl` và tên phiên bản server mới
-  hơn bản đang cài; không bao giờ lấy bản Play.
-- Package khác: Play như cũ.
+- Package thuộc server (theo 5.3, tức là có `downloadUrl`): cập nhật chỉ từ server khi tên phiên bản server
+  mới hơn bản đang cài; không bao giờ lấy bản Play.
+- Package khác, kể cả mục `apps.json` không có `downloadUrl`: Play như cũ.
 
 **Tab Cập nhật của jstore** — `UpdateWorker.checkUpdates` (upstream, `// jstore:`):
 
@@ -212,8 +214,10 @@ jstore và gọi từ cả hai:
   mọi lỗi cài khác.
 
 **Trình quản lý app trong JaecooApp** — `ManageUpdates.pick` (jstore): danh sách catalogue đưa vào là
-`apps.json` **cộng** các mục `featured.json` có `downloadUrl` (bỏ trùng, `apps.json` thắng). `ManagePanel` /
-`JstoreUpdateService` cần tải thêm `featured.json` (cùng cache) khi dựng danh sách đó.
+`apps.json` **cộng** các mục `featured.json` có `downloadUrl` (bỏ trùng, `apps.json` thắng). Chỉ các mục có
+`downloadUrl` trong danh sách đó được giữ khỏi Play; mục `apps.json` không có `downloadUrl` được hỏi Play như
+mọi app khác. `ManagePanel` / `JstoreUpdateService` cần tải thêm `featured.json` (cùng cache) khi dựng danh
+sách đó.
 
 Hai đường cài (tab Kho ứng dụng qua `StoreOps`, jstore qua `DownloadWorker`) có thể cùng cài một package.
 Quyết định của người viết: chấp nhận ở đợt này, vì JaecooApp xử lý từng yêu cầu cài; ghi lại để theo dõi
