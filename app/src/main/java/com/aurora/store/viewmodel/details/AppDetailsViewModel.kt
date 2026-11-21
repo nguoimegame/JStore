@@ -74,7 +74,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull // jstore
 import kotlinx.serialization.json.Json
+
+// jstore: how long details waits for the Jaecoo server list before going on without it
+private const val SERVER_WAIT_MS = 3_000L
 
 @HiltViewModel
 class AppDetailsViewModel @Inject constructor(
@@ -96,6 +100,9 @@ class AppDetailsViewModel @Inject constructor(
 
     private val _app = MutableStateFlow<App?>(null)
     val app = _app.asStateFlow()
+
+    // jstore: the Play lookup behind [app], to work a server app out again after an install
+    private var serverPlay: Result<App>? = null
 
     private val _state = MutableStateFlow<AppState>(AppState.Loading)
     val state = _state.asStateFlow()
@@ -208,22 +215,26 @@ class AppDetailsViewModel @Inject constructor(
         var serverOnly = false // jstore: Play does not know the app, the Jaecoo server does
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // jstore: prefer the Jaecoo server's data; fall back to it when Play fails
-                jaecooServerApps.ensureLoaded()
+                // jstore: prefer the Jaecoo server's data; fall back to it when Play fails.
+                // Wait for the server list briefly only; the load goes on for later callers.
+                withTimeoutOrNull(SERVER_WAIT_MS) { jaecooServerApps.ensureLoaded() }
                 val play = runCatching {
                     appDetailsHelper.getAppByPackageName(packageName).copy(
                         isInstalled = PackageUtil.isInstalled(context, packageName)
                     )
                 }
                 val server = jaecooServerApps.app(packageName)
+                val entry = jaecooServerApps.entry(packageName)
                 play.exceptionOrNull()?.let {
-                    if (it is CancellationException || server == null) throw it
+                    if (it is CancellationException) throw it
+                    if (!ServerDetails.fallsBackOnPlayFailure(entry, server)) throw it
                     JstoreLog.w(TAG, "Play has no details for $packageName, using the server's", it)
                 }
+                serverPlay = play
                 _app.value = ServerDetails.resolve(
                     play,
                     server,
-                    jaecooServerApps.entry(packageName),
+                    entry,
                     jaecooServerApps.installed(packageName)
                 ) ?: error("No details for $packageName")
                 serverOnly = ServerDetails.isServerOnly(play, server)
@@ -416,6 +427,10 @@ class AppDetailsViewModel @Inject constructor(
                 if (event is InstallerEvent.Failed) {
                     _installError.value = InstallError(event.error, event.extra)
                 }
+                // jstore: a server APK's update state follows what is installed now
+                if (event is InstallerEvent.Installed || event is InstallerEvent.Uninstalled) {
+                    reresolveServerApp(event.packageName)
+                }
                 _state.value = when {
                     event is InstallerEvent.Installing -> AppState.Installing(event.progress)
                     else -> defaultAppState
@@ -425,6 +440,20 @@ class AppDetailsViewModel @Inject constructor(
         download.filterNotNull().onEach {
             _state.value = stateFromDownload(it)
         }.launchIn(viewModelScope)
+    }
+
+    // jstore: [app] was worked out against the install state of fetch time; for an app the
+    // Jaecoo server ships, an install or uninstall changes its versionCode, so resolve it again.
+    private fun reresolveServerApp(packageName: String) {
+        val play = serverPlay ?: return
+        val entry = jaecooServerApps.entry(packageName)
+        if (entry?.app?.downloadUrl.isNullOrEmpty()) return
+        ServerDetails.resolve(
+            play,
+            jaecooServerApps.app(packageName),
+            entry,
+            jaecooServerApps.installed(packageName)
+        )?.let { _app.value = it }
     }
 
     // COMPLETED is bridged to Installing so the UI doesn't briefly fall back to the

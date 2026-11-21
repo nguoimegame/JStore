@@ -41,8 +41,7 @@ object ServerApps {
         when {
             installed == null -> playVersionCode ?: 1L
             ManageUpdates.isVersionNewer(serverVersion, installed.versionName) ->
-                installed.versionCode +
-                    1
+                installed.versionCode + 1
             else -> installed.versionCode
         }
 

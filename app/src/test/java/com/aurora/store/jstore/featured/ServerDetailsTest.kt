@@ -183,4 +183,27 @@ class ServerDetailsTest {
     fun bothMissingIsNull() {
         assertThat(ServerDetails.resolve(failed, null, null, null)).isNull()
     }
+
+    @Test
+    fun reResolveAfterInstallOfOlderServerBuildIsNotUpdatable() {
+        // Play has 10; the server hosts the older 1.0.0, installed from the server as code 7.
+        val olderEntry = entry("/apk/app.apk", version = "1.0.0")
+        val before = ServerDetails.resolve(Result.success(play), server, olderEntry, null)!!
+        val live = Installed("1.0.0", 7L, listOf("device"))
+
+        val after = ServerDetails.resolve(Result.success(play), server, olderEntry, live)!!
+
+        assertThat(before.versionCode).isEqualTo(10L)
+        assertThat(after.versionCode).isEqualTo(7L)
+        assertThat(after.isInstalled).isTrue()
+        assertThat(after.certificateSetList.map { it.certificateSet }).containsExactly("device")
+    }
+
+    @Test
+    fun playFailureFallsBackOnlyForServerFiles() {
+        assertThat(ServerDetails.fallsBackOnPlayFailure(fileEntry, server)).isTrue()
+        assertThat(ServerDetails.fallsBackOnPlayFailure(textEntry, server)).isFalse()
+        assertThat(ServerDetails.fallsBackOnPlayFailure(null, server)).isFalse()
+        assertThat(ServerDetails.fallsBackOnPlayFailure(fileEntry, null)).isFalse()
+    }
 }

@@ -245,16 +245,10 @@ class StoreScreen(
         val language = config.language ?: Locale.getDefault().language
         thread(name = "store-catalog") {
             val loaded = catalogSource.load(config.serverUrls, language)
-            val forManager = if (loaded != null && loaded.apps.isNotEmpty()) {
-                ManageUpdates.withFeatured(loaded, featuredSource.load(loaded.baseUrl, language))
-            } else {
-                null
-            }
             onUi {
                 progressBar.visibility = View.GONE
                 if (loaded != null && loaded.apps.isNotEmpty()) {
                     catalog = loaded
-                    managerCatalog = forManager
                     serverBaseUrl = loaded.baseUrl
                     if (loaded.fromCache) {
                         setOffline()
@@ -273,6 +267,16 @@ class StoreScreen(
                     setOffline()
                     setupAdapter(emptyList())
                 }
+            }
+            // The Kho list is up already; the manager's featured apps follow. A catalogue from the
+            // cache means the server did not answer, so featured.json comes from its cache too.
+            if (loaded != null && loaded.apps.isNotEmpty()) {
+                val featured = if (loaded.fromCache) {
+                    featuredSource.cached(language)
+                } else {
+                    featuredSource.load(loaded.baseUrl, language)
+                }
+                managerCatalog = ManageUpdates.withFeatured(loaded, featured)
             }
         }
     }

@@ -64,4 +64,28 @@ class FeaturedListTest {
 
         assertThat(list.load("https://a", "en")).isEmpty()
     }
+
+    @Test
+    fun cacheHoldsLastFullBodyAndNoTempFiles() {
+        val newer = """[{"id":"maps","name":"Maps","packageName":"com.maps"}]"""
+        var body = json
+        val list = FeaturedList(fetch = { body }, cacheFile = cacheFile())
+
+        list.load("https://a", "en")
+        body = newer
+        list.load("https://a", "en")
+
+        assertThat(cacheFile().readText()).isEqualTo(newer)
+        assertThat(cacheFile().parentFile!!.list()!!.toList()).containsExactly("featured.json")
+    }
+
+    @Test
+    fun cachedReadsOnlyTheCache() {
+        cacheFile().apply { parentFile!!.mkdirs() }.writeText(json)
+
+        val apps = FeaturedList(fetch = { error("no network") }, cacheFile = cacheFile())
+            .cached("en")
+
+        assertThat(apps.map { it.packageName }).containsExactly("com.waze")
+    }
 }

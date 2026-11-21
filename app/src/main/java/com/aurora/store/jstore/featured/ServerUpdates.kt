@@ -18,15 +18,17 @@ object ServerUpdates {
         packages.filterNot { it in owned }
 
     /**
-     * Server updates for [owned]: a package is included iff it is installed, its merged
-     * app has a server APK in `fileList`, and that app's versionCode is above the
+     * Server updates for [owned]: a package is included iff it is not [self] (jstore updates
+     * itself through its own release, never through the server catalogue), it is installed, its
+     * merged app has a server APK in `fileList`, and that app's versionCode is above the
      * installed one.
      */
     fun updates(
         owned: Set<String>,
+        self: String,
         appOf: (String) -> App?,
         installed: (String) -> Installed?
-    ): List<App> = owned.mapNotNull { pkg ->
+    ): List<App> = owned.filterNot { it == self }.mapNotNull { pkg ->
         val current = installed(pkg) ?: return@mapNotNull null
         val app = appOf(pkg) ?: return@mapNotNull null
         app.takeIf { it.fileList.isNotEmpty() && it.versionCode > current.versionCode }

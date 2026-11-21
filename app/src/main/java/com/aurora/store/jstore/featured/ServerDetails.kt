@@ -16,6 +16,14 @@ object ServerDetails {
         server != null && play.getOrNull()?.displayName.isNullOrBlank()
 
     /**
+     * When Play fails, the server copy is shown only for an app the server ships ([entry] has a
+     * `downloadUrl`). Otherwise the failure is handled as upstream does (an expired token goes
+     * back to Splash), since a Play-owned copy from the last load would be stale and has no file.
+     */
+    fun fallsBackOnPlayFailure(entry: ServerEntry?, server: App?): Boolean =
+        server != null && !entry?.app?.downloadUrl.isNullOrEmpty()
+
+    /**
      * [play] is the Play lookup, [server] the merged server app from the last load (null when the
      * server does not list the package), [entry] its server entry, [installed] what is installed
      * right now (read at fetch time, never from the load's snapshot).

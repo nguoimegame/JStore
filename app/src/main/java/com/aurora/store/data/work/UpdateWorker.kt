@@ -261,6 +261,7 @@ class UpdateWorker @AssistedInject constructor(
             // jstore: server updates skip the Aurora-only / installer filters, not the blacklist.
             updates += ServerUpdates.updates(
                 serverOwned.filterNot { blacklistProvider.isBlacklisted(it) }.toSet(),
+                context.packageName,
                 jaecooServerApps::app,
                 jaecooServerApps::installed
             )

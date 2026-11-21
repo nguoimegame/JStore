@@ -7,6 +7,7 @@ package com.aurora.store.jstore.featured
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.SystemClock
 import androidx.core.content.pm.PackageInfoCompat
 import com.aurora.gplayapi.data.models.App
 import com.aurora.gplayapi.helpers.AppDetailsHelper
@@ -23,10 +24,14 @@ import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -43,8 +48,17 @@ class JaecooServerApps @Inject constructor(
     private val appDetailsHelper: Provider<AppDetailsHelper>
 ) {
 
-    /** One load: every server entry, the apps they merged into, and the server that answered. */
-    data class Snapshot(val entries: List<ServerEntry>, val apps: List<App>, val baseUrl: String) {
+    /**
+     * One load: every server entry, the apps they merged into, and the server that answered.
+     * [complete] is true when the catalogue came live from the server and the Play lookup worked;
+     * an incomplete load is tried again (see [ServerLoadGate]).
+     */
+    data class Snapshot(
+        val entries: List<ServerEntry>,
+        val apps: List<App>,
+        val baseUrl: String,
+        val complete: Boolean = false
+    ) {
 
         /** True when a server was known (the Kho tab's cache exists). */
         val found: Boolean get() = baseUrl.isNotEmpty()
@@ -76,6 +90,14 @@ class JaecooServerApps @Inject constructor(
 
     private val mutex = Mutex()
 
+    private val gate = ServerLoadGate(SystemClock::elapsedRealtime)
+
+    // Loads started by ensureLoaded run here, not in the caller: a caller that stops waiting
+    // (a details screen's timeout, a closed screen) must not cancel the load for everyone else.
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    private var loading: Job? = null
+
     @Volatile
     private var snapshot = Snapshot.EMPTY
 
@@ -87,10 +109,20 @@ class JaecooServerApps @Inject constructor(
     /** Loads again from the server (or its cache). Never throws. */
     suspend fun refresh(): Unit = mutex.withLock { reload() }
 
-    /** Loads once a server has been found; until then every call tries again. */
+    /**
+     * Loads unless the last load was complete; an incomplete one is retried at most every
+     * [ServerLoadGate.RETRY_GAP_MS]. The load runs in this repository's own scope, so cancelling
+     * the caller (say, `withTimeoutOrNull`) only stops the wait.
+     */
     suspend fun ensureLoaded() {
-        if (snapshot.found) return
-        mutex.withLock { if (!snapshot.found) reload() }
+        if (!gate.shouldLoad(snapshot)) return
+        startLoad().join()
+    }
+
+    private fun startLoad(): Job = synchronized(this) {
+        loading?.takeIf { it.isActive } ?: scope.launch {
+            mutex.withLock { if (gate.shouldLoad(snapshot)) reload() }
+        }.also { loading = it }
     }
 
     fun entry(packageName: String): ServerEntry? = snapshot.entry(packageName)
@@ -103,6 +135,7 @@ class JaecooServerApps @Inject constructor(
 
     @Suppress("TooGenericExceptionCaught")
     private suspend fun reload(): Unit = withContext(Dispatchers.IO) {
+        gate.attempted()
         try {
             val dir = File(context.cacheDir, CACHE_DIR)
             val loaded = build(
@@ -154,9 +187,10 @@ class JaecooServerApps @Inject constructor(
         private const val FEATURED_FILE = "featured.json"
 
         /**
-         * One load, blocking: the catalogue (or its cache), the featured list (or its cache), then
-         * one Play lookup for every package. [Snapshot.EMPTY] when no server was ever reached.
-         * A failing [play] counts as Play knowing none of the apps.
+         * One load, blocking: the catalogue (or its cache), the featured list (only its cache when
+         * the catalogue came from the cache), then one Play lookup for every package.
+         * [Snapshot.EMPTY] when no server was ever reached. A failing [play] counts as Play knowing
+         * none of the apps, and makes the snapshot incomplete.
          */
         @Suppress("TooGenericExceptionCaught")
         internal fun build(
@@ -170,9 +204,17 @@ class JaecooServerApps @Inject constructor(
             val (cachedBaseUrl, _) = cache.read() ?: return Snapshot.EMPTY
             val catalog = StoreCatalog(fetch, cache).load(listOf(cachedBaseUrl), language)
             val baseUrl = catalog?.baseUrl ?: cachedBaseUrl
-            val featured = FeaturedList(fetch, featuredCache).load(baseUrl, language)
+            val live = catalog != null && !catalog.fromCache
+            val featuredList = FeaturedList(fetch, featuredCache)
+            // The server just failed to answer for the catalogue: use the featured cache only.
+            val featured = if (live) {
+                featuredList.load(baseUrl, language)
+            } else {
+                featuredList.cached(language)
+            }
             val entries = ServerApps.entries(catalog?.apps.orEmpty(), featured)
             val packages = entries.map { it.app.packageName }
+            var playOk = true
             val playApps: Map<String, App> = try {
                 if (packages.isEmpty()) {
                     emptyMap()
@@ -181,10 +223,11 @@ class JaecooServerApps @Inject constructor(
                 }
             } catch (e: Exception) {
                 JstoreLog.w(TAG, "Play lookup for the Jaecoo server apps failed", e)
+                playOk = false
                 emptyMap()
             }
             val apps = ServerApps.assemble(entries, baseUrl, playApps, installed)
-            return Snapshot(entries, apps, baseUrl)
+            return Snapshot(entries, apps, baseUrl, complete = live && playOk)
         }
     }
 }

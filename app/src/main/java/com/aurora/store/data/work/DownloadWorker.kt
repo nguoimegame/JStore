@@ -672,12 +672,14 @@ class DownloadWorker @AssistedInject constructor(
             Log.w(TAG, "No SHA-256 for ${gFile.name}, falling back to SHA-1")
         }
 
-        // jstore: trust a hashless file only when it comes from the Jaecoo server
-        if (expectedSha.isBlank() &&
-            ServerFiles.acceptUnverified(gFile, jaecooServerApps::isServerFileUrl)
-        ) {
-            JstoreLog.w(TAG, "Installing ${gFile.name} from the Jaecoo server without a hash")
-            return true
+        // jstore: trust a hashless file only when it comes from the Jaecoo server; load the
+        // server list first, a download resumed after process death starts with none
+        if (expectedSha.isBlank()) {
+            jaecooServerApps.ensureLoaded()
+            if (ServerFiles.acceptUnverified(gFile, jaecooServerApps::isServerFileUrl)) {
+                JstoreLog.w(TAG, "Installing ${gFile.name} from the Jaecoo server without a hash")
+                return true
+            }
         }
 
         if (expectedSha.isBlank()) return false

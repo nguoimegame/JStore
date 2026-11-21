@@ -38,6 +38,7 @@ class ServerUpdatesTest {
     fun newerServerVersionIsUpdate() {
         val updates = ServerUpdates.updates(
             owned = setOf(pkg),
+            self = "com.example.jstore",
             appOf = { app(41) },
             installed = { installed(40) }
         )
@@ -49,6 +50,7 @@ class ServerUpdatesTest {
     fun sameVersionIsNotUpdate() {
         val updates = ServerUpdates.updates(
             owned = setOf(pkg),
+            self = "com.example.jstore",
             appOf = { app(40) },
             installed = { installed(40) }
         )
@@ -60,6 +62,7 @@ class ServerUpdatesTest {
     fun ownedWithoutDownloadUrlNoUpdate() {
         val updates = ServerUpdates.updates(
             owned = setOf(pkg),
+            self = "com.example.jstore",
             appOf = { app(41, withFile = false) },
             installed = { installed(40) }
         )
@@ -71,10 +74,24 @@ class ServerUpdatesTest {
     fun notInstalledNoUpdate() {
         val updates = ServerUpdates.updates(
             owned = setOf(pkg),
+            self = "com.example.jstore",
             appOf = { app(41) },
             installed = { null }
         )
 
         assertThat(updates).isEmpty()
+    }
+
+    @Test
+    fun ownPackageIsNeverServerUpdate() {
+        val self = "com.example.jstore"
+        val updates = ServerUpdates.updates(
+            owned = setOf(self, pkg),
+            self = self,
+            appOf = { app(41).copy(packageName = it) },
+            installed = { installed(40) }
+        )
+
+        assertThat(updates.map { it.packageName }).containsExactly(pkg)
     }
 }

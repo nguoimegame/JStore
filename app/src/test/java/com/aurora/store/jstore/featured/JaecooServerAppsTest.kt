@@ -29,6 +29,13 @@ class JaecooServerAppsTest {
         {"name":"Radio","packageName":"com.jaecoo.radio","downloadUrl":"https://cdn/radio.apk"}
     ]"""
 
+    /** The server answers both lists. */
+    private fun live(url: String): String? = when (url) {
+        "https://srv/api/apps.json" -> catalogue
+        "https://srv/api/featured.json" -> featured
+        else -> null
+    }
+
     private fun dir() = File(folder.root, "jstore_store")
 
     private fun cache() = StoreCatalog.FileCatalogCache(dir())
@@ -56,8 +63,10 @@ class JaecooServerAppsTest {
             null
         })
 
-        assertThat(requested).contains("https://srv/api/apps.json")
+        // The catalogue came from the cache: featured.json is not tried on the network again.
+        assertThat(requested).containsExactly("https://srv/api/apps.json")
         assertThat(snapshot.baseUrl).isEqualTo("https://srv")
+        assertThat(snapshot.complete).isFalse()
         assertThat(snapshot.entries.map { it.app.packageName })
             .containsExactly("com.jaecoo.music", "com.spotify.music")
             .inOrder()
@@ -94,6 +103,7 @@ class JaecooServerAppsTest {
         val snapshot = build(fetch = fetch, play = { error("signed out") })
 
         assertThat(snapshot.found).isTrue()
+        assertThat(snapshot.complete).isFalse()
         assertThat(snapshot.apps.map { it.packageName })
             .containsExactly("com.jaecoo.music", "com.jaecoo.radio")
             .inOrder()
@@ -109,7 +119,7 @@ class JaecooServerAppsTest {
         val asked = mutableListOf<List<String>>()
 
         val snapshot = build(
-            fetch = { if (it.endsWith("featured.json")) featured else null },
+            fetch = ::live,
             play = { pkgs ->
                 asked += pkgs
                 listOf(App(packageName = "com.waze", displayName = "Waze"))
@@ -129,12 +139,41 @@ class JaecooServerAppsTest {
     fun isServerFileUrlMatchesResolvedUrl() {
         cache().write("https://srv", catalogue)
 
-        val snapshot = build(fetch = { if (it.endsWith("featured.json")) featured else null })
+        val snapshot = build(fetch = ::live)
 
         assertThat(snapshot.isServerFileUrl("https://srv/files/music.apk")).isTrue()
         assertThat(snapshot.isServerFileUrl("https://cdn/radio.apk")).isTrue()
         assertThat(snapshot.isServerFileUrl("/files/music.apk")).isFalse()
         assertThat(snapshot.isServerFileUrl("https://play.googleapis.com/x.apk")).isFalse()
         assertThat(snapshot.isServerFileUrl("")).isFalse()
+    }
+
+    @Test
+    fun liveCatalogueAndPlayIsComplete() {
+        cache().write("https://srv", catalogue)
+
+        val snapshot = build(
+            fetch = ::live,
+            play = { listOf(App(packageName = "com.waze", displayName = "Waze")) }
+        )
+
+        assertThat(snapshot.found).isTrue()
+        assertThat(snapshot.complete).isTrue()
+        assertThat(snapshot.apps.map { it.packageName })
+            .containsExactly("com.jaecoo.music", "com.waze", "com.jaecoo.radio")
+            .inOrder()
+    }
+
+    @Test
+    fun cachedCatalogueUsesCachedFeatured() {
+        cache().write("https://srv", catalogue)
+        File(dir(), "featured.json").writeText(featured)
+
+        val snapshot = build(fetch = { null })
+
+        assertThat(snapshot.entry("com.waze")?.fromCatalogue).isFalse()
+        assertThat(snapshot.apps.map { it.packageName })
+            .containsExactly("com.jaecoo.music", "com.jaecoo.radio")
+            .inOrder()
     }
 }
