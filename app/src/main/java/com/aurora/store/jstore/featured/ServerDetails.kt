@@ -31,7 +31,8 @@ object ServerDetails {
      * - [server] unknown: Play as is (null when Play failed).
      * - Play usable and [server] known: the server's text fields win; the rest is Play's. When the
      *   entry has a `downloadUrl`, the server file is used and `isInstalled`, `versionCode` and the
-     *   certificates are worked out again from [installed] (as [ServerApps.versionCode]).
+     *   certificates are worked out again from [installed] (as [ServerApps.versionCode]), and the
+     *   app is free (no Play purchase is involved).
      * - Play failed or blank and [server] known: [server], its install state from [installed].
      */
     fun resolve(play: Result<App>, server: App?, entry: ServerEntry?, installed: Installed?): App? {
@@ -60,6 +61,7 @@ object ServerDetails {
         playVersionCode: Long?,
         installed: Installed?
     ): App = copy(
+        isFree = true,
         isInstalled = installed != null,
         versionCode = ServerApps.versionCode(entry.app.version, playVersionCode, installed),
         certificateSetList = installed?.certHashes

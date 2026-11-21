@@ -142,6 +142,38 @@ class ServerAppsTest {
     }
 
     @Test
+    fun urlEntryWithoutPlayIsFree() {
+        val app = ServerApps.toApp(
+            serverEntry(entry("com.litube", downloadUrl = "/apk/litube.apk")),
+            "https://s",
+            null,
+            null
+        )!!
+        assertThat(app.isFree).isTrue()
+    }
+
+    @Test
+    fun urlEntryPaidOnPlayIsFree() {
+        val play = App(packageName = "com.waze", isFree = false, price = "50.000 đ")
+        val app = ServerApps.toApp(
+            serverEntry(entry("com.waze", downloadUrl = "/apk/w.apk")),
+            "https://s",
+            play,
+            null
+        )!!
+        assertThat(app.isFree).isTrue()
+    }
+
+    @Test
+    fun urlLessEntryKeepsPlayIsFree() {
+        val paid = App(packageName = "com.waze", isFree = false, price = "50.000 đ")
+        val free = App(packageName = "com.waze", isFree = true)
+        val entry = serverEntry(entry("com.waze", name = "Waze"))
+        assertThat(ServerApps.toApp(entry, "https://s", paid, null)!!.isFree).isFalse()
+        assertThat(ServerApps.toApp(entry, "https://s", free, null)!!.isFree).isTrue()
+    }
+
+    @Test
     fun hashlessDownloadStillProducesFile() {
         val app = ServerApps.toApp(
             serverEntry(entry("com.waze", downloadUrl = "/apk/w.apk")),

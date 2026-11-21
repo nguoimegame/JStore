@@ -78,6 +78,8 @@ object ServerApps {
                 )
             ),
             versionCode = versionCode(server.version, play?.versionCode, installed),
+            // The server delivers the file, no Play purchase: free to install (as SelfUpdate)
+            isFree = true,
             certificateSetList = installed?.certHashes
                 ?.map { EncodedCertificateSet(certificateSet = it, sha256 = "") }
                 ?: withText.certificateSetList

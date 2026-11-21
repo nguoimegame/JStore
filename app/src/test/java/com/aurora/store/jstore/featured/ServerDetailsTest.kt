@@ -157,10 +157,37 @@ class ServerDetailsTest {
             server.copy(
                 certificateSetList = listOf(
                     EncodedCertificateSet(certificateSet = "device", sha256 = "")
-                )
+                ),
+                isFree = true
             )
         )
         assertThat(ServerDetails.isServerOnly(failed, server)).isTrue()
+    }
+
+    @Test
+    fun serverOnlyFallbackIsFree() {
+        val app = ServerDetails.resolve(failed, server.copy(isFree = false), fileEntry, null)!!
+
+        assertThat(app.isFree).isTrue()
+    }
+
+    @Test
+    fun paidOnPlayWithServerFileIsFree() {
+        val paid = play.copy(isFree = false, price = "50.000 đ")
+
+        val app = ServerDetails.resolve(Result.success(paid), server, fileEntry, null)!!
+
+        assertThat(app.isFree).isTrue()
+    }
+
+    @Test
+    fun playWithoutServerFileKeepsPlayPrice() {
+        val paid = play.copy(isFree = false, price = "50.000 đ")
+
+        val app = ServerDetails.resolve(Result.success(paid), server, textEntry, null)!!
+
+        assertThat(app.isFree).isFalse()
+        assertThat(app.price).isEqualTo("50.000 đ")
     }
 
     @Test
