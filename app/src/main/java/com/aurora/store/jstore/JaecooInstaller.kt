@@ -19,6 +19,7 @@ import com.aurora.store.data.model.InstallerInfo
 import com.aurora.store.data.room.download.Download
 import com.aurora.store.util.PackageUtil.isSharedLibraryInstalled
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,6 +37,17 @@ class JaecooInstaller @Inject constructor(
 ) : InstallerBase(context) {
 
     companion object {
+        /** Google Play's name for the base APK; the splits are `config.*.apk` and the like. */
+        const val BASE_APK = "base.apk"
+
+        /**
+         * [apks] with the base APK first. They come in directory order, which put a split
+         * first and got the install refused by JaecooApp 4.10.26 to 4.10.30, which took the
+         * first APK as the base. See docs/jstore-contract.md.
+         */
+        fun baseFirst(apks: List<File>): List<File> =
+            apks.sortedByDescending { it.name == BASE_APK }
+
         val installerInfo: InstallerInfo
             get() = InstallerInfo(
                 id = 7,
@@ -104,7 +116,8 @@ class JaecooInstaller @Inject constructor(
         sharedLibPackageName: String = ""
     ): Boolean {
         val target = sharedLibPackageName.ifBlank { packageName }
-        val uris = getFiles(packageName, versionCode, sharedLibPackageName).map { file ->
+        val apks = baseFirst(getFiles(packageName, versionCode, sharedLibPackageName))
+        val uris = apks.map { file ->
             getUri(file).also { uri ->
                 context.grantUriPermission(
                     JaecooConnection.JAECOO_PACKAGE,

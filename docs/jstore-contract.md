@@ -57,7 +57,7 @@ oneway interface IInstallCallback {
 - `status`: `0` đã cài, `1` đã mở màn xác nhận của hệ thống (JaecooApp không phải Device Owner), `2` lỗi (`message` giải thích), `3` đã gỡ.
 - `install` trả về ngay; `onResult` được gọi đúng một lần.
 - `canManageApps` cho biết JaecooApp có quyền ẩn app không. `listApps` trả đúng danh sách `AppVisibilityManager.listApps`: chỉ app người dùng, không có JaecooApp và launcher. Mỗi `Bundle`: `packageName`, `label` (String), `versionCode` (long), `versionName` (String), `hidden` (boolean), `protected` (boolean), `icon` (byte[] PNG, chỉ có khi `hidden`, vì app ẩn trông như chưa cài). `setHidden` trả `false` khi bị từ chối hoặc lỗi.
-- `apks` là các URI `content://` trong `FileProvider` của jstore (authority `com.example.jstore.fileProvider`). jstore cấp quyền đọc cho `com.example.jaecooapp` bằng `grantUriPermission` trước khi gọi. JaecooApp chép các file vào cache của mình rồi cài như APK tự tải, vì vậy khi có `onResult` thì jstore xóa file và thu hồi quyền được ngay.
+- `apks` là các URI `content://` trong `FileProvider` của jstore (authority `com.example.jstore.fileProvider`). jstore cấp quyền đọc cho `com.example.jaecooapp` bằng `grantUriPermission` trước khi gọi. JaecooApp chép các file vào cache của mình rồi cài như APK tự tải, vì vậy khi có `onResult` thì jstore xóa file và thu hồi quyền được ngay. jstore gửi APK gốc (`base.apk`) trước, các split sau; JaecooApp không dựa vào thứ tự này mà tự tìm APK gốc trong danh sách (split không đọc được như một gói riêng). JaecooApp 4.10.26 đến 4.10.30 lấy file đầu tiên làm APK gốc nên từ chối app có split khi jstore gửi sai thứ tự.
 
 ### Luật an toàn của JaecooApp
 
