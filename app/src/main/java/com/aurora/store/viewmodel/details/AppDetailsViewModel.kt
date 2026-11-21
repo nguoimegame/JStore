@@ -45,6 +45,9 @@ import com.aurora.store.data.room.review.LocalReview
 import com.aurora.store.data.room.review.LocalReview.Companion.toReview
 import com.aurora.store.data.room.review.ReviewDao
 import com.aurora.store.jstore.JstoreFeatures
+import com.aurora.store.jstore.JstoreLog
+import com.aurora.store.jstore.featured.JaecooServerApps
+import com.aurora.store.jstore.featured.ServerDetails
 import com.aurora.store.util.CertUtil
 import com.aurora.store.util.PackageUtil
 import com.aurora.store.util.Preferences
@@ -53,6 +56,7 @@ import com.aurora.store.util.StorageUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -85,7 +89,9 @@ class AppDetailsViewModel @Inject constructor(
     private val httpClient: IHttpClient,
     private val json: Json,
     private val accountRepository: AccountRepository,
-    private val exodusRepository: ExodusRepository
+    private val exodusRepository: ExodusRepository,
+    // jstore: server data for details
+    private val jaecooServerApps: JaecooServerApps
 ) : ViewModel() {
 
     private val _app = MutableStateFlow<App?>(null)
@@ -199,11 +205,26 @@ class AppDetailsViewModel @Inject constructor(
     }
 
     fun fetchAppDetails(packageName: String) {
+        var serverOnly = false // jstore: Play does not know the app, the Jaecoo server does
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _app.value = appDetailsHelper.getAppByPackageName(packageName).copy(
-                    isInstalled = PackageUtil.isInstalled(context, packageName)
-                )
+                // jstore: prefer the Jaecoo server's data; fall back to it when Play fails
+                jaecooServerApps.ensureLoaded()
+                val play = runCatching {
+                    appDetailsHelper.getAppByPackageName(packageName).copy(
+                        isInstalled = PackageUtil.isInstalled(context, packageName)
+                    )
+                }
+                val server = jaecooServerApps.app(packageName)
+                play.exceptionOrNull()?.let {
+                    if (it is CancellationException || server == null) throw it
+                    JstoreLog.w(TAG, "Play has no details for $packageName, using the server's", it)
+                }
+                val hasServerFile =
+                    jaecooServerApps.entry(packageName)?.app?.downloadUrl?.isNotEmpty() == true
+                _app.value = ServerDetails.resolve(play, server, hasServerFile)
+                    ?: error("No details for $packageName")
+                serverOnly = server != null && _app.value === server
                 val existingDownload = downloadHelper.getDownload(packageName)
 
                 // A COMPLETED record for an app that is no longer installed means the app was
@@ -236,6 +257,7 @@ class AppDetailsViewModel @Inject constructor(
             if (throwable != null || app.value == null) return@invokeOnCompletion
 
             fetchFavourite(packageName)
+            if (serverOnly) return@invokeOnCompletion // jstore: skip the Play-only follow-ups
             if (JstoreFeatures.REVIEWS) fetchFeaturedReviews(packageName)
             // Reviews can only be submitted for installed apps with a personal account, so the
             // user's existing review is only relevant (and fetchable) in that case.
