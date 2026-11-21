@@ -71,7 +71,8 @@ object ServerApps {
                     name = "$pkg.apk",
                     url = StoreCatalog.resolveUrl(baseUrl, server.downloadUrl),
                     size = size,
-                    sha256 = server.sha256
+                    // DownloadWorker compares lowercase hex; the server may pad or uppercase it
+                    sha256 = server.sha256.trim().lowercase()
                 )
             ),
             versionCode = versionCode(server.version, play?.versionCode, installed),

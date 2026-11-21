@@ -115,6 +115,28 @@ class ServerAppsTest {
     }
 
     @Test
+    fun serverHashIsTrimmedAndLowercased() {
+        val app = ServerApps.toApp(
+            serverEntry(entry("com.waze", downloadUrl = "/apk/w.apk", sha256 = "  ABCDEF01 ")),
+            "https://s",
+            null,
+            null
+        )!!
+        assertThat(app.fileList.single().sha256).isEqualTo("abcdef01")
+    }
+
+    @Test
+    fun blankServerHashStaysBlank() {
+        val app = ServerApps.toApp(
+            serverEntry(entry("com.waze", downloadUrl = "/apk/w.apk", sha256 = "   ")),
+            "https://s",
+            null,
+            null
+        )!!
+        assertThat(app.fileList.single().sha256).isEmpty()
+    }
+
+    @Test
     fun hashlessDownloadStillProducesFile() {
         val app = ServerApps.toApp(
             serverEntry(entry("com.waze", downloadUrl = "/apk/w.apk")),
